@@ -8,7 +8,8 @@ import Order from "./Order";
 import ChangeOrder from "./ChangeOrder";
 import ComparePriceNavigation from "../ComparePrice/ComparePriceNavigation";
 
-export default createStackNavigator(
+
+  export default createStackNavigator(
     {
       OrderScreen: {
         screen: Order,
@@ -21,11 +22,12 @@ export default createStackNavigator(
         }),
       },
       ChnageOrder:{
-          screen: ChangeOrder
+          screen:ChangeOrder
       },
       ComparePriceStack:{
           screen:ComparePriceNavigation
-      }
+      },
+
     },
     {
       

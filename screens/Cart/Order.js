@@ -55,8 +55,16 @@ export default class Order extends Component {
             return(
                 <Container>
                     <Content>
-                        <Button bordered dark>
-                            <Text>Order</Text>
+                    
+                        <Button bordered dark onPress={()=>{
+                            this.props.navigation.navigate('ChnageOrder',);
+                        }}>
+                            <Text>ChangeOrder</Text>
+                        </Button>
+                        <Button bordered dark onPress={()=>{
+                            this.props.navigation.navigate('ComparePriceStack',);
+                        }}>
+                            <Text>Cmpare price stack</Text>
                         </Button>
                     </Content>
                 </Container>
