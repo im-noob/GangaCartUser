@@ -97,6 +97,7 @@ const HomeScreenStack = createStackNavigator(
         title: `Second Screen`,
       }),
     } ,
+  
     ExampleThirdScreen: {
         screen:ExampleScreenThird,
         navigationOptions: ({ navigation }) => ({

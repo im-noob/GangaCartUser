@@ -60,6 +60,16 @@ export default class HomeScreen extends Component {
             }}>
               <Text> Go to First screen</Text>
             </Button>
+            <Button bordered dark onPress={()=>{
+              this.props.navigation.navigate('GroceryScreenStack');
+            }}>
+              <Text> Grocery</Text>
+            </Button>
+            <Button bordered dark onPress={()=>{
+              this.props.navigation.navigate('Resturent');
+            }}>
+              <Text> Resturent</Text>
+            </Button>
           </Content>
         </Container>
       );
