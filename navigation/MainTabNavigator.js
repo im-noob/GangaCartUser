@@ -17,7 +17,16 @@ import MyAccountScreen from '../screens/MyAccountScreen';
 import ExampleScreenFirst from '../screens/ExampleScreenFirst';
 import ExampleScreenSecond from '../screens/ExampleScreenSecond';
 import ExampleScreenThird from '../screens/ExampleScreenThird';
-
+import GroceryNavigation from '../screens/Grocery/GroceryNavigation';
+import MenuButton from '../components/MenuButton';
+import HeaderTitle from '../components/HeaderTitle';
+import ResturantNavigation from '../screens/Resturant/ResturantNavigation';
+import ServiceNavigation from '../screens/Service/ServiceNavigation';
+import OfferNavigation from '../screens/Offer/OfferNavigation';
+import MyOrderNavigation from '../screens/MyOrder/MyOrderNavigation';
+import RewardNavigation from '../screens/Reward/RewardNavigation';
+import CartNavigation from '../screens/Cart/CartNavigation';
+import MyProfileNavigation from '../screens/MyProfile/MyProfileNavigation';
 
 
 const CustomDrawerContentComponent = (props) => (
@@ -30,22 +39,11 @@ const CustomDrawerContentComponent = (props) => (
 		<ScrollView style={{backgroundColor:'#FFF'}}>
 			<DrawerItems {...props} />
 		</ScrollView>
-		
+
 	</SafeAreaView>
   
 );
-class MenuButton extends React.Component{
-	render(){
-		return(
-			<View style={{backgroundColor:"#2874f0"}}>
-				<TouchableOpacity onPress={() => { this.props.obj.toggleDrawer() } }>
-					<Icon name="menu" style={{color: 'white', padding: 10, marginLeft:5, fontSize: 35}}/>
-				</TouchableOpacity>
-			</View>
-		);
-	}
-}
-const HeaderTitle = (<Text style={{color:"#fff",padding: 10, marginLeft:5, fontSize: 20 , fontWeight:"400"}}>GangaCart</Text>);
+
 
 
 
@@ -102,166 +100,13 @@ const HomeScreenStack = createStackNavigator(
         navigationOptions: ({ navigation }) => ({
           title: `Thired Screen`,
         }),
-    }
-    
+    },
   },
   {
     
   }
 );
 
-
-const GangaCartPlusZoneScreenStack = createStackNavigator(
-  {
-    HomeScreen: {
-      screen: GangaCartPlusZoneScreen,
-      navigationOptions: ({ navigation }) => ({
-        headerTitle: HeaderTitle,
-        headerStyle: {
-          backgroundColor: '#2874f0'
-        },
-        headerLeft: <MenuButton obj={navigation}  />,
-      }),  
-    }
-  },
-    
-);
-const GroceryScreenStack = createStackNavigator(
-  {
-    HomeScreen: {
-      screen: GroceryScreen,
-      navigationOptions: ({ navigation }) => ({
-        headerTitle: HeaderTitle,
-        headerStyle: {
-          backgroundColor: '#2874f0'
-        },
-        headerLeft: <MenuButton obj={navigation}  />,
-      }),
-    }
-  },
-  {
-    
-  }
-);
-const RestaurantScreenStack = createStackNavigator(
-  {
-    HomeScreen: {
-      screen: RestaurantScreen,
-      navigationOptions: ({ navigation }) => ({
-        headerTitle: HeaderTitle,
-        headerStyle: {
-          backgroundColor: '#2874f0'
-        },
-        headerLeft: <MenuButton obj={navigation}  />,
-      }),
-    }
-  },
-  {
-    
-  }
-);
-const ServicesScreenStack = createStackNavigator(
-  {
-    HomeScreen: {
-      screen: ServiceScreen,
-      navigationOptions: ({ navigation }) => ({
-        headerTitle: HeaderTitle,
-        headerStyle: {
-          backgroundColor: '#2874f0'
-        },
-        headerLeft: <MenuButton obj={navigation}  />,
-      }),
-    }
-  },
-  {
-    
-  }
-);
-const OfferZoneScreenStack = createStackNavigator(
-  {
-    HomeScreen: {
-      screen: OfferZoneScreen,
-      navigationOptions: ({ navigation }) => ({
-        headerTitle: HeaderTitle,
-        headerStyle: {
-          backgroundColor: '#2874f0'
-        },
-        headerLeft: <MenuButton obj={navigation}  />,
-      }),
-    }
-  },
-  {
-    
-  }
-);
-const MyOrdersScreenStack = createStackNavigator(
-  {
-    HomeScreen: {
-      screen: MyOrderScreen,
-      navigationOptions: ({ navigation }) => ({
-        headerTitle: HeaderTitle,
-        headerStyle: {
-          backgroundColor: '#2874f0'
-        },
-        headerLeft: <MenuButton obj={navigation}  />,
-      }),
-    }
-  },
-  {
-    
-  }
-);
-const MyRewardsScreenStack = createStackNavigator(
-  {
-    HomeScreen: {
-      screen: MyRewardScreen,
-      navigationOptions: ({ navigation }) => ({
-        headerTitle: HeaderTitle,
-        headerStyle: {
-          backgroundColor: '#2874f0'
-        },
-        headerLeft: <MenuButton obj={navigation}  />,
-      }),
-    }
-  },
-  {
-    
-  }
-);
-const MyCartScreenStack = createStackNavigator(
-  {
-    HomeScreen: {
-      screen: MyCartScreen,
-      navigationOptions: ({ navigation }) => ({
-        headerTitle: HeaderTitle,
-        headerStyle: {
-          backgroundColor: '#2874f0'
-        },
-        headerLeft: <MenuButton obj={navigation}  />,
-      }),
-    }
-  },
-  {
-    
-  }
-);
-const MyAccountScreenStack = createStackNavigator(
-  {
-    HomeScreen: {
-      screen: MyAccountScreen,
-      navigationOptions: ({ navigation }) => ({
-        headerTitle: HeaderTitle,
-        headerStyle: {
-          backgroundColor: '#2874f0'
-        },
-        headerLeft: <MenuButton obj={navigation}  />,
-      }),
-    }
-  },
-  {
-    
-  }
-);
 
 const AppDrawerNavigator = createDrawerNavigator({
   
@@ -271,56 +116,51 @@ const AppDrawerNavigator = createDrawerNavigator({
 			drawerIcon: ({ tintColor }) => (<Icon name="home-outline" size={24} style={{ color: tintColor }} />),
 		}
   },
-  GangaCartPlusZone:{
-		screen:GangaCartPlusZoneScreenStack,
-		navigationOptions: {
-			drawerIcon: ({ tintColor }) => (<Icon name="home-outline" size={24} style={{ color: tintColor }} />),
-		}
-  },
+
   Grocery:{
-		screen:GroceryScreenStack,
+		screen:GroceryNavigation,
 		navigationOptions: {
 			drawerIcon: ({ tintColor }) => (<Icon name="home-outline" size={24} style={{ color: tintColor }} />),
 		}
   },
-  Restaurant:{
-		screen:RestaurantScreenStack,
-		navigationOptions: {
-			drawerIcon: ({ tintColor }) => (<Icon name="home-outline" size={24} style={{ color: tintColor }} />),
-		}
-  },
+  // Restaurant:{
+	// 	screen:ResturantNavigation,
+	// 	navigationOptions: {
+	// 		drawerIcon: ({ tintColor }) => (<Icon name="home-outline" size={24} style={{ color: tintColor }} />),
+	// 	}
+  // },
   Services:{
-		screen:ServicesScreenStack,
+		screen:ServiceNavigation,
 		navigationOptions: {
 			drawerIcon: ({ tintColor }) => (<Icon name="home-outline" size={24} style={{ color: tintColor }} />),
 		}
   },
   OfferZone:{
-		screen:OfferZoneScreenStack,
+		screen:OfferNavigation,
 		navigationOptions: {
 			drawerIcon: ({ tintColor }) => (<Icon name="home-outline" size={24} style={{ color: tintColor }} />),
 		}
   },
   MyOrders:{
-		screen:MyOrdersScreenStack,
+		screen:MyOrderNavigation,
 		navigationOptions: {
 			drawerIcon: ({ tintColor }) => (<Icon name="home-outline" size={24} style={{ color: tintColor }} />),
 		}
   },
   MyRewards:{
-		screen:MyRewardsScreenStack,
+		screen: RewardNavigation,
 		navigationOptions: {
 			drawerIcon: ({ tintColor }) => (<Icon name="home-outline" size={24} style={{ color: tintColor }} />),
 		}
   },
   MyCart:{
-		screen:MyCartScreenStack,
+		screen:CartNavigation,
 		navigationOptions: {
 			drawerIcon: ({ tintColor }) => (<Icon name="home-outline" size={24} style={{ color: tintColor }} />),
 		}
   },
   MyAccount:{
-		screen:MyAccountScreenStack,
+		screen:MyProfileNavigation,
 		navigationOptions: {
 			drawerIcon: ({ tintColor }) => (<Icon name="home-outline" size={24} style={{ color: tintColor }} />),
 		}

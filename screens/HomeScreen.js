@@ -60,6 +60,13 @@ export default class HomeScreen extends Component {
             }}>
               <Text> Go to First screen</Text>
             </Button>
+
+
+            <Button bordered dark onPress={()=>{
+              this.props.navigation.navigate('Gorcery');
+            }}>
+              <Text> Go to Profile screen</Text>
+            </Button>
           </Content>
         </Container>
       );
