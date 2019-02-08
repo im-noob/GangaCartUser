@@ -31,11 +31,18 @@ import {
     Item,
     Textarea,
     Label,
+    Accordion,
     Thumbnail,
 } from 'native-base';
 import {createDrawerNavigator,DrawerItems, SafeAreaView,createStackNavigator,NavigationActions } from 'react-navigation';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 const {width,height} = Dimensions.get('window');
+
+const dataArray = [
+    { title: "First Element", content: "Lorem ipsum dolor sit amet" },
+    { title: "Second Element", content: "Lorem ipsum dolor sit amet" },
+    { title: "Third Element", content: "Lorem ipsum dolor sit amet" }
+  ];
 
 export default class Category extends Component {
     constructor(props){
@@ -54,10 +61,9 @@ export default class Category extends Component {
         if(renderCoponentFlag){
             return(
                 <Container>
-                    <Content>
-                        <Button bordered dark>
-                            <Text>Category</Text>
-                        </Button>
+                   
+                    <Content padder>
+                    <Accordion dataArray={dataArray}  icon="add" expandedIcon="remove"/>
                     </Content>
                 </Container>
             );

@@ -6,7 +6,7 @@ import {
     TouchableOpacity,
     Dimensions,
     AsyncStorage,
-    ToastAndroid,
+    ToastAndroid, 
     NetInfo,
     Modal,
 } from "react-native";

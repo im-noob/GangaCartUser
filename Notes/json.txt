@@ -1,0 +1,62 @@
+/**Category.js*/
+GET :: http://gomarket.ourgts.com/public/api/gro_category
+Input :
+     method: 'GET',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+          }
+
+output-
+         {
+                "gro_cat_id": 2,
+                "gro_cat_name": "Food Products, Beverages & More",
+                "pic": ""
+            }
+
+/** sub Category */
+ POST :: http://gomarket.ourgts.com/public/api/gro_subCategory
+
+ Input - 
+     method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body:JSON.stringify({
+            id:value
+            })
+
+ Output -
+    {
+                "subcat_name": "NOODLES & MORE",
+                "pic": "",
+                "gro_subcat_id": 10
+    }
+
+/** product List */
+ POST :: http://gomarket.ourgts.com/public/api/gro_subCategory
+
+ Input -
+     method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body:JSON.stringify({
+            id:value
+            })
+
+ Output -
+     {
+                "gro_product_name": "KESH KANTI REETHA",
+                "inStock": 1,
+                "gro_cat_id": 2,
+                "gro_price": 260,
+                "quantity": 500,
+                "gro_map_id": 471,
+                "gro_product_list_id": 435,
+                "gro_product_info": null,
+                "pic": "all_product_pics/patanjali/KESH KANTI REETHA.jpg",
+                "unit_name": "gram"
+            },

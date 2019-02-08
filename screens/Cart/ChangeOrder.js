@@ -55,15 +55,19 @@ export default class ChangeOrder extends Component {
             return(
                 <Container>
                     <Content>
-                        <Button bordered dark onPress={()=>{
-                            this.props.navigation.navigate('OrderScreen',);
-                        }}>
+                        <Button bordered dark 
+                        onPress={()=>{
+                                    this.props.navigation.navigate('OrderScreen',);
+                                }}
+                        >
                             <Text>OrderScreen</Text>
                         </Button>
                         
-                        <Button bordered dark onPress={()=>{
-                            this.props.navigation.navigate('ComparePriceStack',);
-                        }}>
+                        <Button bordered dark 
+                        onPress={()=>{
+                                    this.props.navigation.navigate('ComparePriceStack',);
+                                }}
+                        >
                             <Text>ComparePrice</Text>
                         </Button>
                     </Content>
@@ -85,7 +89,7 @@ class AdvLoder extends Component{
             <View style={{ flex: 1, width:width, justifyContent: 'center', alignItems: 'center',backgroundColor:'#fff'}}> 
                 <Spinner color='#2874f0' size='large' style={{height:40}} />
             </View>
-        )
+        ) 
     }
 }
 
