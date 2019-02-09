@@ -1,5 +1,5 @@
 /**Category.js*/
-GET :: http://gomarket.ourgts.com/public/api/gro_category
+GET :: http://gomarket.ourgts.com/public/api/cat
 Input :
      method: 'GET',
           headers: {
@@ -9,33 +9,22 @@ Input :
 
 output-
          {
-                "gro_cat_id": 2,
-                "gro_cat_name": "Food Products, Beverages & More",
-                "pic": ""
-            }
-
-/** sub Category */
- POST :: http://gomarket.ourgts.com/public/api/gro_subCategory
-
- Input - 
-     method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body:JSON.stringify({
-            id:value
-            })
-
- Output -
-    {
-                "subcat_name": "NOODLES & MORE",
-                "pic": "",
-                "gro_subcat_id": 10
-    }
+    
+        "data": [
+                    {
+                        "cKey": 2,
+                        "cname": "Food Products, Beverages & More",
+                        "cpic": "",
+                        "sKey": 4,
+                        "sName": "SALT, SUGAR & SPICES",
+                        "sPic": ""
+                    }
+                ],
+                "received": "yes"
+        }
 
 /** product List */
- POST :: http://gomarket.ourgts.com/public/api/gro_subCategory
+ POST :: http://gomarket.ourgts.com/public/api/gro_product
 
  Input -
      method: 'POST',
@@ -48,15 +37,29 @@ output-
             })
 
  Output -
-     {
-                "gro_product_name": "KESH KANTI REETHA",
-                "inStock": 1,
-                "gro_cat_id": 2,
-                "gro_price": 260,
-                "quantity": 500,
-                "gro_map_id": 471,
-                "gro_product_list_id": 435,
-                "gro_product_info": null,
+    {
+    "data": {
+        "current_page": 1,
+        "data": [
+            {
+                "title": "KESH KANTI REETHA",
+                "stock": 1,
+                "mapcid": 2,
+                "price": 260,
+                "size": 500,
+                "map": 471,
+                "pid": 435,
+                "info": null,
                 "pic": "all_product_pics/patanjali/KESH KANTI REETHA.jpg",
-                "unit_name": "gram"
-            },
+                "unit": "gram"
+            }
+        ],
+        "first_page_url": "http://gomarket.ourgts.com/public/api/gro_product?page=1",
+        "from": 1,
+        "next_page_url": "http://gomarket.ourgts.com/public/api/gro_product?page=2",
+        "path": "http://gomarket.ourgts.com/public/api/gro_product",
+        "per_page": 1,
+        "prev_page_url": null,
+        "to": 1
+    }
+}

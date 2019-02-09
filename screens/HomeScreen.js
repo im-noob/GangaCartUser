@@ -33,6 +33,8 @@ import {
   Label,
   Thumbnail,
 } from 'native-base';
+import ImageSlider from 'react-native-image-slider';
+// import Slideshow from 'react-native-slideshow';
 import {createDrawerNavigator,DrawerItems, SafeAreaView,createStackNavigator,NavigationActions } from 'react-navigation';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 const {width,height} = Dimensions.get('window');
@@ -60,6 +62,23 @@ export default class HomeScreen extends Component {
             }}>
               <Text> Go to First screen</Text>
             </Button>
+            <Card>
+              <CardItem>
+              <ImageSlider images={[
+                'http://placeimg.com/640/480/any',
+                'http://placeimg.com/640/480/any',
+                'http://placeimg.com/640/480/any'
+              ]}/>
+                
+                {/* <Slideshow
+                dataSource={[
+                              { url:'http://placeimg.com/640/480/any' },
+                              { url:'http://placeimg.com/640/480/any' },
+                              { url:'http://placeimg.com/640/480/any' }
+                            ]}
+                />  */}
+              </CardItem>
+            </Card>
 
 
             <Button bordered dark onPress={()=>{
