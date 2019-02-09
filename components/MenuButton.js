@@ -1,15 +1,8 @@
 
 import React, { Component } from "react";
 import {
-    StyleSheet,
-    WebView ,
     View,
     TouchableOpacity,
-    Dimensions,
-    AsyncStorage,
-    ToastAndroid,
-    NetInfo,
-    Modal,
 } from "react-native";
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 

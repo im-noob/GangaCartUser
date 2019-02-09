@@ -47,7 +47,7 @@ export default createStackNavigator(
       category: {
         screen: Category,
         navigationOptions: ({ navigation }) => ({
-        //   headerTitle: HeaderTitle,
+           headerTitle:"Grocery",
           headerStyle: {
             backgroundColor: '#2874f0'
           },
