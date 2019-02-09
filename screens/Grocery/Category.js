@@ -55,7 +55,59 @@ export default class Category extends Component {
                 }
             }).then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson); 
+                //console.log(responseJson); 
+                if(responseJson.received == "yes"){
+                    let list = [];
+                    let content1 = [];
+                    var ckeyT = 0;
+                    var last = responseJson.data[responseJson.data.length -1].sKey;
+                    //console.log(last);
+                    for(let data of responseJson.data){
+                        if(data.cKey == ckeyT){
+                            ckeyT = data.cKey;
+                            var temp = {
+                                 sKey :data.sKey,
+                                 sName : data.sName,
+                                 sPic : (data.sPic) ? data.sPic : "http://gomarket.ourgts.com/storage/app/public/offer/ImageNotFound.png"
+                             }
+                            content1.push(temp);
+                            if(data.sKey == last){
+                                let title = {
+                                    title : data.cname,
+                                    content : content1 
+                                };
+                                list.push(title);
+                            }
+                        }
+                        else{
+                            if( ckeyT != 0){
+                                let title = {
+                                    title : data.cname,
+                                    content : content1 
+                                };
+                                list.push(title);
+                                content1 = [];
+                                var temp = {
+                                    sKey :data.sKey,
+                                    sName : data.sName,
+                                    sPic : (data.sPic) ? data.sPic : "http://gomarket.ourgts.com/storage/app/public/offer/ImageNotFound.png"
+                                }
+                               content1.push(temp);                                                                           
+                            }
+                            else{
+                                var temp = {
+                                    sKey :data.sKey,
+                                    sName : data.sName,
+                                    sPic : (data.sPic) ? data.sPic : "http://gomarket.ourgts.com/storage/app/public/offer/ImageNotFound.png"
+                                }
+                               content1.push(temp);
+                            }
+                            ckeyT = data.cKey;
+                        }
+                    }
+
+                    this.setState({CategoryData:list});
+                }
                 }).catch((error) => {
                     console.log("on error featching:"+error);
             });
@@ -92,16 +144,18 @@ export default class Category extends Component {
                 <FlatList 
                     data = {Item.content}
                     renderItem={({item}) => {return(
-                        <ListItem avatar onPress = {() => {console.log('Clickec On item : ', item.id)}} >
+                        <ListItem avatar onPress = {() => {this.props.navigation.navigate('itemList',{
+                            sid: item.sKey
+                        })}} >
                             <Left>
-                                <Thumbnail source={{ uri: item.pic }} />
+                                <Thumbnail source={{ uri: item.sPic }} />
                             </Left>
                             <Body>
-                                <Text>{item.name}</Text>
+                                <Text>{item.sName}</Text>
                             </Body>
                         </ListItem>
                     )} }
-                    keyExtractor={item => item.id.toString()}
+                    keyExtractor={item => item.sKey.toString()}
                 >
                 </FlatList>
             </List>
@@ -114,7 +168,7 @@ export default class Category extends Component {
                 <Container>
                     <Content padder style={{ backgroundColor: "white" }}>
                         <Accordion
-                            dataArray={dataArray}
+                            dataArray={this.state.CategoryData}
                             animation={true}
                             expanded={true}
                             renderHeader={this._renderHeader}
