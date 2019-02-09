@@ -1,5 +1,5 @@
 /**Category.js*/
-GET :: http://gomarket.ourgts.com/public/api/gro_category
+GET :: http://gomarket.ourgts.com/public/api/cat
 Input :
      method: 'GET',
           headers: {
@@ -9,30 +9,19 @@ Input :
 
 output-
          {
-                "gro_cat_id": 2,
-                "gro_cat_name": "Food Products, Beverages & More",
-                "pic": ""
-            }
-
-/** sub Category */
- POST :: http://gomarket.ourgts.com/public/api/gro_subCategory
-
- Input - 
-     method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body:JSON.stringify({
-            id:value
-            })
-
- Output -
-    {
-                "subcat_name": "NOODLES & MORE",
-                "pic": "",
-                "gro_subcat_id": 10
-    }
+    
+        "data": [
+                    {
+                        "cKey": 2,
+                        "cname": "Food Products, Beverages & More",
+                        "cpic": "",
+                        "sKey": 4,
+                        "sName": "SALT, SUGAR & SPICES",
+                        "sPic": ""
+                    }
+                ],
+                "received": "yes"
+        }
 
 /** product List */
  POST :: http://gomarket.ourgts.com/public/api/gro_subCategory
