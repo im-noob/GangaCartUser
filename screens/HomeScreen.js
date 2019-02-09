@@ -33,7 +33,7 @@ import {
   Label,
   Thumbnail,
 } from 'native-base';
-import ImageSlider from 'react-native-image-slider';
+//import ImageSlider from 'react-native-image-slider';
 // import Slideshow from 'react-native-slideshow';
 import {createDrawerNavigator,DrawerItems, SafeAreaView,createStackNavigator,NavigationActions } from 'react-navigation';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -64,11 +64,11 @@ export default class HomeScreen extends Component {
             </Button>
             <Card>
               <CardItem>
-              <ImageSlider images={[
+              {/* <ImageSlider images={[
                 'http://placeimg.com/640/480/any',
                 'http://placeimg.com/640/480/any',
                 'http://placeimg.com/640/480/any'
-              ]}/>
+              ]}/> */}
                 
                 {/* <Slideshow
                 dataSource={[

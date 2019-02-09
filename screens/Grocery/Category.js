@@ -47,8 +47,7 @@ export default class Category extends Component {
             );        
         }else{
             console.log("yes internet ");
-            
-            fetch(Global.API_URL+'Retailer/getOrder', {
+            fetch('http://gomarket.ourgts.com/public/api/cat', {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
@@ -67,6 +66,7 @@ export default class Category extends Component {
 
     componentDidMount() {
         setTimeout(() => {this.setState({renderCoponentFlag: true})}, 0);
+        this.fatchCategory();
     }
 
     _renderHeader(item, expanded) {
