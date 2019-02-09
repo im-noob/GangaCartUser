@@ -55,10 +55,22 @@ export default createStackNavigator(
         }),
       },
       ItemDetails:{
-          screen: ItemDetails
+          screen: ItemDetails,
+          navigationOptions: ({ navigation }) => ({
+            headerTitle:"Item Details",
+           headerStyle: {
+             backgroundColor: '#2874f0'
+           },
+         }),
       },
       itemList:{
-          screen:ItemList
+          screen:ItemList,
+          navigationOptions: ({ navigation }) => ({
+            headerTitle:"Item Details",
+           headerStyle: {
+             backgroundColor: '#2874f0'
+           },
+         }),
       }
     },
     {
