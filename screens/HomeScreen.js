@@ -37,6 +37,7 @@ import {
 // import Slideshow from 'react-native-slideshow';
 import {createDrawerNavigator,DrawerItems, SafeAreaView,createStackNavigator,NavigationActions } from 'react-navigation';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
+import DeckSwiperAdvancedExample from "./ImageExample";
 const {width,height} = Dimensions.get('window');
 
 export default class HomeScreen extends Component {
@@ -62,22 +63,10 @@ export default class HomeScreen extends Component {
             }}>
               <Text> Go to First screen</Text>
             </Button>
-            <Card>
-              <CardItem>
-              {/* <ImageSlider images={[
-                'http://placeimg.com/640/480/any',
-                'http://placeimg.com/640/480/any',
-                'http://placeimg.com/640/480/any'
-              ]}/> */}
-                
-                {/* <Slideshow
-                dataSource={[
-                              { url:'http://placeimg.com/640/480/any' },
-                              { url:'http://placeimg.com/640/480/any' },
-                              { url:'http://placeimg.com/640/480/any' }
-                            ]}
-                />  */}
-              </CardItem>
+            <Card style={{height:200}}>
+              
+                <DeckSwiperAdvancedExample/>
+             
             </Card>
 
 
