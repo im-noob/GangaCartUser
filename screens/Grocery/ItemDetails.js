@@ -43,6 +43,7 @@ export default class ItemDetails extends Component {
         this.state = {
             renderCoponentFlag: false,
             LodingModal: false,
+            
         }
     }
     componentDidMount() {

@@ -138,13 +138,14 @@ export default class Category extends Component {
           </View>
         );
       }
-      _renderContent(Item) {
+    _renderContent(Item,props) {
+       // console.log(props);
         return (
             <List>
                 <FlatList 
                     data = {Item.content}
                     renderItem={({item}) => {return(
-                        <ListItem avatar onPress = {() => {this.props.navigation.navigate('itemList',{
+                        <ListItem avatar onPress = {() => {props.navigation.navigate('itemList',{
                             sid: item.sKey
                         })}} >
                             <Left>
@@ -172,7 +173,7 @@ export default class Category extends Component {
                             animation={true}
                             expanded={true}
                             renderHeader={this._renderHeader}
-                            renderContent={this._renderContent}
+                            renderContent={(item) => this._renderContent(item,this.props)}
                         />
                     </Content>
                 </Container>
