@@ -32,11 +32,13 @@ import {
   Textarea,
   Label,
   Thumbnail,
+  
 } from 'native-base';
 //import ImageSlider from 'react-native-image-slider';
 // import Slideshow from 'react-native-slideshow';
 import {createDrawerNavigator,DrawerItems, SafeAreaView,createStackNavigator,NavigationActions } from 'react-navigation';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
+import Global from "../constants/Global";
 const {width,height} = Dimensions.get('window');
 
 export default class HomeScreen extends Component {
@@ -61,6 +63,15 @@ export default class HomeScreen extends Component {
               this.props.navigation.navigate('ExampleScreenFirst');
             }}>
               <Text> Go to First screen</Text>
+            </Button>
+            <Button bordered primary onPress={()=>{
+              console.log("changin no:"+Global.CART_VALUE);
+              value = parseInt(Global.CART_VALUE) + 1 
+              AsyncStorage.setItem('cart_value',value+"12");
+              Global.CART_VALUE = "5";
+              console.log("changin:"+Global.CART_VALUE);
+            }}>
+                <Text>Add to Cart</Text>
             </Button>
             <Card>
               <CardItem>

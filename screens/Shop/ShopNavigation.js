@@ -8,6 +8,7 @@ import ItemDetails from "./ItemDetails";
 import ItemList from "./ItemList";
 import ShopDetails from "./ShopDetails";
 import ShopList from "./ShopList";
+import CartButton from "../../components/CartButton";
 
 export default createStackNavigator(
     {
@@ -19,6 +20,8 @@ export default createStackNavigator(
             backgroundColor: '#2874f0'
           },
           headerLeft: <MenuButton obj={navigation}  />,
+          headerRight: <CartButton obj={navigation} value="10"  />,
+          
         }),
       },
       ItemList: {
