@@ -128,7 +128,7 @@ export default class Category extends Component {
             padding: 10,
             justifyContent: "space-between",
             alignItems: "center" ,
-            backgroundColor: "#A9DAD6" }}>
+            backgroundColor: "#fffeff" }}>
           <Text style={{ fontWeight: "600" }}>
               {" "}{item.title}
             </Text>
@@ -166,7 +166,7 @@ export default class Category extends Component {
         if(renderCoponentFlag){
             return(
                 <Container>
-                    <Content padder style={{ backgroundColor: "white" }}>
+                    <Content padder style={{ backgroundColor: "#f4f3f7" }}>
                         <Accordion
                             dataArray={this.state.CategoryData}
                             animation={true}
