@@ -66,11 +66,11 @@ export default createStackNavigator(
       itemList:{
           screen:ItemList,
           navigationOptions: ({ navigation }) => ({
-            headerTitle:"Item List",
+            headerTitle:"Item Details",
            headerStyle: {
              backgroundColor: '#2874f0'
-          },
-        }),
+           },
+         }),
       }
     },
     {
