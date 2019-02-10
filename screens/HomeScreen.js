@@ -5,8 +5,10 @@ import {
   View,
   TouchableOpacity,
   Dimensions,
+  Image,
   AsyncStorage,
   ToastAndroid,
+  FlatList,
   NetInfo,
   Modal,
 } from "react-native";
@@ -24,6 +26,7 @@ import {
   Input,
   Card,
   CardItem,
+  
   List,
   ListItem,
   Form,
@@ -46,11 +49,24 @@ export default class HomeScreen extends Component {
     this.state = {
       renderCoponentFlag: false,
       LodingModal: false,
+      data:[{key:'1',title:'Gorcery',navigationKey:'Grocery',pic:'https://upload.wikimedia.org/wikipedia/commons/1/13/Supermarkt.jpg'}]
     }
   }
   componentDidMount() {
     setTimeout(() => {this.setState({renderCoponentFlag: true})}, 5);
   }
+
+  _renderItem = ({item}) =>{
+                            return(
+                             <TouchableOpacity onPress={()=>{this.props.navigation.navigate(item.navigationKey)}}>
+                             <View  style={{justifyContent:'center',width:60,paddingHorizontal:10,paddingVertical:4,borderColor:"#040504"}}>
+                                  <Image style={{height:50,width:50,resizeMode: 'contain'}} source={{uri: item.pic}}/>
+                                  <Text style={{color:'#000000',fontSize:10}}>{item.title}</Text>   
+                              </View>
+                              </TouchableOpacity>
+                              
+                            )
+                           } 
 
   render() {
     const {renderCoponentFlag} = this.state;
@@ -58,12 +74,15 @@ export default class HomeScreen extends Component {
       return(
         <Container>
           <Content>
-            <Button bordered dark onPress={()=>{
-              this.props.navigation.navigate('ExampleScreenFirst');
-            }}>
-              <Text> Go to First screen</Text>
-            </Button>
-            <Card style={{height:200}}>
+            <Card style={{height:100,width:500}} transparent >
+              <FlatList
+                data={this.state.data}
+               
+               
+                renderItem={this._renderItem}
+              />
+            </Card>
+            <Card>
               
                 <DeckSwiperAdvancedExample/>
              

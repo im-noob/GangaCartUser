@@ -83,10 +83,10 @@ const HomeScreenStack = createStackNavigator(
         headerLeft: <MenuButton obj={navigation}  />,
       }),
     },
-    ExampleScreenFirst: {
-      screen: ExampleScreenFirst,
+    Grocery: {
+      screen: GroceryNavigation,
       navigationOptions: ({ navigation }) => ({
-        title: `First Screen`,
+        header:null
       }),
     },
     ExampleScreenSecond: {
