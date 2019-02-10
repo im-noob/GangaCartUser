@@ -33,16 +33,18 @@ import {
     Label,
     Thumbnail,
 } from 'native-base';
-import {createDrawerNavigator,DrawerItems, SafeAreaView,createStackNavigator,NavigationActions,createBottomTabNavigator, createAppContainer } from 'react-navigation';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 import Category from "./Category";
 import ItemDetails from "./ItemDetails";
 import ItemList from "./ItemList";
 import MenuButton from "../../components/MenuButton";
 import HeaderTitle from "../../components/HeaderTitle";
+import Details from "./Details";
 import CartNavigation from "../Cart/CartNavigation";
 import CartButton from "../../components/CartButton";
 const {width,height} = Dimensions.get('window');
+import {createDrawerNavigator,DrawerItems,createAppContainer, SafeAreaView,createStackNavigator,NavigationActions,createBottomTabNavigator } from 'react-navigation';
+
 
 const StackNav =  createStackNavigator(
     {
@@ -59,7 +61,7 @@ const StackNav =  createStackNavigator(
         }),
       },
       ItemDetails:{
-          screen: ItemDetails,
+          screen: Details,
           navigationOptions: ({ navigation }) => ({
             headerTitle:"Item Details",
            headerStyle: {

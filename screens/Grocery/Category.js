@@ -33,6 +33,7 @@ export default class Category extends Component {
 
     fatchCategory =async ()=> {
         
+        this.setState({renderCoponentFlag:false});
         var connectionInfoLocal = '';
         NetInfo.getConnectionInfo().then((connectionInfo) => {
         console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
@@ -55,7 +56,7 @@ export default class Category extends Component {
                 }
             }).then((response) => response.json())
             .then((responseJson) => {
-                //console.log(responseJson); 
+                console.log(responseJson); 
                 if(responseJson.received == "yes"){
                     let list = [];
                     let content1 = [];
@@ -114,6 +115,7 @@ export default class Category extends Component {
         }
         });
         console.log(connectionInfoLocal);  
+        this.setState({renderCoponentFlag:false});
     }
 
     componentDidMount() {
