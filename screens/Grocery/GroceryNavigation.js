@@ -10,29 +10,6 @@ import {
     NetInfo,
     Modal,
 } from "react-native";
-import { 
-    Container,
-    Spinner,
-    Button,
-    Text,
-    Content,
-    Header,
-    Left,
-    Right,
-    Title,
-    Body,
-    Input,
-    Card,
-    CardItem,
-    List,
-    ListItem,
-    Form,
-    Picker,
-    Item,
-    Textarea,
-    Label,
-    Thumbnail,
-} from 'native-base';
 import {createDrawerNavigator,DrawerItems, SafeAreaView,createStackNavigator,NavigationActions } from 'react-navigation';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 import Category from "./Category";
@@ -40,6 +17,7 @@ import ItemDetails from "./ItemDetails";
 import ItemList from "./ItemList";
 import MenuButton from "../../components/MenuButton";
 import HeaderTitle from "../../components/HeaderTitle";
+import Details from "./Details";
 const {width,height} = Dimensions.get('window');
 
 export default createStackNavigator(
@@ -55,7 +33,7 @@ export default createStackNavigator(
         }),
       },
       ItemDetails:{
-          screen: ItemDetails,
+          screen: Details,
           navigationOptions: ({ navigation }) => ({
             headerTitle:"Item Details",
            headerStyle: {

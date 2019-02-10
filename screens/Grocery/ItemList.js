@@ -73,7 +73,7 @@ export default class ItemList extends Component {
     render() {
         
         dataView = (item) => {
-            console.log('http://gomarket.ourgts.com/public/'+item.pic);
+           // console.log('http://gomarket.ourgts.com/public/'+item.pic);
             return ( 
                 <Content>
                     <Card style={{flex: 0}}>
@@ -81,7 +81,7 @@ export default class ItemList extends Component {
                             data:[item],
                         })}}>
                             <Body>
-                                <Image source={{uri:"http://gomarket.ourgts.com/public/"+item.pic}} style={{height:100, width: "100%", flex: 1}}/>
+                                <Image source={{uri:'http://gomarket.ourgts.com/public/'+item.pic}} style={{height:100, width: "100%", flex: 1}}/>
                             </Body>
                         </CardItem>
                         <Text style={{paddingHorizontal:8,marginVertical:2,fontSize:14}}>{item.title}</Text>
@@ -110,7 +110,7 @@ export default class ItemList extends Component {
             );
         }else{
             return (
-            <AdvLoder/>
+                <Spinner color='#2874f0' size='large' style={{height:40}} />
             );
         }
     }
