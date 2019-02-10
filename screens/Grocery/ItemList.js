@@ -81,11 +81,7 @@ export default class ItemList extends Component {
                             data:[item],
                         })}}>
                             <Body>
-<<<<<<< HEAD
-                                <Image source={{uri:"http://gomarket.ourgts.com/public/"+item.pic}} style={{height:150, width: "100%",resizeMode: 'contain'}}/>
-=======
                                 <Image source={{uri:'http://gomarket.ourgts.com/public/'+item.pic}} style={{height:100, width: "100%", flex: 1}}/>
->>>>>>> 4810fe7f48471a12cc9834d666b2baeb5d2aef09
                             </Body>
                         </CardItem>
                         <Title style={{paddingHorizontal:8,marginVertical:2,fontSize:14,color:'#000000'}}>{item.title}</Title>
