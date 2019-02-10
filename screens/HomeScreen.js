@@ -83,7 +83,7 @@ export default class HomeScreen extends Component {
                 renderItem={this._renderItem}
               />
             </Card>
-            <Card>
+            <Card style={{height:150}}>
               
                 <DeckSwiperAdvancedExample/>
              

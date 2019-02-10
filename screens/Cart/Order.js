@@ -35,6 +35,7 @@ import {
 } from 'native-base';
 import {createDrawerNavigator,DrawerItems, SafeAreaView,createStackNavigator,NavigationActions } from 'react-navigation';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Tile } from "react-native-elements";
 const {width,height} = Dimensions.get('window');
 
 export default class Order extends Component {
@@ -56,16 +57,27 @@ export default class Order extends Component {
                 <Container>
                     <Content>
                     
-                        <Button bordered dark onPress={()=>{
-                            this.props.navigation.navigate('ChnageOrder',);
-                        }}>
-                            <Text>ChangeOrder</Text>
-                        </Button>
-                        <Button bordered dark onPress={()=>{
-                            this.props.navigation.navigate('ComparePriceStack',);
+                       <Card>
+                            <CardItem header>
+                                    <Tile style={{color:'#000000'}}>Redmi 6 (Rose Gold, 32 GB)</Tile>
+                            </CardItem>
+                            <CardItem>
+                                    <Left>
+
+                                    </Left>
+                                    <Right>
+
+                                    </Right>
+                            </CardItem>
+                            <CardItem footer>
+                                    <Text>Redmi 6 (Rose Gold, 32 GB)</Text>
+                            </CardItem>
+                       </Card>
+                        {/* <Button bordered dark onPress={()=>{
+                            this.props.navigation.navigate('ComparePriceStack',{});
                         }}>
                             <Text>Cmpare price stack</Text>
-                        </Button>
+                        </Button> */}
                     </Content>
                 </Container>
             );

@@ -107,7 +107,7 @@ const HomeScreenStack = createStackNavigator(
     },
   },
   {
-    
+   initialRouteName:'Home' 
   }
 );
 

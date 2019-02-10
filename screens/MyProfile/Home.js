@@ -54,12 +54,84 @@ export default class Home extends Component {
         if(renderCoponentFlag){
             return(
                 <Container>
-                    <Content>
-                        <Button bordered dark>
-                            <Text>Home</Text>
-                        </Button>
-                    </Content>
-                </Container>
+        <Header>
+          <Left/>
+          <Body>
+          <Title>My Account</Title>
+          </Body>
+          <Right />
+        </Header>
+        <Content>
+        <Card>
+            <CardItem header bordered>
+            <Left>
+                <Text>My Orders</Text>
+            </Left>
+            
+            </CardItem>
+            
+            <CardItem footer>
+            <Right>
+                <Button hasText transparent onPress={()=>{this.state.obj.navigate('BillList');}}>
+                <Text>VIEW ALL ORDERS</Text>
+                </Button>
+            </Right>
+            </CardItem>
+         </Card>
+        {/* Address */}
+         <Card>
+            <CardItem header bordered>
+            <Left>
+                <Text>My Addresses</Text>
+                <Text style={{color:'#cdd0d6', fontSize:13,}}>{this.state.address}, {this.state.city}, {this.state.state}, {this.state.pincode}</Text>
+        
+            </Left>
+            <Body>
+                   </Body>
+            
+            </CardItem>
+            
+            <CardItem footer>
+            <Right>
+                <Button hasText transparent onPress={()=>{this.state.obj.navigate('Address');}}>
+                <Text>VIEW MORE</Text>
+                </Button>
+            </Right>
+            </CardItem>
+         </Card>
+
+         <Card>
+            <CardItem header bordered>
+            <Left>
+                <Text>GANGA CART Plus Zone</Text>
+            </Left>
+            
+            </CardItem>
+            
+            <CardItem footer>
+            <Right>
+                <Button hasText transparent onPress={()=>{alert("Order Click")}}>
+                <Text>VIEW ALL ORDERS</Text>
+                </Button>
+            </Right>
+            </CardItem>
+         </Card>
+        </Content>
+        
+          
+          <Card>
+            <CardItem bordered>
+            <Button hasText transparent onPress={()=>{this.LogOut()}}>
+                <Text>LogOut</Text>
+                </Button>
+            
+            </CardItem>
+            
+           
+         </Card>
+         
+        
+      </Container>
             );
         }else{
             return (

@@ -73,18 +73,18 @@ export default class ItemList extends Component {
     render() {
         
         dataView = (item) => {
-            console.log('http://gomarket.ourgts.com/public/'+item.pic);
+           // console.log('http://gomarket.ourgts.com/public/'+item.pic);
             return ( 
                 <Content>
                     <Card style={{flex: 0}}>
-                        <CardItem button onPress={() => {  this.props.navigation.navigate('ItemDetails',{
+                        <CardItem style={{height:200,width:(width-4)/2 }} button onPress={() => {  this.props.navigation.navigate('ItemDetails',{
                             data:[item],
                         })}}>
                             <Body>
-                                <Image source={{uri:"http://gomarket.ourgts.com/public/"+item.pic}} style={{height:100, width: "100%", flex: 1}}/>
+                                <Image source={{uri:"http://gomarket.ourgts.com/public/"+item.pic}} style={{height:150, width: "100%",resizeMode: 'contain'}}/>
                             </Body>
                         </CardItem>
-                        <Text style={{paddingHorizontal:8,marginVertical:2,fontSize:14}}>{item.title}</Text>
+                        <Title style={{paddingHorizontal:8,marginVertical:2,fontSize:14,color:'#000000'}}>{item.title}</Title>
                         <Grid style={{paddingHorizontal:8,marginVertical:2,flexDirection:'row'}}>
                             <Text style={{fontSize:12}}><Icon name="currency-inr" size={12}/>{item.price}</Text>
                             <Text style={{paddingHorizontal:4 ,fontSize:12}}>{item.size}/{item.unit}</Text>

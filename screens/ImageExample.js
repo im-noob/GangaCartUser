@@ -32,7 +32,7 @@ export default class DeckSwiperAdvancedExample extends Component {
     return (
     
       
-      <Container>
+      <Container style={{height:210}}>
        
         <View>
           <DeckSwiper
@@ -55,7 +55,7 @@ export default class DeckSwiperAdvancedExample extends Component {
             }
           />
         </View>
-        {this._Retrive(this)}
+       
         {/* <View style={{ flexDirection: "row", flex: 1, position: "absolute", bottom: 50, left: 0, right: 0, justifyContent: 'space-between', padding: 15 }}>
           <Button iconLeft onPress={() => this._deckSwiper._root.swipeLeft()}>
             <Icon name="arrow-back" />
