@@ -5,6 +5,7 @@ import MenuButton from "../../components/MenuButton";
 import HeaderTitle from "../../components/HeaderTitle";
 import Home from "./Home";
 import OrderDetails from "./OrderDetails";
+import CartButton from "../../components/CartButton";
 
 export default createStackNavigator(
     {
@@ -16,6 +17,8 @@ export default createStackNavigator(
             backgroundColor: '#2874f0'
           },
           headerLeft: <MenuButton obj={navigation}  />,
+          headerRight: <CartButton obj={navigation} value="10"  />,
+          
         }),
       },
       OrderDetails:{

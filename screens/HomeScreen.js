@@ -35,6 +35,7 @@ import {
   Textarea,
   Label,
   Thumbnail,
+  
 } from 'native-base';
 //import ImageSlider from 'react-native-image-slider';
 // import Slideshow from 'react-native-slideshow';
