@@ -8,6 +8,7 @@ import EditProfile from "./EditProfile";
 import RewardNavigation from "../Reward/RewardNavigation";
 import ViewProfile from "./ViewProfile";
 import MyOrderNavigation from "../MyOrder/MyOrderNavigation";
+import CartButton from "../../components/CartButton";
 
 export default createStackNavigator(
     {
@@ -19,6 +20,8 @@ export default createStackNavigator(
             backgroundColor: '#2874f0'
           },
           headerLeft: <MenuButton obj={navigation}  />,
+          headerRight: <CartButton obj={navigation} value="10"  />,
+          
         }),
       },
       Home:{

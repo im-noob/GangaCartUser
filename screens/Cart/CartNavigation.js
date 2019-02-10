@@ -7,6 +7,7 @@ import HeaderTitle from "../../components/HeaderTitle";
 import Order from "./Order";
 import ChangeOrder from "./ChangeOrder";
 import ComparePriceNavigation from "../ComparePrice/ComparePriceNavigation";
+import CartButton from "../../components/CartButton";
 
 
   export default createStackNavigator(
@@ -19,6 +20,8 @@ import ComparePriceNavigation from "../ComparePrice/ComparePriceNavigation";
             backgroundColor: '#2874f0'
           },
           headerLeft: <MenuButton obj={navigation}  />,
+          headerRight: <CartButton obj={navigation} value="10"  />,
+          
         }),
       },
       ChnageOrder:{

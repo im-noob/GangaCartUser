@@ -56,7 +56,9 @@ export default class ItemDetails extends Component {
             return(
                 <Container>
                     <Content>
-                        <Button bordered dark>
+                        <Button bordered dark onPress={()=>{
+                            this.props.navigation.navigate('category',{});
+                        }}>
                             <Text>ItemDetails</Text>
                         </Button>
                     </Content>

@@ -27,6 +27,7 @@ import MyOrderNavigation from '../screens/MyOrder/MyOrderNavigation';
 import RewardNavigation from '../screens/Reward/RewardNavigation';
 import CartNavigation from '../screens/Cart/CartNavigation';
 import MyProfileNavigation from '../screens/MyProfile/MyProfileNavigation';
+import CartButton from '../components/CartButton';
 
 
 const CustomDrawerContentComponent = (props) => (
@@ -81,12 +82,14 @@ const HomeScreenStack = createStackNavigator(
           backgroundColor: '#2874f0'
         },
         headerLeft: <MenuButton obj={navigation}  />,
+        headerRight: <CartButton obj={navigation} value="10"  />,
+        
       }),
     },
-    ExampleScreenFirst: {
-      screen: ExampleScreenFirst,
+    Grocery: {
+      screen: GroceryNavigation,
       navigationOptions: ({ navigation }) => ({
-        title: `First Screen`,
+        header:null
       }),
     },
     ExampleScreenSecond: {

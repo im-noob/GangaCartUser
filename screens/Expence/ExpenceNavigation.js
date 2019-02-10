@@ -8,6 +8,7 @@ import Home from "./Home";
 import ExpenceList from "./ExpenceList";
 import ExpenceDetails from "./ExpenceDetails";
 import Feedback from "./Feedback";
+import CartButton from "../../components/CartButton";
 export default createStackNavigator(
     {
       Home: {
@@ -18,6 +19,8 @@ export default createStackNavigator(
             backgroundColor: '#2874f0'
           },
           headerLeft: <MenuButton obj={navigation}  />,
+          headerRight: <CartButton obj={navigation} value="10"  />,
+          
         }),
       },
       ExpenceLilst:{

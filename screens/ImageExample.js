@@ -24,7 +24,7 @@ export default class DeckSwiperAdvancedExample extends Component {
 
   _Retrive = (t)=>{
    // console.log('Heloo : ',t)
-   // t._deckSwiper._root.swipeLeft();   
+   // t._deckSwiper._root.swipeLeft();   h
 }
 
   render() {
