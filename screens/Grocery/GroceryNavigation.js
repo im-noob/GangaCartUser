@@ -43,6 +43,8 @@ import Details from "./Details";
 import CartNavigation from "../Cart/CartNavigation";
 import CartButton from "../../components/CartButton";
 const {width,height} = Dimensions.get('window');
+import {createDrawerNavigator,DrawerItems,createAppContainer, SafeAreaView,createStackNavigator,NavigationActions,createBottomTabNavigator } from 'react-navigation';
+
 
 const StackNav =  createStackNavigator(
     {
