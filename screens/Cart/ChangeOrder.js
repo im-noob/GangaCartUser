@@ -20,6 +20,7 @@ import { Thumbnail,ListItem,Container,List,Grid,Picker,
      Header, Content, Spinner,Button, Title,Card,CardItem,Left,Body,Right,Subtitle, Form } from 'native-base';
 import {createDrawerNavigator,DrawerItems, SafeAreaView,createStackNavigator,NavigationActions } from 'react-navigation';
 import Global from '../../constants/Global';
+import { CartPrepare } from '../../constants/OrderListPrepare';
 // import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 // const {width,height} = Dimensions.get('window');
 
@@ -135,8 +136,8 @@ export default class ChangeOrder extends React.Component {
     }
     setData = async() =>{
         const { navigation } = this.props;
-        console.log("Data not found ",this.props);
-        const item = navigation.getParam('data', '[]');
+       
+        const item = navigation.getParam('item', '[]');
         console.log("Data not found ",item);
         await this.setState({selectedProduct:item[0]});
         await this.setState({pID:item[0].pid});
@@ -236,7 +237,7 @@ export default class ChangeOrder extends React.Component {
                         </CardItem>
 
                         <Button bordered full onPress={()=>{
-                            CartPrepare(this.state.selectedProduct,this.state.selectedQunt);
+                            CartPrepare(this.state.selectedProduct,this.state.selectedQunt);this.props.navigation.goBack();
                             }}>
                                 <Text>Add To Cart</Text>
                         </Button>

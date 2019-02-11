@@ -11,6 +11,7 @@ import { StyleSheet,
         FlatList,
         ActivityIndicator,
         Image } from 'react-native';
+import { Toast } from 'native-base';
 
  
     export async function CartPrepare(item,quantity){
@@ -39,6 +40,7 @@ import { StyleSheet,
                              tempArray[i] = temp;
                             flag=true;
                             console.log("update ",temp.map);
+                            ToastAndroid.showWithGravity("Item Add On the Cart",ToastAndroid.LONG,ToastAndroid.BOTTOM)
                             break;
                        }
                     }
