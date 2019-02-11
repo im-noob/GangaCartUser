@@ -35,7 +35,8 @@ export default createStackNavigator(
       },
       MyOrderStack:{
           screen:MyOrderNavigation
-      }
+      },
+      
     },
     {
       initialRouteName :'Home',

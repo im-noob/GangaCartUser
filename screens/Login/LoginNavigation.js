@@ -6,6 +6,7 @@ import MenuButton from "../../components/MenuButton";
 import HeaderTitle from "../../components/HeaderTitle";
 import LoginScreen from "./LoginScreen";
 import CartButton from "../../components/CartButton";
+import SignUPScreen from "./SingUP";
 export default createStackNavigator(
     {
       LoginScreen: {
@@ -20,6 +21,12 @@ export default createStackNavigator(
           
         }),
       },
+      Login:{
+        screen: LoginScreen
+      },
+      Singup:{
+        screen:SignUPScreen
+      }
     },
     {
       
