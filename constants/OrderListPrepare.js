@@ -28,16 +28,17 @@ import { StyleSheet,
                 if(value == null){
                     cartValue.push(temp);
                     await AsyncStorage.setItem('CartList',JSON.stringify(cartValue));
+                    console.log("New add");
                 } 
                 else{
                     let flag=false;
                     let tempArray = JSON.parse(value);
                     for(var i=0;i<tempArray.length;i++){
                         let tempValue = tempArray[i];
-                        if(tempValue.gro_map_id == temp.gro_map_id){
+                        if(tempValue.map == temp.map){
                              tempArray[i] = temp;
                             flag=true;
-                            console.log("update ",temp.gro_map_id);
+                            console.log("update ",temp.map);
                             break;
                        }
                     }
@@ -72,7 +73,7 @@ import { StyleSheet,
                 let tempArray = JSON.parse(value);
                 for(var i=0;i<tempArray.length;i++){
                     let tempValue = tempArray[i];
-                    if(tempValue.gro_map_id != item.gro_map_id){
+                    if(tempValue.map != item.map){
                          
                         cartValue.push(tempArray[i]) 
                         

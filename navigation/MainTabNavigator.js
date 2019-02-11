@@ -171,7 +171,7 @@ const AppDrawerNavigator = createDrawerNavigator({
 	
 },{
   contentComponent:CustomDrawerContentComponent,
-  initialRouteName :'MyAccount',
+  initialRouteName :'MyCart',
 })
 
 const styles = StyleSheet.create({

@@ -81,6 +81,7 @@ export default class HomeScreen extends Component {
                
                
                 renderItem={this._renderItem}
+                horizontal
               />
             </Card>
             <Card style={{height:150}}>
