@@ -58,7 +58,6 @@ const CustomDrawerContentComponent = (props) => (
 //       screen:ExampleScreenSecond,
 //     },
 // });
-
 // const ExampleScreenSecondStack = createStackNavigator(
 //   {
     
@@ -107,7 +106,7 @@ const HomeScreenStack = createStackNavigator(
     },
   },
   {
-   initialRouteName:'Home' 
+   initialRouteName:'HomeScreen' 
   }
 );
 

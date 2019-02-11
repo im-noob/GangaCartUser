@@ -44,10 +44,19 @@ export default class Order extends Component {
         this.state = {
             renderCoponentFlag: false,
             LodingModal: false,
+            cartData:[],
         }
     }
     componentDidMount() {
         setTimeout(() => {this.setState({renderCoponentFlag: true})}, 0);
+        this._start();
+
+    }
+
+    _start =async()=>{
+        data =await AsyncStorage.getItem('CartList');
+        data = JSON.parse(data);
+        console.log("Cart Order : ",data);
     }
 
     render() {
@@ -59,7 +68,7 @@ export default class Order extends Component {
                     
                        <Card>
                             <CardItem header>
-                                    <Tile style={{color:'#000000'}}>Redmi 6 (Rose Gold, 32 GB)</Tile>
+                                    <Title style={{color:'#000000'}}>Redmi 6 (Rose Gold, 32 GB)</Title>
                             </CardItem>
                             <CardItem>
                                     <Left>
@@ -70,7 +79,9 @@ export default class Order extends Component {
                                     </Right>
                             </CardItem>
                             <CardItem footer>
-                                    <Text>Redmi 6 (Rose Gold, 32 GB)</Text>
+                                    <Left>
+
+                                    </Left>
                             </CardItem>
                        </Card>
                         {/* <Button bordered dark onPress={()=>{
