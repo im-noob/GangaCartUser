@@ -20,7 +20,7 @@ import { } from 'react-native-elements'
 
 import Global from '../../constants/Global';
 const {height,width} = Dimensions.get('window');
-export default class LoginScreen extends Component {
+export default class SingupScreen extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -833,7 +833,7 @@ export default class LoginScreen extends Component {
                                         </TouchableOpacity>    
                                     </View>
                                     <View style={{flexDirection:'row',justifyContent:'space-around',margin:10,marginHorizontal:20,marginVertical:50,alignSelf:'center'}}>
-                                        <Text style={{color:"#fff",width:'80%'}}>Sign in to make a monthly expence report and get more spiecal offer and awards</Text>
+                                        <Text style={{color:"#fff",width:'80%'}}>Sign UP to be in touch with us and get spiecal offer and products for you</Text>
                                         <Image
                                             style={{width: '20%', height: 50}}
                                             source={{uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png'}}
@@ -844,37 +844,79 @@ export default class LoginScreen extends Component {
                                 <View style={{ flex: 6,height: height*(0.6),  width: width,backgroundColor:"#ffffff",flexDirection: 'column', justifyContent: 'center', alignItems: 'center',borderRadius:0.2,borderColor:'#fff'}}>
 
                                         <View style={{ width: width*(0.85), alignSelf:'center',marginVertical:5}}>
-                                            <Item regular style={{marginVertical:2,borderRadius:15,paddingHorizontal: 7,}}>
+                                            
+                                            <Item  regular style={{marginVertical:2,borderRadius:15,paddingHorizontal: 7,}}>
                                                 <Input 
                                                     placeholder='Email' 
-                                                    onChangeText={(text) => this.setState({email_or_phone:text})}
-                                                    textContentType='username'
+                                                    onChangeText={(text) => {
+                                                        this.REGcheckEmail(text);
+                                                        this.setState({reg_email:text})
+                                                        this.checkAvilEmail(text);
+                                                    }}
+                                                    textContentType='emailAddress'
+                                                    returnKeyType='next'
+                                                    keyboardType='email-address'
+
                                                 />
+                                                <Icon name={this.state.reg_email_valid_icon} style={{color:this.state.reg_email_valid_color,fontSize:25}}/>
                                             </Item>
+                                            { this.state.reg_email_valid_color == 'red' && 
+                                                <Text style={{color:'red',marginHorizontal:7,fontSize:12}}>*Not a Valid Email Format.</Text>
+                                            }
+                                            { this.state.avilEmail == false && 
+                                                <Text style={{color:'red',marginHorizontal:7,fontSize:12}}>*This email is already registered with us.</Text>
+                                            }
+                                            <Item regular style={{marginVertical:2,borderRadius:15,paddingHorizontal: 7,}}>
+                                                <Input 
+                                                    placeholder='Phone NO'
+                                                    onChangeText={(text) => {
+                                                        this.REGcheckPhone(text);    
+                                                        this.setState({reg_phone:text})
+                                                        this.checkAvilPhone()
+                                                    }}
+                                                    textContentType='telephoneNumber'
+                                                    returnKeyType='next'
+                                                    keyboardType='numeric'   
+
+
+                                                />
+                                                <Icon name={this.state.reg_phone_valid_icon} style={{color:this.state.reg_phone_valid_color,fontSize:25}}/>
+                                            </Item>
+                                            { this.state.reg_phone_valid_color == 'red' && 
+                                                <Text style={{color:'red',marginHorizontal:7,fontSize:12}}>*Phone no must be 10 Digit long.</Text>
+                                            }
+                                            { this.state.avilPhone == false && 
+                                                <Text style={{color:'red',marginHorizontal:7,fontSize:12}}>*This moible no is already registered with us.</Text>
+                                            }
                                             <Item regular style={{marginVertical:2,borderRadius:15,paddingHorizontal: 7,}}>
                                                 <Input 
                                                     placeholder='Password'
-                                                    onChangeText={(text) => this.setState({password:text})} 
+                                                    onChangeText={(text) => {
+                                                        this.REGcheckPassword(text);
+                                                        this.setState({reg_password:text})
+                                                    }}
+                                                    textContentType='password' 
+                                                    returnKeyType='next'
                                                     secureTextEntry={true}
-                                                    textContentType='password'
-                                                 />
-                                            </Item>
-                                            <TouchableOpacity style={{marginVertical:5}} onPress={this.forgotPasswordStart}>
-                                                <Text style={{alignSelf:'flex-end',color:'#2162ca'}}>Forgot Password?</Text>
-                                            </TouchableOpacity>                  
+                                                />
+                                                <Icon name={this.state.reg_password_valid_icon} style={{color:this.state.reg_password_valid_color,fontSize:25}}/>
+                                            </Item>  
+                                            { this.state.reg_password_valid_color == 'red' && 
+                                                <Text style={{color:'red',marginHorizontal:7,fontSize:12}}>*Password Must be at least 4 character Long.</Text>
+                                            }
                                             <Button block 
                                                 style={{color:'#fff',backgroundColor:'#fb641b',marginVertical:5}}
                                                 onPress={this.submitLogin}
                                                 disabled = {this.state.submitButtonDisable}
                                             >
-                                                <Text>SIGN IN</Text>
+                                                <Text>SIGN UP</Text>
                                             </Button>
                                             <Button block bordered primary   
                                                 style={{marginVertical:5}}
                                                 onPress={this.submitLogin}
                                                 disabled = {this.state.submitButtonDisable}
                                             >
-                                                <Text>New to Flipcart? SIGNUP </Text>
+                                                <Text>Existing User? SIGN IN </Text>
                                             </Button>
                                         </View>
                                 </View>

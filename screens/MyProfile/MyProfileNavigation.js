@@ -9,6 +9,7 @@ import RewardNavigation from "../Reward/RewardNavigation";
 import ViewProfile from "./ViewProfile";
 import MyOrderNavigation from "../MyOrder/MyOrderNavigation";
 import CartButton from "../../components/CartButton";
+import LoginNavigation from "../Login/LoginNavigation";
 
 export default createStackNavigator(
     {
@@ -36,10 +37,16 @@ export default createStackNavigator(
       MyOrderStack:{
           screen:MyOrderNavigation
       },
+      test:{
+        screen: LoginNavigation,
+        navigationOptions: ({ navigation }) => ({
+          header:null
+        }),
+      },
       
     },
     {
-      initialRouteName :'Home',
+      initialRouteName :'EditProfile',
 
     }
   );

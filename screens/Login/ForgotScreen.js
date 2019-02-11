@@ -20,7 +20,7 @@ import { } from 'react-native-elements'
 
 import Global from '../../constants/Global';
 const {height,width} = Dimensions.get('window');
-export default class LoginScreen extends Component {
+export default class ForgotScreen extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -820,43 +820,143 @@ export default class LoginScreen extends Component {
         const {renderCoponentFlag} = this.state;
         if(renderCoponentFlag){
             return(
-                <Container>
-                        <ImageBackground source={{ uri: "https://i.imgur.com/STZpybm.jpg", cache: 'force-cache', }} style={{width: '100%', height: '100%'}}>
-                                <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center',borderRadius:0.2,borderColor:'#fff'}}>
-                                    <View style={{ width: width*(0.95), height: 300,backgroundColor:"#ffffff",borderRadius:15,borderColor:'#fff'}}>
-                                        <TouchableOpacity onPress={()=>{this.setState({loginModelVisible:false})}}>
-                                            <Icon name="close-circle-outline" style={{alignSelf:'flex-end',fontSize:30}}/>
-                                        </TouchableOpacity>
-                                        <Text style={{fontSize:30,alignSelf:'center'}}>Sign In</Text>
+                <Container style={{backgroundColor:'#2268d7'}}>
+                        <View style={{flex:1,backgroundColor:'#2162ca'}}>
+                                <View style={{marginTop:20,height:height*(0.2),flex:3}}>
+                                    <View style={{margin:15,flexDirection:'row',justifyContent: 'space-between',}}>
+                                        <View style={{flexDirection:'row'}}>
+                                            <Text style={{color:'#fff',fontSize:25,fontWeight:'600',alignSelf:'center'}}>GangaCart</Text>
+                                            <Image style={{height:30,width:30,alignSelf:'center',marginHorizontal:5}} source={{uri:'https://facebook.github.io/react-native/docs/assets/favicon.png'}}/>
+                                        </View>
+                                        <TouchableOpacity style={{alignContent:'flex-end',alignItems:'flex-end',alignSelf:'center'}} onPress={this.forgotPasswordStart} >
+                                            <Icon name="close" style={{alignSelf:'flex-end',fontSize:30,color:'#fff'}}/>
+                                        </TouchableOpacity>    
+                                    </View>
+                                    <View style={{flexDirection:'row',justifyContent:'space-around',margin:10,marginHorizontal:20,marginVertical:50,alignSelf:'center'}}>
+                                        <Text style={{color:"#fff",width:'80%'}}>Keep your password secure</Text>
+                                        <Image
+                                            style={{width: '20%', height: 50}}
+                                            source={{uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png'}}
+                                        />
+                                    </View>
+                                    
+                                </View>
+                                <View style={{ flex: 7,height: height*(0.8),  width: width,backgroundColor:"#ffffff",flexDirection: 'column', justifyContent: 'center', alignItems: 'center',borderRadius:0.2,borderColor:'#fff'}}>
+
                                         <View style={{ width: width*(0.85), alignSelf:'center',marginVertical:5}}>
-                                            <Item regular style={{marginVertical:2,borderRadius:15,paddingHorizontal: 7,}}>
+                                            
+                                            <Item  regular style={{marginVertical:2,borderRadius:15,paddingHorizontal: 7,}}>
                                                 <Input 
                                                     placeholder='Email' 
-                                                    onChangeText={(text) => this.setState({email_or_phone:text})}
-                                                    textContentType='username'
+                                                    onChangeText={(text) => {
+                                                        this.forgotcheckEmail(text);
+                                                        this.setState({forgot_email:text})
+                                                        this.forgotcheckAvilEmail(text);
+                                                    }}
+                                                    textContentType='emailAddress'
+                                                    returnKeyType='next'
+                                                    keyboardType='email-address'
+                                                    editable = {this.state.forgot_email_edit}
+
                                                 />
+                                                <Icon name={this.state.forgot_email_valid_icon} style={{color:this.state.forgot_email_valid_color,fontSize:25}}/>
                                             </Item>
-                                            <Item regular style={{marginVertical:2,borderRadius:15,paddingHorizontal: 7,}}>
-                                                <Input 
-                                                    placeholder='Password'
-                                                    onChangeText={(text) => this.setState({password:text})} 
-                                                    secureTextEntry={true}
-                                                    textContentType='password'
-                                                 />
-                                            </Item>
-                                            <TouchableOpacity style={{marginVertical:5}} onPress={this.forgotPasswordStart}>
-                                                <Text style={{alignSelf:'flex-end'}}>Forgot Password?</Text>
-                                            </TouchableOpacity>                  
-                                            <Button rounded success block 
-                                                onPress={this.submitLogin}
-                                                disabled = {this.state.submitButtonDisable}
-                                            >
-                                                <Text>Login</Text>
-                                            </Button>
+                                            { this.state.forgot_email_valid_color == 'red' && 
+                                                <Text style={{color:'red',marginHorizontal:7,fontSize:12}}>*Not a Valid Email Format.</Text>
+                                            }
+                                            { this.state.forgot_avilEmail && this.state.forgot_email != '' && 
+                                                <Text style={{color:'red',marginHorizontal:7,fontSize:12}}>*Unable to Find Your Account.</Text>
+                                            }
+                                            { this.state.forgot_email_edit && 
+                                                <Button dark block style={{marginVertical:4}} 
+                                                        onPress={this.sendOTPForgot}
+                                                        disabled={this.state.forgot_sendOTPButtonDisable }
+                                                >
+                                                        <Text>Send OTP</Text>
+                                                </Button>
+                                            }  
+                                            { this.state.askOTP && 
+                                                <Item regular style={{marginVertical:2,borderRadius:15,paddingHorizontal: 7,}}>
+                                                    <Input 
+                                                        placeholder='Enter 6 Digit OTP'
+                                                        onChangeText={(text) => {
+                                                            this.setState({OTPEntered:text})
+                                                            if(text.length == 6 && text != this.state.OTPreal){
+                                                                ToastAndroid.showWithGravityAndOffset(
+                                                                    'Invalid OTP',
+                                                                    ToastAndroid.SHORT,
+                                                                    ToastAndroid.TOP,
+                                                                    25,
+                                                                    50,
+                                                                    );    
+                                                            }
+                                                        }}
+                                                        textContentType='password' 
+                                                        returnKeyType='next'
+                                                        secureTextEntry={true}
+                                                        editable = {this.state.forgot_OTP_edit}
+                                                    />
+                                                </Item>
+                                            }
+                                            {/* continue password buton after correct OTP */}
+                                            { this.state.OTPEntered == this.state.OTPreal && 
+                                                <Button dark block style={{marginVertical:4}} onPress={()=>{this.setState({forgot_OTP_edit:false,OTPEntered:'0'})}}>
+                                                        <Text>Continue</Text>
+                                                </Button>
+                                            }  
+                                            {/* change password box apper */}
+                                            { this.state.forgot_OTP_edit == false && 
+                                                <View>
+                                                    <Item regular style={{marginVertical:2,borderRadius:15,paddingHorizontal: 7,}}>
+                                                        <Input 
+                                                            placeholder='Password'
+                                                            onChangeText={(text) => {
+                                                                this.forgotcheckPassword(text);
+                                                                this.setState({forgot_password:text})
+                                                            }}
+                                                            textContentType='password' 
+                                                            returnKeyType='next'
+                                                            secureTextEntry={true}
+                                                        />
+                                                        <Icon name={this.state.forgot_password_valid_icon} style={{color:this.state.forgot_password_valid_color,fontSize:25}}/>
+                                                    </Item>  
+                                                    { this.state.forgot_password_valid_color == 'red' && 
+                                                        <Text style={{color:'red',marginHorizontal:7,fontSize:12}}>*Password Must be at least 4 character Long.</Text>
+                                                    }  
+                                                    <Item regular style={{marginVertical:2,borderRadius:15,paddingHorizontal: 7,}}>
+                                                        <Input 
+                                                            placeholder='Confirm password'
+                                                            onChangeText={(text) => {
+                                                                this.forgotcheckConfirm(text);
+                                                                this.setState({forgot_confirm:text})
+                                                            }}
+                                                            textContentType='password' 
+                                                            returnKeyType='go'
+                                                            onSubmitEditing={this.submitChangePassword}
+                                                            secureTextEntry={true}
+                                                        />
+                                                        <Icon name={this.state.forgot_confirm_valid_icon} style={{color:this.state.forgot_confirm_valid_color,fontSize:25}}/>
+                                                    </Item>
+                                                    { this.state.forgot_confirm_valid_color == 'red' && 
+                                                         <Text style={{color:'red',marginHorizontal:7,fontSize:12}}>*Confirm password Don't Matched.</Text>
+                                                    }     
+                                                    {
+                                                        this.state.forgot_confirm == this.state.forgot_password && this.state.forgot_confirm_valid_color == 'green'  &&
+                                                        <Button primary block style={{marginVertical:4}} 
+                                                            onPress={this.submitChangePassword}
+                                                            disabled={this.state.forgot_submitButtonDisable}>
+                                                                <Text>Change Password</Text>
+                                                        </Button>
+                                                    }            
+                                                    
+                                                        
+                                                </View>
+                                                    
+                                            }  
+                                            
                                         </View>
-                                    </View>
                                 </View>
-                        </ImageBackground>
+                        </View>
                 </Container>
             );
         }else{
