@@ -28,7 +28,8 @@ import RewardNavigation from '../screens/Reward/RewardNavigation';
 import CartNavigation from '../screens/Cart/CartNavigation';
 import MyProfileNavigation from '../screens/MyProfile/MyProfileNavigation';
 import CartButton from '../components/CartButton';
-import { HomeScreenStack } from '../screens/Home/HomeScreenStack';
+import HomeScreenStack from '../screens/Home/HomeScreenStack';
+// import { HomeScreenStack } from '../screens/Home/HomeScreenStack';
 
 
 const CustomDrawerContentComponent = (props) => (
