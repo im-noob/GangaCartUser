@@ -131,7 +131,8 @@ export default class ItemDetails extends React.Component{
                     <TouchableOpacity onPress={()=>{this._selectShop(item);}}>
                     <Card>
                         <Text style={{color:'#000000'}} >{item.name} </Text>
-                            <Subtitle style={{color:'#9698b7'}}>Address :{item.address}</Subtitle>
+                        <Subtitle style={{color:'#9698b7'}}>Address :{item.address}</Subtitle>
+                        
                         <Grid style={{paddingHorizontal:8,marginVertical:2,flexDirection:'row'}}>
                             <Text style={{fontSize:18}}><Icon name="currency-inr" size={18}/>{item.data[0].price}  </Text>
                             <Text style={{fontSize:14}}> {item.data[0].quantity}/{item.data[0].unit} </Text>

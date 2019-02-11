@@ -12,15 +12,6 @@ import {createDrawerNavigator,DrawerItems, SafeAreaView,createStackNavigator,Nav
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 const {width,height} = Dimensions.get('window');
 
-const dataArray = [
-    { title: "Vegitables", content: [{id:1,name:'Green Vegitables',pic:'http://gomarket.ourgts.com/storage/app/public/offer/ImageNotFound.png'},
-                                        {id:2,name:'Dry Vegitables',pic:'http://gomarket.ourgts.com/storage/app/public/offer/ImageNotFound.png'}]},
-    { title: "Fruits", content: [{id:4,name:'Green Vegitables',pic:'http://gomarket.ourgts.com/storage/app/public/offer/ImageNotFound.png'},
-                                    {id:3,name:'Dry Vegitables',pic:'http://gomarket.ourgts.com/storage/app/public/offer/ImageNotFound.png'}] },
-    { title: "Third Element", content: [{id:5,name:'Green Vegitables',pic:'http://gomarket.ourgts.com/storage/app/public/offer/ImageNotFound.png'},
-                                    {id:6,name:'Dry Vegitables',pic:'http://gomarket.ourgts.com/storage/app/public/offer/ImageNotFound.png'}] }
-];
-
 export default class Category extends Component {
     constructor(props){
         super(props);
@@ -34,6 +25,11 @@ export default class Category extends Component {
     fatchCategory =async ()=> {
         
         this.setState({renderCoponentFlag:false});
+        let value = await AsyncStorage.getItem('ShopID');
+        if(value ==null){
+            alert('Shop not selected.');
+            return; 
+        }
         var connectionInfoLocal = '';
         NetInfo.getConnectionInfo().then((connectionInfo) => {
         console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
@@ -48,33 +44,36 @@ export default class Category extends Component {
             );        
         }else{
             console.log("yes internet ");
-            fetch('http://gomarket.ourgts.com/public/api/cat', {
-                method: 'GET',
+            fetch('http://gomarket.ourgts.com/public/api/Grocery/Shop/category', {
+                method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                }
+                },
+                body:JSON.stringify({
+                    Shopid:value
+                })
             }).then((response) => response.json())
             .then((responseJson) => {
                 console.log(responseJson); 
-                if(responseJson.received == "yes"){
+                if(Object.keys(responseJson.data).length > 0){
                     let list = [];
                     let content1 = [];
                     var ckeyT = 0;
                     var last = responseJson.data[responseJson.data.length -1].sKey;
                     //console.log(last);
                     for(let data of responseJson.data){
-                        if(data.cKey == ckeyT){
-                            ckeyT = data.cKey;
+                        if(data.gro_cat_id == ckeyT){
+                            ckeyT = data.gro_cat_id;
                             var temp = {
-                                 sKey :data.sKey,
-                                 sName : data.sName,
-                                 sPic : (data.sPic) ? data.sPic : "http://gomarket.ourgts.com/storage/app/public/offer/ImageNotFound.png"
-                             }
+                                sKey :data.gro_subcat_id,
+                                sName : data.subcat_name,
+                                sPic : (data.spic) ? data.spic : "http://gomarket.ourgts.com/storage/app/public/offer/ImageNotFound.png"
+                            }
                             content1.push(temp);
                             if(data.sKey == last){
                                 let title = {
-                                    title : data.cname,
+                                    title : data.gro_cat_name,
                                     content : content1 
                                 };
                                 list.push(title);
@@ -83,27 +82,27 @@ export default class Category extends Component {
                         else{
                             if( ckeyT != 0){
                                 let title = {
-                                    title : data.cname,
+                                    title : data.gro_cat_name,
                                     content : content1 
                                 };
                                 list.push(title);
                                 content1 = [];
                                 var temp = {
-                                    sKey :data.sKey,
-                                    sName : data.sName,
-                                    sPic : (data.sPic) ? data.sPic : "http://gomarket.ourgts.com/storage/app/public/offer/ImageNotFound.png"
+                                    sKey :data.gro_subcat_id,
+                                    sName : data.subcat_name,
+                                    sPic : (data.spic) ? data.spic : "http://gomarket.ourgts.com/storage/app/public/offer/ImageNotFound.png"
                                 }
                                content1.push(temp);                                                                           
                             }
                             else{
                                 var temp = {
-                                    sKey :data.sKey,
-                                    sName : data.sName,
-                                    sPic : (data.sPic) ? data.sPic : "http://gomarket.ourgts.com/storage/app/public/offer/ImageNotFound.png"
+                                    sKey :data.gro_subcat_id,
+                                    sName : data.subcat_name,
+                                    sPic : (data.spic) ? data.spic : "http://gomarket.ourgts.com/storage/app/public/offer/ImageNotFound.png"
                                 }
                                content1.push(temp);
                             }
-                            ckeyT = data.cKey;
+                            ckeyT = data.gro_cat_id;
                         }
                     }
                     this.setState({CategoryData:list});
@@ -114,7 +113,7 @@ export default class Category extends Component {
         }
         });
         console.log(connectionInfoLocal);  
-        this.setState({renderCoponentFlag:false});
+        this.setState({renderCoponentFlag:true});
     }
 
     componentDidMount() {
@@ -186,7 +185,6 @@ export default class Category extends Component {
         }
     }
 }
-
 
 class AdvLoder extends Component{
     render(){

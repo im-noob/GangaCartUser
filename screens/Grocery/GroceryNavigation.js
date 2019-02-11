@@ -37,14 +37,17 @@ import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 import Category from "./Category";
 import ItemDetails from "./ItemDetails";
 import ItemList from "./ItemList";
+
 import MenuButton from "../../components/MenuButton";
 import HeaderTitle from "../../components/HeaderTitle";
 import Details from "./Details";
 import CartNavigation from "../Cart/CartNavigation";
 import CartButton from "../../components/CartButton";
+import ShoppingPage from  "./ShopList";
+import ShopCategory from './ShopCategory';
 const {width,height} = Dimensions.get('window');
 import {createDrawerNavigator,DrawerItems,createAppContainer, SafeAreaView,createStackNavigator,NavigationActions,createBottomTabNavigator } from 'react-navigation';
-
+import ShopDetail from './shopDetails';
 
 const StackNav =  createStackNavigator(
     {
@@ -57,7 +60,6 @@ const StackNav =  createStackNavigator(
           },
           headerLeft: <MenuButton obj={navigation}  />,
           headerRight: <CartButton obj={navigation} value="10"  />,
-          
         }),
       },
       ItemDetails:{
@@ -86,7 +88,7 @@ const StackNav =  createStackNavigator(
 
 
 
-class ShoppingScreen extends React.Component {
+class ShoppingScreen1 extends React.Component {
   render() {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -96,6 +98,42 @@ class ShoppingScreen extends React.Component {
   }
 }
 
+const ShoppingScreen =  createStackNavigator(
+  {
+    ShopList: {
+      screen: ShoppingPage,
+      navigationOptions: ({ navigation }) => ({
+        headerTitle: "Shop List",
+        headerStyle: {
+          backgroundColor: '#2874f0'
+        },
+        headerLeft: <MenuButton obj={navigation}  />,
+        headerRight: <CartButton obj={navigation} value="10"  />,
+      }),
+    },
+    CategoryList:{
+        screen: ShopCategory,
+        navigationOptions: ({ navigation }) => ({
+          headerTitle:"Item Details",
+         headerStyle: {
+           backgroundColor: '#2874f0'
+         },
+       }),
+    },
+    ShopDetail:{
+        screen:ShopDetail,
+        navigationOptions: ({ navigation }) => ({
+          headerTitle:"Details",
+         headerStyle: {
+           backgroundColor: '#2874f0'
+         },
+       }),
+    }
+  },
+  {
+    
+  }
+);
 
  
 
@@ -117,8 +155,6 @@ const TabNavigator = createBottomTabNavigator(
         } else if (routeName === 'Cart') {
             iconName = `cart${focused ? '' : ''}`;
         }
-    
-    
         return <Icon name={iconName} size={30} color={tintColor} style={{fontWeight:'900'}}/>;
       },
       
