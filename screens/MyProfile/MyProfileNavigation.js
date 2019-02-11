@@ -38,6 +38,7 @@ export default createStackNavigator(
       }
     },
     {
-      
+      initialRouteName :'Home',
+
     }
   );
