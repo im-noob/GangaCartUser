@@ -7,32 +7,10 @@ import ItemDetails from "./ItemDetails";
 import ItemList from "./ItemList";
 import Order from "../Cart/Order";
 import ChangeOrder from "../Cart/ChangeOrder";
-import CartNavigation from "../Cart/CartNavigation";
+// import CartNavigation from "../Cart/CartNavigation";
 import CartButton from "../../components/CartButton";
 
 
-// const CartNavigation = createStackNavigator(
-//   {
-//     OrderScreen: {
-//       screen: Order,
-//       navigationOptions: ({ navigation }) => ({
-//         headerTitle: HeaderTitle,
-//         headerStyle: {
-//           backgroundColor: '#2874f0'
-//         },
-//         headerLeft: <MenuButton obj={navigation}  />,
-//       }),
-//     },
-//     ChnageOrder:{
-//         screen:ChangeOrder
-//     },
- 
-
-//   },
-//   {
-    
-//   }
-// );
 
 
 export default createStackNavigator(
