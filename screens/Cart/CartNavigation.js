@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 
 import {createStackNavigator } from 'react-navigation';
 
@@ -8,6 +8,7 @@ import Order from "./Order";
 import ChangeOrder from "./ChangeOrder";
 import ComparePriceNavigation from "../ComparePrice/ComparePriceNavigation";
 import CartButton from "../../components/CartButton";
+
 
 
   export default createStackNavigator(
@@ -30,6 +31,7 @@ import CartButton from "../../components/CartButton";
       ComparePriceStack:{
           screen:ComparePriceNavigation
       },
+    
 
     },
     {

@@ -37,9 +37,6 @@ import {
   Thumbnail,
   
 } from 'native-base';
-//import ImageSlider from 'react-native-image-slider';
-// import Slideshow from 'react-native-slideshow';
-import {createDrawerNavigator,DrawerItems, SafeAreaView,createStackNavigator,NavigationActions } from 'react-navigation';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 import DeckSwiperAdvancedExample from "./ImageExample";
 const {width,height} = Dimensions.get('window');
@@ -81,6 +78,7 @@ export default class HomeScreen extends Component {
                
                
                 renderItem={this._renderItem}
+                horizontal
               />
             </Card>
             <Card style={{height:150}}>

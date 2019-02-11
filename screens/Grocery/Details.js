@@ -19,6 +19,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Thumbnail,ListItem,Container,List,Grid,Picker,
      Header, Content, Spinner,Button, Title,Card,CardItem,Left,Body,Right,Subtitle, Form } from 'native-base';
 import { CartPrepare } from '../../constants/OrderListPrepare';
+import Global from '../../constants/Global';
 
 class Loading extends React.Component{
     constructor(props){
@@ -69,6 +70,7 @@ export default class ItemDetails extends React.Component{
     componentDidMount = async () => {
         await this.setData();
         await this.fetech();
+        this.setState({path:Global.Image_URL});
     }
 
     fetech = async() =>{
@@ -86,7 +88,7 @@ export default class ItemDetails extends React.Component{
             })
             }).then((response) => response.json())
             .then((responseJson) => {
-              console.log("Related shop Load ......",responseJson);
+            //  console.log("Related shop Load ......",responseJson);
               this.setState({data:responseJson.data}); 
               this._selectShop(responseJson.data[0]);
             }).catch((error) => {        
@@ -113,10 +115,13 @@ export default class ItemDetails extends React.Component{
             unit_name:0,
             unitList:list,
             pic1:item.pic,
+            path:'http://gomarket.ourgts.com/public/'
         }); 
         
         console.log('Shop Selected.');
     }
+
+    
 
    /**Render iteam for shop this._selectShop(item)*/
     _renderIteam =({item})=>{
@@ -148,7 +153,7 @@ export default class ItemDetails extends React.Component{
     setData = async() =>{
         const { navigation } = this.props;
         const item = navigation.getParam('data', '[]');
-        await this.setState({selectedProduct:item});
+        await this.setState({selectedProduct:item[0]});
         await this.setState({pID:item[0].pid});
         await this.setState({unitname:item[0].unit});
         await this.setState({price:item[0].price});
@@ -179,12 +184,13 @@ export default class ItemDetails extends React.Component{
     }
 
     render(){
+      //  console.log(Global.API_URL+this.state.pic);
         if(this.state.isLoad)
             return(
             <Container>
                 <Header>
                     <Left>
-                        <Thumbnail source={{uri: this.state.pic1}} />
+                        <Thumbnail source={{uri:this.state.path+ this.state.pic1}} />
                     </Left>
                     <Body>
                         <Title style={{color:'#ffffff',fontSize:'600',fontSize:20}}>{this.state.shopName}</Title>
@@ -195,7 +201,7 @@ export default class ItemDetails extends React.Component{
                     <Card>
                         <CardItem cardBody>
                             <Image 
-                                source={{uri:'http://gomarket.ourgts.com/public/'+this.state.pic}} 
+                                source={{uri:Global.API_URL+this.state.pic}} 
                                 style={{height: 200, width:'100%', flex: 1, resizeMode: 'contain'}}
                             />
                         </CardItem>
