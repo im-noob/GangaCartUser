@@ -118,45 +118,82 @@ export default class ItemDetails extends React.Component{
       // console.log("In select shop : ",item);
       }
 
-    
-  /**Render iteam for shop this._selectShop(item)*/
-  _renderIteam =({item})=>{
-    let uri;
-    try {
-      item.pic == null ? uri="https://pvsmt99345.i.lithium.com/t5/image/serverpage/image-id/10546i3DAC5A5993C8BC8C?v=1.0":uri=item.pic;  
-    } catch (error) {
-        uri="https://pvsmt99345.i.lithium.com/t5/image/serverpage/image-id/10546i3DAC5A5993C8BC8C?v=1.0"
+   /**Render iteam for shop this._selectShop(item)*/
+    _renderIteam =({item})=>{
+        //console.log(item.data[0].price);
+        return(
+            <List>
+                <ListItem avatar>
+                <Left>
+                    <Thumbnail large source={{uri: item.pic}} />
+                </Left>
+                <Body>
+                    <TouchableOpacity onPress={()=>{this._selectShop(item);}}>
+                    <Card>
+                        <Text style={{color:'#000000'}} >{item.name} </Text>
+                        <Subtitle style={{color:'#9698b7'}}>Address :{item.address}</Subtitle>
+                        
+                        <Grid style={{paddingHorizontal:8,marginVertical:2,flexDirection:'row'}}>
+                            <Text style={{fontSize:18}}><Icon name="currency-inr" size={18}/>{item.data[0].price}  </Text>
+                            <Text style={{fontSize:14}}> {item.data[0].quantity}/{item.data[0].unit} </Text>
+                            <Text style={{paddingHorizontal:4 ,color:'#4bb550',fontSize:15}}>  {item.data[0].offer} % off</Text>
+                        </Grid>   
+                    </Card>  
+                    </TouchableOpacity>
+                </Body>   
+                </ListItem>
+            </List>
+        );
     }
-    return(
+    setData = async() =>{
+        const { navigation } = this.props;
+        const item = navigation.getParam('data', '[]');
+        await this.setState({selectedProduct:item});
+        await this.setState({pID:item[0].pid});
+        await this.setState({unitname:item[0].unit});
+        await this.setState({price:item[0].price});
+        await this.setState({info:item[0].info});
+        await this.setState({title:item[0].title});
+        await this.setState({pic:item[0].pic});
+        await this.setState({map:item[0].map});  
+        var name = item[0].size + ' ' + item[0].unit;
+        var list = [];
+        list.push(<Picker.Item label={name} value={0} />);
+        await this.setState({unit_name:0});
+        await this.setState({unitList:list});
+        console.log('Data seted successfully.');
+    }
+
+    // return(
             
         
-          <List>
-            <ListItem avatar>
-            <Left>
-            <Thumbnail large source={{uri: uri}} />
-            </Left>
-              <Body>
-              <TouchableOpacity onPress={()=>{this._selectShop(item);}}>
-              <Card>
-                <CardItem>
-                    <Title style={{color:'#000000'}} >{item.name}</Title>
-                </CardItem>
-                <CardItem>
-                   <Subtitle style={{color:'#9698b7'}}>Address : {item.address}</Subtitle>
-                </CardItem>
-                <CardItem>
-                   <Subtitle style={{color:'#9698b7'}}>Price <Icon name={'ios-cash'} size={15}/> : {item.gro_price}</Subtitle>
-                </CardItem>
+    //       <List>
+    //         <ListItem avatar>
+    //         <Left>
+    //         <Thumbnail large source={{uri: uri}} />
+    //         </Left>
+    //           <Body>
+    //           <TouchableOpacity onPress={()=>{this._selectShop(item);}}>
+    //           <Card>
+    //             <CardItem>
+    //                 <Title style={{color:'#000000'}} >{item.name}</Title>
+    //             </CardItem>
+    //             <CardItem>
+    //                <Subtitle style={{color:'#9698b7'}}>Address : {item.address}</Subtitle>
+    //             </CardItem>
+    //             <CardItem>
+    //                <Subtitle style={{color:'#9698b7'}}>Price <Icon name={'ios-cash'} size={15}/> : {item.gro_price}</Subtitle>
+    //             </CardItem>
                
-                </Card>
-                </TouchableOpacity>
-              </Body>
+    //             </Card>
+    //             </TouchableOpacity>
+    //           </Body>
               
-            </ListItem>
-          </List>
+    //         </ListItem>
+    //       </List>
           
-        );
-}
+    //     );
+// }
 
     
 // _storeData=async(item) =>{
