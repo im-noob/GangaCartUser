@@ -46,7 +46,7 @@ export default createStackNavigator(
       
     },
     {
-      initialRouteName :'test',
+      initialRouteName :'Home',
 
     }
   );
