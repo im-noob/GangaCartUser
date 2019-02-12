@@ -7,7 +7,7 @@ import HeaderTitle from '../../components/HeaderTitle';
 import MenuButton from '../../components/MenuButton';
 import CartButton from '../../components/CartButton';
 
-export const HomeScreenStack = createStackNavigator(
+export default createStackNavigator(
     {
       HomeScreen: {
         screen: HomeScreen,

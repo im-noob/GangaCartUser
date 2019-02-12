@@ -69,6 +69,7 @@ export default class EditProfile extends Component {
                                         }}
                                         showEditButton
                                         rounded
+                                        title="MD"
                                     />
                                 </View>
                             </View>
