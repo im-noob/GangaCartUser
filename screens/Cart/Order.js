@@ -9,6 +9,7 @@ import {
     AsyncStorage,
     Image,
     TouchableHighlight,
+    
     FlatList,
     ToastAndroid, 
     NetInfo,
@@ -52,71 +53,229 @@ export default class Order extends Component {
             renderCoponentFlag: false,
             LodingModal: false,
             data:[],
-            path:'http://gomarket.ourgts.com/public/'
+            path:'http://gomarket.ourgts.com/public/',
+            GroceryShop:[],
+            priceTopay:0,
+            selectedShop:'',
+            priceData:[]
         }
     }
     componentDidMount() {
          this._start();
-        this.setState({path:Global.Image_URL});
-      //  setTimeout(() => {this.setState({renderCoponentFlag: true})}, 0);
-      
+       
 
+        this.setState({path:Global.Image_URL});
+     
+    }
+
+    _store =async(item)=>{
+        try {
+            await AsyncStorage.setItem('ShopID',JSON.stringify(item.gro_shop_info_id));
+            this.setState({selectedShop:item});
+            this.render_price();
+        } catch (error) {
+            
+        }
     }
 
 
-
-    // componentWillUnmount () {
-    //     this.refreshEvent.remove();
-    //   console.log("Udtae call");
-    //   }
 
     _start =async()=>{
      
         data =await AsyncStorage.getItem('CartList');
         data = JSON.parse(data);
      this.setState({data:data});
-       // console.log("Cart Order : ",data);
-      // let array =data;
-  //  console.log(array);
-
- // let index=0;
-    // array.forEach(element =>
-    // {  
-    //     element["checked"]=true;
-    //     element["index"]=index++;
-       
-    //     const {data} = this.state;
-        
-    //     data.push(
-        
-    //         element
-    //     );
-    
-    //     this.setState({ 
-    //         data
-    //     });
-        
-    // });
+     this.render_shop();
+     this.render_price();
+      
      this.setState({renderCoponentFlag: true});
    
     }
-/**rray [
-[16:12:25]   Object {
-[16:12:25]     "Quantity": 2,
-[16:12:25]     "checked": true,
-[16:12:25]     "flag": true,
-[16:12:25]     "index": 0,
-[16:12:25]     "info": null,
-[16:12:25]     "map": 279,
-[16:12:25]     "mapcid": 2,
-[16:12:25]     "pic": "all_product_pics/daily_use/tata salt.jpg",
-[16:12:25]     "pid": 244,
-[16:12:25]     "price": 60,
-[16:12:25]     "size": 1,
-[16:12:25]     "stock": 1,
-[16:12:25]     "title": "Tata Salt ",
-[16:12:25]     "unit": "Kg",
-[16:12:25]   }, */
+
+    /**Shop List */
+    render_shop = async () => {
+        var connectionInfoLocal = '';
+        var KEY = await AsyncStorage.getItem('userToken_S');
+        NetInfo.getConnectionInfo().then((connectionInfo) => {
+            console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
+            // connectionInfo.type = 'none';//force local loding
+            if(connectionInfo.type == 'none'){
+                console.log('no internet ');
+                ToastAndroid.showWithGravityAndOffset(
+                    'Oops! No Internet Connection',
+                    ToastAndroid.LONG,
+                    ToastAndroid.BOTTOM,
+                    25,
+                    50,
+                );
+                return;
+            }else{
+                console.log('yes internet '); 
+                this.setState({
+                    LodingModal:true,
+                });
+                fetch(Global.API_URL+'Grocery/Shop/List', {
+                    method: 'GET',
+                    headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                           
+                        },
+                       
+                    }).then((response) => response.json())
+                    .then((responseJson) => {
+                        var itemsToSet = responseJson.data;
+                      //  console.log('resp:',itemsToSet);
+                        if(responseJson.received == 'yes'){
+                        this.setState({GroceryShop:responseJson.data.data}); 
+                        this.setState({
+                            LodingModal:false,
+                        });
+                        }else{
+                            ToastAndroid.showWithGravityAndOffset(
+                                'Internal Server Error',
+                                ToastAndroid.LONG,
+                                ToastAndroid.BOTTOM,
+                                25,
+                                50,
+                            );
+                        }
+                }).catch((error) => {
+                    ToastAndroid.showWithGravityAndOffset(
+                        'Network Failed!!! Retrying...',
+                        ToastAndroid.LONG,
+                        ToastAndroid.BOTTOM,
+                        25,
+                        50,
+                    );
+                    console.log('on error fetching:'+error);
+                    this.render_shop();
+                });
+            }
+        });
+        console.log(connectionInfoLocal);
+    }
+   
+    
+      
+
+     /** fetch price  */
+     render_price = async () => {
+        let value = await AsyncStorage.getItem('ShopID');
+        
+        if(value ==null ){
+        
+           return; 
+   
+        }
+        console.log(value);
+         var connectionInfoLocal = '';
+         var KEY = await AsyncStorage.getItem('userToken_S');
+         NetInfo.getConnectionInfo().then((connectionInfo) => {
+             console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
+             // connectionInfo.type = 'none';//force local loding
+             if(connectionInfo.type == 'none'){
+                 console.log('no internet ');
+                 ToastAndroid.showWithGravityAndOffset(
+                     'Oops! No Internet Connection',
+                     ToastAndroid.LONG,
+                     ToastAndroid.BOTTOM,
+                     25,
+                     50,
+                 );
+                 return;
+             }else{
+                 console.log('yes internet '); 
+                 this.setState({
+                     LodingModal:true,
+                 });
+                 fetch(Global.API_URL+'Grocery/Shop/product/price', {
+                     method: 'POST',
+                     headers: {
+                             'Accept': 'application/json',
+                             'Content-Type': 'application/json',
+                         },
+                         body: JSON.stringify({ 
+                            id:this.state.data,
+                            Shopid: value
+                          })
+                     }).then((response) => response.json())
+                     .then((responseJson) => {
+                         var itemsToSet = responseJson.data;
+                         console.log('resp in p:',responseJson.data);
+                         if(responseJson.received == 'yes'){
+                         this.setState({
+                             LodingModal:false,
+                             priceTopay:responseJson.price,
+                             priceData:responseJson.data
+                         });
+                         }else{
+                             ToastAndroid.showWithGravityAndOffset(
+                                 'Internal Server Error',
+                                 ToastAndroid.LONG,
+                                 ToastAndroid.BOTTOM,
+                                 25,
+                                 50,
+                             );
+                         }
+                 }).catch((error) => {
+                     ToastAndroid.showWithGravityAndOffset(
+                         'Network Failed!!! Retrying...',
+                         ToastAndroid.LONG,
+                         ToastAndroid.BOTTOM,
+                         25,
+                         50,
+                     );
+                     console.log('on error fetching:'+error);
+                     this.render_price();
+                 });
+             }
+         });
+         console.log(connectionInfoLocal);
+     }
+
+     fetchPrice = async() =>{
+
+        let value = this.state.selectedShop;
+        
+        if(value ==null ){
+            
+           return; 
+   
+        }
+      
+    //   console.log("Pass value for price ",this.state.GrocerySelectedProduct)
+        
+        await  fetch('http://gomarket.ourgts.com/public/api/Grocery/Shop/product/price', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body:JSON.stringify({
+                id:this.state.data,
+                Shopid:shop
+                })
+            }).then((response) => response.json())
+                .then((responseJson) => {
+                
+                
+              this.setState({avilableItem:responseJson.data});
+              this.setState({priceTopay:responseJson.price})
+              
+           
+            }).catch((error) => {
+                    
+                
+                console.log("Erro during Price fetech", error.message);
+                // log.error({error:err})
+                //   value.flag=false;
+                //   value.data = "Network request failed" ==error.message?  console.log("Check internet connection"):error;
+    
+                }); 
+
+    }
+
     
 _addQuantity=(index) =>{
     const data = this.state.data;
@@ -130,6 +289,7 @@ _addQuantity=(index) =>{
         array.push(element);
     })
     this.setState({data:array});
+   
     console.log(data)
 }
 
@@ -147,36 +307,17 @@ _subQuantity=(index) =>{
         array.push(element);
     })
     this.setState({data:array});
+    
     console.log(data)
   
 }
 
-_toggleCheckbox =(index) =>{
-  //  console.log("Index value ",index);
-    const {data} = this.state;
-
-   data[parseInt(index)].checked = !data[index].checked;
-    
-  //  console.log(data);
- // CartPrepare(this.state.selectedProduct,this.state.selectedQunt);
-
-    this.setState({
-        data
-    });
-    CartPrepare(data[parseInt(index)],data[parseInt(index)].quntity);this._start();
-   // console.log(data);
-}
     
 
     _renderCartItem =({item})=>{
         console.log(item);
         return(
-            // <TouchableOpacity onPress={()=>{this.props.navigation.navigate("ChnageOrder")}}>
-            // <View  style={{justifyContent:'center',width:60,paddingHorizontal:10,paddingVertical:4,borderColor:"#040504"}}>
-            //      <Image style={{height:50,width:50,resizeMode: 'contain'}} source={{uri:this.state.path+item.pic}}/>
-            //      <Subtitle style={{color:'#000000',fontSize:10}}>{item.title}</Subtitle>   
-            //  </View>
-            //  </TouchableOpacity>
+           
             <Card>
                 <CardItem>
                 <Left><ImageBackground style={{height:100,width:90}} source={{uri:this.state.path+item.pic}}>
@@ -210,20 +351,65 @@ _toggleCheckbox =(index) =>{
                  </Right>
                  </CardItem>
             </Card>
-        //     <View style={{padding:0,height:115,width:100}}>
-                
-        //     <View style={{height:100,width:90,padding:5,flexDirection:'row'}}>
-               
-                
-                  
-        //        </View> 
-        //         <TouchableHighlight onPress={()=>{this.props.navigation.navigate("ChnageOrder",{item:[item]});console.log(item)}}>
-        //       
-        //          </TouchableHighlight>
-        //   </View>
             
            );
     }
+
+    _renderShopItem =({item})=>{
+       return( 
+        <TouchableHighlight onPress={()=>{this._store(item);}}>
+            <View style={{borderWidth:0.5}}>
+                <View style={{padding:10}}>
+                <View style={{alignItems:'center',flexDirection:'row'}}> 
+                    <Title style={{color:'#020aed'}}>{item.name}</Title>
+                </View>
+                <View style={{alignItems:'center',flexDirection:'row'}}> 
+                    <Subtitle style={{color:'#7f7f8e'}}> {item.address}</Subtitle>
+                </View>
+                <View style={{alignItems:'center',flexDirection:'row'}}> 
+                    <Subtitle style={{color:'#14012b'}}>Mobile 1: {item.mobile1}</Subtitle>
+                </View>
+                <View style={{alignItems:'center',flexDirection:'row'}}> 
+                    <Subtitle style={{color:'#14012b'}}>Mobile 2: {item.mobile2}</Subtitle>
+                </View>
+
+                </View>     
+            </View>
+        </TouchableHighlight> 
+        );
+    }
+
+    _renderPrice =({item})=>{
+        return( 
+            <CardItem >
+                <Left>
+                <Text style={{color:'#000000',fontSize:15,fontWeight:'700'}}>{item.title} ( {item.Quantity} )</Text>
+                </Left>
+                <Right>
+                <Text style={{color:'#000000',fontSize:15,fontWeight:'700'}}><Icon name="currency-inr" size={15}/>{item.price}</Text>
+                </Right>
+            </CardItem>
+        
+            //  <View style={{borderWidth:0.5}}>
+            //      <View style={{padding:10}}>
+            //      <View style={{alignItems:'center',flexDirection:'row'}}> 
+            //          <Title style={{color:'#020aed'}}>{item.title} ( {item.Quantity} )</Title>
+            //      </View>
+            //      <View style={{alignItems:'center',flexDirection:'row'}}> 
+            //          <Subtitle style={{color:'#7f7f8e'}}> {item.address}</Subtitle>
+            //      </View>
+            //      <View style={{alignItems:'center',flexDirection:'row'}}> 
+            //          <Subtitle style={{color:'#14012b'}}>Mobile 1: {item.mobile1}</Subtitle>
+            //      </View>
+            //      <View style={{alignItems:'center',flexDirection:'row'}}> 
+            //          <Subtitle style={{color:'#14012b'}}>Mobile 2: {item.mobile2}</Subtitle>
+            //      </View>
+ 
+            //      </View>     
+            //  </View>
+         
+         );
+     }
 
     render() {
         const {renderCoponentFlag} = this.state;
@@ -243,21 +429,49 @@ _toggleCheckbox =(index) =>{
                                        <FlatList
                                        data={this.state.data}
                                        renderItem={this._renderCartItem}
-                                    
                                        />
                                     
                             </CardItem>
-                            <CardItem footer>
-                                    <Left>
-
-                                    </Left>
-                            </CardItem>
+                           
                        </Card>
+
+                       <Card >
+                        <CardItem header style={{backgroundColor:'#cccecc'}} >
+                            <Title style={{color:'#646b61'}}>PRICE LIST</Title>
+                        </CardItem>
+                       
+                           <FlatList
+                            data={this.state.priceData}
+                            renderItem={this._renderPrice}
+                           />
+                        <CardItem footer style={{backgroundColor:'#cccecc'}}>
+                            <Left>
+                                <Title style={{color:'#035904',fontSize:15,fontWeight:'700'}}>Total Price :</Title>
+                            </Left>
+                            <Right>
+                            <Text style={{color:'#035904',fontSize:15,fontWeight:'700'}}><Icon name="currency-inr" color="#035904" size={15}/>{this.state.priceTopay}</Text>
+               
+                            </Right>
+                            
+                        </CardItem>
+                    </Card>
+                  
                         {/* <Button bordered dark onPress={()=>{
                             this.props.navigation.navigate('ComparePriceStack',{});
                         }}>
                             <Text>Cmpare price stack</Text>
                         </Button> */}
+                    <Card >
+                        <CardItem header style={{backgroundColor:'#243c9e'}}>
+                            <Title>Related Shop</Title>
+                        </CardItem>
+                       
+                           <FlatList
+                            data={this.state.GroceryShop}
+                            renderItem={this._renderShopItem}
+                           />
+                        
+                    </Card>
                     </Content>
                     <View style={{height:50,backgroundColor:'#d6a22a',flexDirection:'row',justifyContent:'space-around'}}>
                         <Button block ><Text>Checkout</Text></Button>

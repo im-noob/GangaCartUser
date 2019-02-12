@@ -6,7 +6,7 @@ import HeaderTitle from "../../components/HeaderTitle";
 import ItemDetails from "./ItemDetails";
 import ItemList from "./ItemList";
 import Order from "../Cart/Order";
-import ChangeOrder from "../Cart/ChangeOrder";
+import ConifirmOrder from "../Cart/ConifirmOrder";
 // import CartNavigation from "../Cart/CartNavigation";
 import CartButton from "../../components/CartButton";
 

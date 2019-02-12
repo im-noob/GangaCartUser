@@ -24,7 +24,7 @@ import { CartPrepare } from '../../constants/OrderListPrepare';
 // import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 // const {width,height} = Dimensions.get('window');
 
-export default class ChangeOrder extends React.Component {
+export default class ConifirmOrder extends React.Component {
     constructor(props){
         super(props);
         this.state={
