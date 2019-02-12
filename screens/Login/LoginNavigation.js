@@ -31,7 +31,7 @@ export default createStackNavigator(
       }
     },
     {
-      initialRouteName :'ForgotScreen',
+      initialRouteName :'SingupScreen',
     }
   );
 

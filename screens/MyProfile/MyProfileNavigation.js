@@ -46,7 +46,7 @@ export default createStackNavigator(
       
     },
     {
-      initialRouteName :'EditProfile',
+      initialRouteName :'test',
 
     }
   );
