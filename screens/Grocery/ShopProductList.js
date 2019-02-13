@@ -343,7 +343,20 @@ _renderIteam=({item})=>{
                     
                     <View style={{flexDirection:'row',justifyContent:'space-around',padding:5,height:50,paddingBottom:5}}>
                         <View style={{flexDirection:'column',paddingBottom:5}}>
-                            <Text style={{fontSize:16,fontWeight:'900'}}><Icon name={'currency-inr'} size={15}/>{price}</Text>
+                            <Text style={{fontSize:16,fontWeight:'900'}}><Icon name={'currency-inr'} size={15}/>{
+                                (item.offer > 0 ) ? 
+                                  (price - (price)*(item.offer/100))
+
+                                    :
+                                    price
+                                }
+                                {
+                                    (item.offer > 0 ) ? 
+                                        <Text style={{fontSize:12,textDecorationLine: 'line-through'}}>  MRP <Icon name="currency-inr" size={12}/>{price}</Text>
+                                    :
+                                    <Text></Text>
+                                }
+                                </Text>
                             {(item.offer > 0.1) ?
                                 <Text style={{fontSize:14,fontWeight:'500',color:'green'}}>{item.offer}% off</Text>
                                 :
@@ -381,7 +394,7 @@ _renderIteam=({item})=>{
             //await AsyncStorage.setItem('Product',JSON.stringify(item));
             nvg.navigation.navigate('ShopProductDetails',{
                 data : [item],
-                
+
             });
         }
         catch(error){
