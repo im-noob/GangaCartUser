@@ -29,7 +29,7 @@ import {
 
 import {createDrawerNavigator,DrawerItems, SafeAreaView,createStackNavigator,NavigationActions } from 'react-navigation';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
-import Global from "../Global";
+import Global from "../../../constants/Global";
 
 export default class SubCategoryScreen extends Component {
     constructor(props){

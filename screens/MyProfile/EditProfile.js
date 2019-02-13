@@ -38,6 +38,7 @@ import {createDrawerNavigator,DrawerItems, SafeAreaView,createStackNavigator,Nav
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Avatar } from 'react-native-elements';
 import KeyboardShift from "../../components/KeyboardShift";
+import Global from "../../constants/Global";
 
 const {width,height} = Dimensions.get('window');
 
@@ -57,12 +58,167 @@ export default class EditProfile extends Component {
             shipping_city:'Bhagalpur',
             shipping_street:'',
             shipping_pincode:'',
-            submitShippingDetails:'',
+            submitShippingDetails:false,
+
+            userID:'',
+
+
+            // checking email
+            reg_email_valid_color:'green',
+            reg_email_valid_icon:'check-circle',
+            reg_phone_valid_color:'green',
+            reg_phone_valid_icon:'check-circle',
+            
+            avilEmail:true,
+            avilPhone:true,
+
+            
         }
     }
     componentDidMount() {
         setTimeout(() => {this.setState({renderCoponentFlag: true})}, 0);
         this.setProfile();
+    }
+
+
+    validateEmail = (email) => {
+        var re =  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+    }
+
+    validatephone = (phone) =>{
+        return /^[0-9]+$/.test(phone);
+    }
+    
+    REGcheckEmail = (text) =>{
+        // valdating email
+        if(text.trim().length != 0 ){
+            if(this.validateEmail(text) && text.length > 5){
+                this.setState({
+                    reg_email_valid_color:'green',
+                    reg_email_valid_icon:'check-circle'
+                });
+                console.log("valid email");
+            }else{
+                this.setState({
+                    reg_email_valid_color:'red',
+                    reg_email_valid_icon:'close-circle'
+                });
+            }
+        }
+    }
+
+    
+    REGcheckPhone = (text) =>{
+        //validation phone
+        console.log(text.trim().length);
+        if(text.trim().length != 0){
+            if(this.validatephone(text) && text.length == 10){
+                this.setState({
+                    reg_phone_valid_color:'green',
+                    reg_phone_valid_icon:'check-circle'
+                });
+                console.log("valid phone");
+            }else{
+                this.setState({
+                    reg_phone_valid_color:'red',
+                    reg_phone_valid_icon:'close-circle'
+                });
+            }
+        }
+    }
+
+    checkAvilEmail = (text) =>{
+        // now sending request to login
+        console.log("Checking for avil email");
+
+        var connectionInfoLocal = '';
+        NetInfo.getConnectionInfo().then((connectionInfo) => {
+            console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
+            if(connectionInfo.type == 'none'){
+                console.log("no internet ");
+                
+                ToastAndroid.showWithGravityAndOffset(
+                'Oops! No Internet Connection',
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
+                25,
+                50,
+                );        
+            }else{
+                console.log("yes internet ");
+                fetch(Global.API_URL+'AvilEmail_MU', {
+                    method: 'POST',
+                    headers: {},
+                    body: JSON.stringify({
+                        email:text,
+                        check:'email',
+                    })
+                }).then((response) => response.json())
+                .then((responseJson) => {
+                    var itemsToSet = responseJson.data ;
+                    console.log("resp:",itemsToSet);
+                    if(itemsToSet.status == true){
+                        this.setState({
+                            avilEmail:true,
+                        })
+                    }else{
+                        this.setState({
+                            avilEmail:false,
+                        })
+                    }
+
+                }).catch((error) => {
+                        alert("Internal Server Error 500");
+                        console.log("on error featching:"+error);
+                });
+            }
+        });
+    }
+    checkAvilPhone = (text) =>{
+        console.log("Checking for avil phone");
+        var connectionInfoLocal = '';
+        NetInfo.getConnectionInfo().then((connectionInfo) => {
+            console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
+            if(connectionInfo.type == 'none'){
+                console.log("no internet ");
+                
+                ToastAndroid.showWithGravityAndOffset(
+                'Oops! No Internet Connection',
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
+                25,
+                50,
+                );        
+            }else{
+                console.log("yes internet ");
+                fetch(Global.API_URL+'AvilPhone_MU', {
+                    method: 'POST',
+                    headers: {},
+                    body: JSON.stringify({
+                        phone: text,
+                        check:'phone',
+                    })
+                }).then((response) => response.json())
+                .then((responseJson) => {
+                    var itemsToSet = responseJson.data ;
+                    console.log("resp:",itemsToSet);
+                    if(itemsToSet.status == true){
+                        this.setState({
+                            avilPhone:true,
+                        })
+                    }else{
+                        this.setState({
+                            avilPhone:false,
+                        })
+                    }
+
+                }).catch((error) => {
+                        alert("Internal Server Error 500");
+                        console.log("on error featching:"+error);
+                });
+            }
+        });
     }
     setProfile = async () =>{
         const profileData = JSON.parse(await AsyncStorage.getItem('userProfileData'));
@@ -71,13 +227,15 @@ export default class EditProfile extends Component {
 
         this.setState({
             profile_name: profileData.cname,
-            profile_email: '',
-            profile_phonheno: '',
+            profile_email: profileData.email,
+            profile_phonheno: profileData.phone+'',
 
             shipping_state: profileData.state,
             shipping_city: profileData.city,
             shipping_street: profileData.address,
             shipping_pincode: profileData.cpin+"",
+
+            userID: profileData.user_id,
         });
         console.log(this.state.profile_name,this.state.profile_email,this.state.profile_phonheno,this.state.shipping_state,this.state.shipping_city,this.state.shipping_street,this.state.shipping_pincode);
     }
@@ -99,6 +257,20 @@ export default class EditProfile extends Component {
                 return;
             }else{
                 console.log('yes internet '); 
+
+                if(
+            
+                    this.state.reg_phone_valid_color != 'green' ||
+                    this.state.reg_email_valid_color != 'green' ||
+                    this.state.avilEmail != true ||
+                    this.state.avilPhone != true
+                ){
+                    console.log(this.state.reg_phone_valid_color,this.state.reg_email_valid_color,
+                        this.state.avilEmail,this.state.avilPhone )
+                    alert("All fields must be filled correctly.");
+                    return;
+                }
+
                 this.setState({
                     submitProfileBasic:true,
                 });
@@ -109,19 +281,33 @@ export default class EditProfile extends Component {
                             'Authorization':'Bearer '+KEY,
                         },
                         body: JSON.stringify({ 
-                            profile_name:this.state.profile_name,
-                            profile_phonheno:this.state.profile_phonheno,
-                            profile_email:this.state.profile_email,
+                            profile_name:this.state.profile_name+'',
+                            profile_phonheno:this.state.profile_phonheno+'',
+                            profile_email:this.state.profile_email+'',
+
+                            userID: this.state.userID,
                          })
                     }).then((response) => response.json())
                     .then((responseJson) => {
                         var itemsToSet = responseJson.data;
-                        console.log('resp:',itemsToSet);
+                        console.log('resp:',responseJson);
                         if(responseJson.received == 'yes'){
-                        this.setState({
-                            submitProfileBasic:false,
-                        });
+                            
+                            let profileData = JSON.stringify(itemsToSet);
+                            console.log(profileData);
+                            this.SaveProfileData(profileData);
+                            
+                            ToastAndroid.showWithGravityAndOffset(
+                                'Basic Details Saved',
+                                ToastAndroid.LONG,
+                                ToastAndroid.BOTTOM,
+                                25,
+                                50,
+                            );
                         }else{
+
+                            
+
                             ToastAndroid.showWithGravityAndOffset(
                                 'Internal Server Error',
                                 ToastAndroid.LONG,
@@ -129,7 +315,11 @@ export default class EditProfile extends Component {
                                 25,
                                 50,
                             );
+                            
                         }
+                        this.setState({
+                            submitProfileBasic:false,
+                        });
                 }).catch((error) => {
                     ToastAndroid.showWithGravityAndOffset(
                         'Network Failed!!! Retrying...',
@@ -172,15 +362,30 @@ export default class EditProfile extends Component {
                             'Accept': 'application/json',
                             'Authorization':'Bearer '+KEY,
                         },
-                        body: JSON.stringify({  })
+                        body: JSON.stringify({ 
+                            shipping_state:this.state.shipping_state+'',
+                            shipping_city:this.state.shipping_city+'',
+                            shipping_street:this.state.shipping_street+'',
+                            shipping_pincode:this.state.shipping_pincode+'',
+
+                            userID: this.state.userID,
+                         })
                     }).then((response) => response.json())
                     .then((responseJson) => {
                         var itemsToSet = responseJson.data;
-                        console.log('resp:',itemsToSet);
+                        console.log('resp:',responseJson);
                         if(responseJson.received == 'yes'){
-                        this.setState({
-                            submitShippingDetails:false,
-                        });
+                            // 
+                            let profileData = JSON.stringify(itemsToSet);
+                            console.log(profileData);
+                            this.SaveProfileData(profileData);
+                            ToastAndroid.showWithGravityAndOffset(
+                                'Shipping Details Saved',
+                                ToastAndroid.LONG,
+                                ToastAndroid.BOTTOM,
+                                25,
+                                50,
+                            );
                         }else{
                             ToastAndroid.showWithGravityAndOffset(
                                 'Internal Server Error',
@@ -190,10 +395,13 @@ export default class EditProfile extends Component {
                                 50,
                             );
                         }
+                        this.setState({
+                            submitShippingDetails:false,
+                        });
                 }).catch((error) => {
                     ToastAndroid.showWithGravityAndOffset(
                         'Network Failed!!! Retrying...',
-                        ToastAndroid.LONG,
+                        ToastAndroid.SHORT,
                         ToastAndroid.BOTTOM,
                         25,
                         50,
@@ -205,6 +413,10 @@ export default class EditProfile extends Component {
         });
         console.log(connectionInfoLocal);
     }
+    SaveProfileData = async (profileData) => {
+        
+        await AsyncStorage.setItem('userProfileData', profileData);
+    };
     render() {
         
         const {renderCoponentFlag} = this.state;
@@ -247,33 +459,82 @@ export default class EditProfile extends Component {
                                                         <Label style={{color:'#2873f0'}}>Phone NO</Label>
                                                         <Input underlineColorAndroid="#2873f0" 
                                                             value={this.state.profile_phonheno}
-                                                            onChangeText={(text) => this.setState({profile_phonheno:text})}
+                                                            onChangeText={(text) => {
+                                                                this.setState({profile_phonheno:text});
+                                                                this.REGcheckPhone(text);    
+                                                                this.checkAvilPhone(text);
+                                                            }}
                                                             keyboardType='numeric' 
+                                                            maxLength={10}
                                                         />
+                                                        
                                                     </Item>
                                                 </CardItem>
+                                                
+                                                { 
+                                                    this.state.reg_phone_valid_color == 'red' && 
+                                                    <CardItem><Text style={{color:'red',marginHorizontal:7,fontSize:12}}>*Phone no must be 10 Digit long.</Text></CardItem>
+                                                }
+                                                
+
+                                                
+                                                { 
+                                                    this.state.avilPhone == false && 
+                                                    <CardItem><Text style={{color:'red',marginHorizontal:7,fontSize:12}}>*This moible no is already registered with us.</Text></CardItem>
+                                                }
+
+                                                
                                                 <CardItem>
                                                     <Item floatingLabel>
                                                         <Label style={{color:'#2873f0'}}>Email</Label>
                                                         <Input underlineColorAndroid="#2873f0" 
-                                                            onChangeText={(text) => this.setState({profile_email:text})}
+                                                            onChangeText={(text) => {
+                                                                this.setState({profile_email:text});
+                                                                
+                                                                this.REGcheckEmail(text);
+                                                                this.checkAvilEmail(text);
+                                                            }}
                                                             value={this.state.profile_email}
                                                             keyboardType='email-address' 
                                                         />
+                                                        
                                                     </Item>
                                                 </CardItem>
+                                                
+                                                { 
+                                                    this.state.reg_email_valid_color == 'red' && 
+                                                    <CardItem><Text style={{color:'red',marginHorizontal:7,fontSize:12}}>*Not a Valid Email Format.</Text></CardItem>
+                                                }
+                                                
+                                                
+                                                { 
+                                                    this.state.avilEmail == false && 
+                                                    <CardItem><Text style={{color:'red',marginHorizontal:7,fontSize:12}}>*This email is already registered with us.</Text></CardItem>
+                                                }
+                                                
+                                               
                                             </Card>
-                                            
                                             <Card>
-                                                <Button transparent block onPress={()=>{
-                                                    console.log("Chnage Basic Details");
-                                                    console.log(this.state.profile_name,this.state.profile_phonheno,this.state.profile_email)
-                                                    this.render_setBasicProfile();
-                                                }}>
-                                                    <Text style={{fontSize:15,fontWeight:'500',color:'#2873f0'}}>SUBMIT</Text>
-                                                </Button>
+                                                {this.state.submitProfileBasic &&
+                                                    <AdvLoder/>
+                                                }
+                                                {this.state.submitProfileBasic != true &&
+                                                    <Button transparent block 
+                                                        disabled={this.state.submitProfileBasic}
+                                                        onPress={()=>{
+                                                            
+                                                            console.log("Chnage Basic Details");
+                                                            console.log(this.state.profile_name,this.state.profile_phonheno,this.state.profile_email)
+                                                            this.render_setBasicProfile();
+                                                        }}>
+                                                        <Text style={{fontSize:15,fontWeight:'500',color:'#2873f0'}}>SUBMIT</Text>
+                                                    </Button>
+                                                }
+                                                
                                             </Card>
                                             
+
+                                            {/* Shipping Address */}
                                             <Card>
                                                 <CardItem header>
                                                     <Text>Shipping Address</Text>
@@ -329,13 +590,22 @@ export default class EditProfile extends Component {
                                                         
                                                     </Body>
                                                 </CardItem>
-                                                    <Button transparent block onPress={()=>{
-                                                        console.log("Change Shipping Address");
-                                                        console.log(this.state.shipping_city,this.state.shipping_state,this.state.shipping_street,this.state.shipping_pincode);
-                                                        this.render_setShippingAddress();
-                                                    }}>
+
+                                                {this.state.submitShippingDetails &&
+                                                    <AdvLoder/>
+                                                }
+                                                {this.state.submitShippingDetails != true &&
+                                                    <Button transparent block 
+                                                        disabled={this.state.submitShippingDetails}
+                                                        onPress={()=>{
+                                                            console.log("Change Shipping Address");
+                                                            console.log(this.state.shipping_city,this.state.shipping_state,this.state.shipping_street,this.state.shipping_pincode);
+                                                            this.render_setShippingAddress();
+                                                        }}>
                                                         <Text style={{fontSize:15,fontWeight:'500',color:'#2873f0'}}>SUBMIT</Text>
                                                     </Button>
+                                                }
+                                                    
                                             </Card>
                                             
                                         </View>
