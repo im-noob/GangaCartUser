@@ -4,6 +4,7 @@ import {ActivityIndicator,AsyncStorage,ToastAndroid,StyleSheet,
         } from 'react-native';
 import { SearchBar } from 'react-native-elements'
 import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail, Text } from 'native-base';
+import Global from  '../../constants/Global';
 
 export default class ShopList extends React.Component{
     constructor(props){
@@ -38,7 +39,7 @@ export default class ShopList extends React.Component{
             }else{
                 console.log("yes internet ");
                 
-                fetch('http://gomarket.ourgts.com/public/api/Grocery/Shop/List', {
+                fetch(Global.API_URL+'Grocery/Shop/List', {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',
@@ -104,9 +105,16 @@ export default class ShopList extends React.Component{
                         </TouchableOpacity>
                     </Body>
                     <Right>
-                        <View style={{backgroundColor:"#09c416",padding:10, justifyContent:'center'}}>
-                            <Text style={{fontWeight:"900",color:'#ffffff'}}>{item.rating} *</Text> 
-                        </View>
+                        <Text style={{
+                                fontWeight:'500',
+                                fontSize:15,
+                                backgroundColor:'#ffa329',
+                                color:'white',
+                                borderRadius:5,
+                                paddingHorizontal:5
+                            }}>
+                                {(item.rating ) ? (item.rating+'*') : 0+'*'}
+                        </Text>
                     </Right>
                 </ListItem>
               </List>

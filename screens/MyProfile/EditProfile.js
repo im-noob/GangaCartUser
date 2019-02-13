@@ -293,7 +293,7 @@ export default class EditProfile extends Component {
                                                         </CardItem>
                                                         <CardItem>
                                                             <Item floatingLabel>
-                                                                <Label style={{color:'#2873f0'}}>Name</Label>
+                                                                <Label style={{color:'#2873f0'}}>City</Label>
                                                                     <Input 
                                                                         underlineColorAndroid="#2873f0" 
                                                                         value={this.state.shipping_city} 

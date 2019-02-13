@@ -11,6 +11,7 @@ import {
 import {createDrawerNavigator,DrawerItems, SafeAreaView,createStackNavigator,NavigationActions } from 'react-navigation';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 const {width,height} = Dimensions.get('window');
+import Global from  '../../constants/Global'; 
 
 const dataArray = [
     { title: "Vegitables", content: [{id:1,name:'Green Vegitables',pic:'http://gomarket.ourgts.com/storage/app/public/offer/ImageNotFound.png'},
@@ -48,7 +49,7 @@ export default class Category extends Component {
             );        
         }else{
             console.log("yes internet ");
-            fetch('http://gomarket.ourgts.com/public/api/cat', {
+            fetch(Global.API_URL+'cat', {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
@@ -56,11 +57,12 @@ export default class Category extends Component {
                 }
             }).then((response) => response.json())
             .then((responseJson) => {
-            //    console.log(responseJson); 
+                //console.log(responseJson); 
                 if(responseJson.received == "yes"){
                     let list = [];
                     let content1 = [];
                     var ckeyT = 0;
+                    var catTNamt = '';
                     var last = responseJson.data[responseJson.data.length -1].sKey;
                     //console.log(last);
                     for(let data of responseJson.data){
@@ -69,12 +71,12 @@ export default class Category extends Component {
                             var temp = {
                                  sKey :data.sKey,
                                  sName : data.sName,
-                                 sPic : (data.sPic) ? data.sPic : "http://gomarket.ourgts.com/storage/app/public/offer/ImageNotFound.png"
+                                 sPic : (data.sPic) ? data.sPic : "http://gangacart.com/storage/app/public/offer/ImageNotFound.png"
                              }
                             content1.push(temp);
                             if(data.sKey == last){
                                 let title = {
-                                    title : data.cname,
+                                    title : this.catTNamt,
                                     content : content1 
                                 };
                                 list.push(title);
@@ -83,23 +85,32 @@ export default class Category extends Component {
                         else{
                             if( ckeyT != 0){
                                 let title = {
-                                    title : data.cname,
+                                    title : this.catTNamt,
                                     content : content1 
                                 };
                                 list.push(title);
                                 content1 = [];
+                                this.catTNamt  = data.cname;
                                 var temp = {
                                     sKey :data.sKey,
                                     sName : data.sName,
-                                    sPic : (data.sPic) ? data.sPic : "http://gomarket.ourgts.com/storage/app/public/offer/ImageNotFound.png"
+                                    sPic : (data.sPic) ? data.sPic : "http://gangacart.com/storage/app/public/offer/ImageNotFound.png"
                                 }
-                               content1.push(temp);                                                                           
+                               content1.push(temp);  
+                               if(data.sKey == last){
+                                let title = {
+                                    title : this.catTNamt,
+                                    content : content1 
+                                    };
+                                    list.push(title);
+                                }                                                                         
                             }
                             else{
+                                this.catTNamt  = data.cname;
                                 var temp = {
                                     sKey :data.sKey,
                                     sName : data.sName,
-                                    sPic : (data.sPic) ? data.sPic : "http://gomarket.ourgts.com/storage/app/public/offer/ImageNotFound.png"
+                                    sPic : (data.sPic) ? data.sPic : "http://gangacart.com/storage/app/public/offer/ImageNotFound.png"
                                 }
                                content1.push(temp);
                             }
