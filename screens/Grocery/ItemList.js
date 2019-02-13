@@ -11,6 +11,7 @@ import {
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 import HeaderTitle from './../../components/HeaderTitle';
 const {width,height} = Dimensions.get('window');
+import Global from  '../../constants/Global';
 
 export default class ItemList extends Component {
     constructor(props){
@@ -46,7 +47,7 @@ export default class ItemList extends Component {
             );        
         }else{
             console.log("yes internet ");
-            fetch('http://gomarket.ourgts.com/public/api/gro_product', {
+            fetch(Global.API_URL+'gro_product', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -57,9 +58,21 @@ export default class ItemList extends Component {
                 })
             }).then((response) => response.json())
             .then((responseJson) => {
-               //console.log(responseJson); 
+                //console.log(responseJson); 
                 if(responseJson.received == "yes"){
-                    this.setState({ProductList:responseJson.data.data});
+
+                    let list = [];
+                    var map_id = 0;
+                    for(let data of responseJson.data.data){
+                        if(data.map != map_id){
+                            map_id = data.map;
+                            list.push(data);
+                        }   
+                        else{
+                            map_id = data.map;
+                        }
+                    }
+                    this.setState({ProductList:list});
                     //console.log(responseJson.data.data);
                 }
                 }).catch((error) => {
@@ -81,7 +94,7 @@ export default class ItemList extends Component {
                             data:[item],
                         })}}>
                             <Body>
-                                <Image source={{uri:'http://gomarket.ourgts.com/public/'+item.pic}} style={{height:100, width: "100%", flex: 1}}/>
+                                <Image source={{uri:'http://gangacart.com/public/'+item.pic}} style={{height:100, width: "100%", flex: 1}}/>
                             </Body>
                         </CardItem>
                         <Title style={{paddingHorizontal:8,marginVertical:2,fontSize:14,color:'#000000'}}>{item.title}</Title>
@@ -97,15 +110,15 @@ export default class ItemList extends Component {
         if(renderCoponentFlag){
             return(
                 <Container>
-                <ScrollView>
-                <FlatList 
-                        data = {this.state.ProductList}
-                        renderItem = {({item}) => dataView(item) }
-                        keyExtractor = {item => item.pid}
-                        numColumns = {2}
-                    >
-                    </FlatList>
-                </ScrollView>
+                    <ScrollView>
+                        <FlatList 
+                            data = {this.state.ProductList}
+                            renderItem = {({item}) => dataView(item) }
+                            keyExtractor = {item => item.pid}
+                            numColumns = {2}
+                        >
+                        </FlatList>
+                    </ScrollView>
                 </Container>
             );
         }else{

@@ -37,7 +37,6 @@ import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 import Category from "./Category";
 import ItemDetails from "./ItemDetails";
 import ItemList from "./ItemList";
-
 import MenuButton from "../../components/MenuButton";
 import HeaderTitle from "../../components/HeaderTitle";
 import Details from "./Details";
@@ -48,6 +47,8 @@ import ShopCategory from './ShopCategory';
 const {width,height} = Dimensions.get('window');
 import {createDrawerNavigator,DrawerItems,createAppContainer, SafeAreaView,createStackNavigator,NavigationActions,createBottomTabNavigator } from 'react-navigation';
 import ShopDetail from './shopDetails';
+import ShopsProductsList from './ShopProductList';
+import ShopProductDetails from './ShopProductDetails';
 
 const StackNav =  createStackNavigator(
     {
@@ -114,7 +115,7 @@ const ShoppingScreen =  createStackNavigator(
     CategoryList:{
         screen: ShopCategory,
         navigationOptions: ({ navigation }) => ({
-          headerTitle:"Item Details",
+          headerTitle:"Catrgory",
          headerStyle: {
            backgroundColor: '#2874f0'
          },
@@ -128,6 +129,24 @@ const ShoppingScreen =  createStackNavigator(
            backgroundColor: '#2874f0'
          },
        }),
+    },
+    ShopsProductsList:{
+      screen: ShopsProductsList,
+      navigationOptions: ({ navigation }) => ({
+        headerTitle:"Prodoct List",
+       headerStyle: {
+         backgroundColor: '#2874f0'
+       },
+     }),
+    },
+    ShopProductDetails:{
+        screen:ShopProductDetails,
+        navigationOptions: ({ navigation }) => ({
+          headerTitle:"Details",
+        headerStyle: {
+          backgroundColor: '#2874f0'
+        },
+      }),
     }
   },
   {

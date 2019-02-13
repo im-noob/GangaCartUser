@@ -19,6 +19,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Thumbnail,ListItem,Container,List,Grid,Picker,
      Header, Content, Spinner,Button, Title,Card,CardItem,Left,Body,Right,Subtitle, Form } from 'native-base';
 import { CartPrepare } from '../../constants/OrderListPrepare';
+import Global from  '../../constants/Global';
 
 class Loading extends React.Component{
     constructor(props){
@@ -72,10 +73,8 @@ export default class ItemDetails extends React.Component{
     }
 
     fetech = async() =>{
-
-
         this.setState({isLoad:false});
-        await fetch('http://gomarket.ourgts.com/public/api/gro_product_shop', {
+        await fetch(Global.API_URL+'gro_product_shop', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -86,11 +85,10 @@ export default class ItemDetails extends React.Component{
             })
             }).then((response) => response.json())
             .then((responseJson) => {
-              console.log("Related shop Load ......",responseJson);
+              //console.log("Related shop Load ......",responseJson);
               this.setState({data:responseJson.data}); 
               this._selectShop(responseJson.data[0]);
             }).catch((error) => {        
-
                 console.log( error.message);
         }); 
         this.setState({isLoad:true});
@@ -103,6 +101,14 @@ export default class ItemDetails extends React.Component{
         for (let index = 0; index < item.data.length; index++) {
             list.push(<Picker.Item label={item.data[index].quantity + ' ' + item.data[index].unit} value={index} />);   
         }
+        const data = this.state.selectedProduct;
+        data[0].size = item.data[0].quantity;
+        data[0].unit = item.data[0].unit;
+        data[0].offer = item.data[0].offer;
+        data[0].price = item.data[0].price;
+
+        this.setState({selectedProduct:data});
+
         this.setState({
             selectedShop:item,
             price:item.data[0].price,
@@ -147,6 +153,7 @@ export default class ItemDetails extends React.Component{
     }
     setData = async() =>{
         const { navigation } = this.props;
+        
         const item = navigation.getParam('data', '[]');
         await this.setState({selectedProduct:item});
         await this.setState({pID:item[0].pid});
@@ -176,6 +183,14 @@ export default class ItemDetails extends React.Component{
             offer:this.state.selectedShop.data[indx].offer,
             unitname:this.state.selectedShop.data[indx].unit,
         }); 
+
+        const data = this.state.selectedProduct;
+        data[0].size = this.state.selectedShop.data[indx].quantity;
+        data[0].unit = this.state.selectedShop.data[indx].unit;
+        data[0].offer = this.state.selectedShop.data[indx].offer;
+        data[0].price = this.state.selectedShop.data[indx].price;
+
+        this.setState({selectedProduct:data});
     }
 
     render(){
@@ -195,13 +210,14 @@ export default class ItemDetails extends React.Component{
                     <Card>
                         <CardItem cardBody>
                             <Image 
-                                source={{uri:'http://gomarket.ourgts.com/public/'+this.state.pic}} 
+                                source={{uri:'http://gangacart.com/public/'+this.state.pic}} 
                                 style={{height: 200, width:'100%', flex: 1, resizeMode: 'contain'}}
                             />
                         </CardItem>
                         <Grid style={{paddingHorizontal:8,marginVertical:2,flexDirection:'row'}}>
                             <Body>
-                                <Text style={{fontSize:18}}>{this.state.title} - Local</Text>
+                                <Text style={{fontSize:18,fontWeight:'600'}}>{this.state.title} - Local</Text>
+                                <Text style={{fontSize:16,fontWeight:'400'}}>{this.state.info}</Text>
                             </Body>
                         </Grid>
 
@@ -245,7 +261,8 @@ export default class ItemDetails extends React.Component{
                         </CardItem>
 
                         <Button bordered full onPress={()=>{
-                            CartPrepare(this.state.selectedProduct,this.state.selectedQunt);
+                                console.log(this.state.selectedProduct);
+                                CartPrepare(this.state.selectedProduct,this.state.selectedQunt);
                             }}>
                                 <Text>Add To Cart</Text>
                         </Button>
