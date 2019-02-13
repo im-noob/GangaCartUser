@@ -8,7 +8,7 @@ import Order from "./Order";
 import ConifirmOrder from "./ConifirmOrder";
 import ComparePriceNavigation from "../ComparePrice/ComparePriceNavigation";
 import CartButton from "../../components/CartButton";
-
+import LoginNavigation from "../Login/LoginNavigation";
 
 
   export default createStackNavigator(
@@ -26,12 +26,19 @@ import CartButton from "../../components/CartButton";
         }),
       },
       Conifirm:{
-          screen:ConifirmOrder
+          screen:ConifirmOrder,
+          navigationOptions:({navigation})=>({
+            header:null
+          })
       },
       ComparePriceStack:{
           screen:ComparePriceNavigation
       },
-    
+      LoginStack:{
+        screen:LoginNavigation,
+        navigationOptions:({header:null})
+      },
+       
 
     },
     {

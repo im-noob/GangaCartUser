@@ -10,6 +10,9 @@ import {  Badge,  } from 'react-native-elements'
 import Global from "../constants/Global";
 
 export default class CartButton extends React.Component{
+	constructor(props)
+	
+
 	render(){
 		return(
 			<View style={{backgroundColor:"#2874f0"}}>

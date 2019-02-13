@@ -60,19 +60,31 @@ export default class Order extends Component {
             priceData:[]
         }
     }
+
     componentDidMount() {
          this._start();
-       
-
         this.setState({path:Global.Image_URL});
+        this.didFocusListener = this.props.navigation.addListener(
+            'didFocus',
+            ()=>{
+                console.log("Calling");
+                this._start();
+            }
+        )
      
+    }
+
+    componentWillUnmount(){
+        this.didFocusListener.remove();
     }
 
     _store =async(item)=>{
         try {
             await AsyncStorage.setItem('ShopID',JSON.stringify(item.gro_shop_info_id));
-            this.setState({selectedShop:item});
+           await this.setState({selectedShop:item});
             this.render_price();
+           
+            console.log(this.state.selectedShop);
         } catch (error) {
             
         }
@@ -85,15 +97,18 @@ export default class Order extends Component {
         data =await AsyncStorage.getItem('CartList');
         data = JSON.parse(data);
      this.setState({data:data});
-     this.render_shop();
-     this.render_price();
+        await this.render_shop();
+    await this.render_price();
       
-     this.setState({renderCoponentFlag: true});
+     await this.setState({renderCoponentFlag: true});
    
     }
 
     /**Shop List */
     render_shop = async () => {
+        let value = await AsyncStorage.getItem('ShopID');
+        
+        this.setState({selectedShop:value});
         var connectionInfoLocal = '';
         var KEY = await AsyncStorage.getItem('userToken_S');
         NetInfo.getConnectionInfo().then((connectionInfo) => {
@@ -125,12 +140,18 @@ export default class Order extends Component {
                     }).then((response) => response.json())
                     .then((responseJson) => {
                         var itemsToSet = responseJson.data;
-                      //  console.log('resp:',itemsToSet);
+                      // console.log('resp:',itemsToSet);
                         if(responseJson.received == 'yes'){
                         this.setState({GroceryShop:responseJson.data.data}); 
                         this.setState({
                             LodingModal:false,
                         });
+                        this.state.GroceryShop.forEach(element=>{
+                            if(value == element.gro_shop_info_id){
+                                //console.log(element);
+                                this.setState({selectedShop:element});
+                            }
+                        })
                         }else{
                             ToastAndroid.showWithGravityAndOffset(
                                 'Internal Server Error',
@@ -168,9 +189,9 @@ export default class Order extends Component {
            return; 
    
         }
-        console.log(value);
+       // this.setState({selectedShop:value});
          var connectionInfoLocal = '';
-         var KEY = await AsyncStorage.getItem('userToken_S');
+         var KEY = await AsyncStorage.getItem('Token');
          NetInfo.getConnectionInfo().then((connectionInfo) => {
              console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
              // connectionInfo.type = 'none';//force local loding
@@ -234,47 +255,47 @@ export default class Order extends Component {
          console.log(connectionInfoLocal);
      }
 
-     fetchPrice = async() =>{
+    //  fetchPrice = async() =>{
 
-        let value = this.state.selectedShop;
+    //     let value = this.state.selectedShop;
         
-        if(value ==null ){
+    //     if(value ==null ){
             
-           return; 
+    //        return; 
    
-        }
+    //     }
       
-    //   console.log("Pass value for price ",this.state.GrocerySelectedProduct)
+    // //   console.log("Pass value for price ",this.state.GrocerySelectedProduct)
         
-        await  fetch('http://gomarket.ourgts.com/public/api/Grocery/Shop/product/price', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body:JSON.stringify({
-                id:this.state.data,
-                Shopid:shop
-                })
-            }).then((response) => response.json())
-                .then((responseJson) => {
+    //     await  fetch('http://gomarket.ourgts.com/public/api/Grocery/Shop/product/price', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Accept': 'application/json',
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body:JSON.stringify({
+    //             id:this.state.data,
+    //             Shopid:shop
+    //             })
+    //         }).then((response) => response.json())
+    //             .then((responseJson) => {
                 
                 
-              this.setState({avilableItem:responseJson.data});
-              this.setState({priceTopay:responseJson.price})
+    //           this.setState({avilableItem:responseJson.data});
+    //           this.setState({priceTopay:responseJson.price})
               
            
-            }).catch((error) => {
+    //         }).catch((error) => {
                     
                 
-                console.log("Erro during Price fetech", error.message);
-                // log.error({error:err})
-                //   value.flag=false;
-                //   value.data = "Network request failed" ==error.message?  console.log("Check internet connection"):error;
+    //             console.log("Erro during Price fetech", error.message);
+    //             // log.error({error:err})
+    //             //   value.flag=false;
+    //             //   value.data = "Network request failed" ==error.message?  console.log("Check internet connection"):error;
     
-                }); 
+    //             }); 
 
-    }
+    // }
 
     
 _addQuantity=(index) =>{
@@ -411,6 +432,34 @@ _subQuantity=(index) =>{
          );
      }
 
+    //  Checkout click
+    _checkoutPress =async()=>{
+       
+            try {
+             let token =   await AsyncStorage.getItem('Token');
+             let userId = await AsyncStorage.getItem('userID');
+             let profile = await AsyncStorage.getItem('userProfileData');
+            if(token==null||userId== null || profile == null){
+              this.props.navigation.navigate('LoginStack') ;
+              setTimeout(() => {this.setState({renderCoponentFlag: false})}, 0);    
+            }
+            else if(this.state.priceData.length != 0) {
+                console.log("Passing to confirm ",JSON.parse(profile))
+                
+                this.props.navigation.navigate('Conifirm',{selectedShop:this.state.selectedShop,items:this.state.priceData,profile:JSON.parse(profile)});
+                setTimeout(() => {this.setState({renderCoponentFlag: true})}, 0); 
+            }
+            else{
+                ToastAndroid.showWithGravity("There is Not any Item",ToastAndroid.LONG,ToastAndroid.BOTTOM)
+                this.props.navigation.navigate('Home');
+            }
+              
+            } catch (error) {
+                
+            }
+            
+       
+    }
     render() {
         const {renderCoponentFlag} = this.state;
         if(renderCoponentFlag){
@@ -418,6 +467,41 @@ _subQuantity=(index) =>{
                 <Container>
                     <Content>
                     
+                    <Card >
+                            
+                        <CardItem style={{backgroundColor:'#221793'}} header>
+                            <Title style={{color:'#ffffff'}}>{this.state.selectedShop.name}</Title>
+                        </CardItem>
+                       
+                        <CardItem>
+                               <Image style={{height:250,width:width-35,resizeMode:'contain'}} source={{uri:this.state.selectedShop.pic}}/>
+                        </CardItem>
+                        <CardItem>
+                                        <View >
+                                <View style={{padding:10}}>
+                                <View style={{alignItems:'center',flexDirection:'row'}}> 
+                                    <Title style={{color:'#020aed'}}>{this.state.selectedShop.name}</Title>
+                                </View>
+                                <View style={{alignItems:'center',flexDirection:'row'}}> 
+                                    <Subtitle style={{color:'#7f7f8e'}}> {this.state.selectedShop.address}</Subtitle>
+                                </View>
+                                <View style={{alignItems:'center',flexDirection:'row'}}> 
+                                    <Subtitle style={{color:'#14012b'}}>Mobile 1: {this.state.selectedShop.mobile1}</Subtitle>
+                                </View>
+                                <View style={{alignItems:'center',flexDirection:'row'}}> 
+                                    <Subtitle style={{color:'#14012b'}}>Mobile 2: {this.state.selectedShop.mobile2}</Subtitle>
+                                </View>
+
+                                </View>     
+                            </View>    
+                        </CardItem>
+                        <CardItem>
+                             <Item>
+                                 <Title style={{color:'#000000'}}>Total Price :  {this.state.priceTopay} </Title>
+                            </Item>     
+                        </CardItem>
+                       
+                   </Card>
                        <Card >
                             
                                 <CardItem style={{backgroundColor:'#221793'}} header>
@@ -474,7 +558,7 @@ _subQuantity=(index) =>{
                     </Card>
                     </Content>
                     <View style={{height:50,backgroundColor:'#d6a22a',flexDirection:'row',justifyContent:'space-around'}}>
-                        <Button block ><Text>Checkout</Text></Button>
+                        <Button block onPress={()=>{this._checkoutPress()}} ><Text>Checkout</Text></Button>
                     
                     
                         <Button onPress={()=>{this.props.navigation.navigate('Home');}} block><Text>Continu Shopping</Text></Button>

@@ -5,9 +5,11 @@ import {
     StatusBar,
     StyleSheet,
     TouchableOpacity,
+    NetInfo,
     Image,
     View,
     Text,
+    ToastAndroid,
     FlatList,
     ScrollView,
     Modal,
@@ -16,251 +18,317 @@ import {
     Dimensions
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Thumbnail,ListItem,Container,List,Grid,Picker,
-     Header, Content, Spinner,Button, Title,Card,CardItem,Left,Body,Right,Subtitle, Form } from 'native-base';
+import { Thumbnail,ListItem,Container,List,Grid,Picker,Item,
+     Header, Content, Spinner,Button,Label,Input, Title,Card,CardItem,Left,Body,Right,Subtitle, Form } from 'native-base';
 import {createDrawerNavigator,DrawerItems, SafeAreaView,createStackNavigator,NavigationActions } from 'react-navigation';
 import Global from '../../constants/Global';
-import { CartPrepare } from '../../constants/OrderListPrepare';
-// import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
-// const {width,height} = Dimensions.get('window');
+import { Avatar } from 'react-native-elements';
+
+const {width,height} = Dimensions.get('window');
+
+
+function sendNotification(title,msg,token){
+    
+   
+    // console.log("Tokn :",token);
+    fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: {
+            
+            "content-type": "application/json",
+        },
+        body:JSON.stringify( {
+            to:token,
+            sound: "default",
+            body: msg,
+            title:title,
+            badge: 1,
+          })
+        })
+        console.log("Notification send");
+    }
+
+  
 
 export default class ConifirmOrder extends React.Component {
     constructor(props){
         super(props);
         this.state={
-            isLoad:false,
-            pID:0,
-            mid:0,
-            sID:0,
+            renderCoponentFlag:false,
+            LodingModal: false,
             data:[],
-            selectedQunt:1,
+           price :'',
+           offerPrice:'',
+           topay:'',
             selectedShop:[],
-            price:0,
-            offer:0,
-            topay:0,
             selectedProduct:[],
-            unitname:'',
-            pic:'',
-            pic1:'',
-            info:'',
-            title:'',
-            shopName:'No Shop Selected',
-            address:'',
-            unitList :[],
-            unit_name:'',
+            profile:[],
+            name:'',
+            phone:'',
+            street:'',
+            state:'',
+            city:'',
+            pincode:''
+           
         }
     }
     
     componentDidMount = async () => {
-        await this.setData();
-        await this.fetech();
+    
         this.setState({path:Global.Image_URL});
+        this._getData();
     }
 
-    fetech = async() =>{
 
 
-        this.setState({isLoad:false});
-        await fetch('http://gomarket.ourgts.com/public/api/gro_product_shop', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body:JSON.stringify({
-                id:this.state.map
-            })
-            }).then((response) => response.json())
-            .then((responseJson) => {
-           console.log(this.state.map +" Related shop Load ......",responseJson);
-              this.setState({data:responseJson.data}); 
-              this._selectShop(responseJson.data[0]);
-            }).catch((error) => {        
-
-                console.log( error.message);
-        }); 
-        this.setState({isLoad:true});
-
-    }
-
-    _selectShop= (item)=>{
-        //var name = item.data[0].quantity + ' ' + item.data[0].unit;
-        var list = [];
-        for (let index = 0; index < item.data.length; index++) {
-            list.push(<Picker.Item label={item.data[index].quantity + ' ' + item.data[index].unit} value={index} />);   
+    _getData =async()=>{
+        const { navigation } = this.props;
+        const item = navigation.getParam('items',null);
+        const shop =navigation.getParam('selectedShop',null);
+        const profile = navigation.getParam('profile',null)
+        if(shop == null || item == null || profile == null){
+            ToastAndroid.showWithGravity("Select Any shop For Shoping",ToastAndroid.LONG,ToastAndroid.BOTTOM);
+            this.props.navigation.goBack();
         }
-        this.setState({
-            selectedShop:item,
-            price:item.data[0].price,
-            offer:item.data[0].offer,
-            unitname:item.data[0].unit,
-            shopName : item.name,
-            address:item.address,
-            unit_name:0,
-            unitList:list,
-            pic1:item.pic,
-            path:'http://gomarket.ourgts.com/public/'
-        }); 
-        
-        console.log('Shop Selected.');
+      await this.setState({data:item,selectedShop:shop,profile:profile,renderCoponentFlag:true});
+     console.log(item);
+       this._calculation();
     }
 
+    _validation = ()=>{
+        let flag = true;
+        if(this.state.profile.cname.lenght==0)
+        {
+            ToastAndroid.showWithGravity("Please Enter Your Name",ToastAndroid.LONG,ToastAndroid.BOTTOM);
+            return  flag = false;
+        }
+        else if(this.state.phone.lenght>=10 && this.state.phone.lenght<=13)
+        {
+            ToastAndroid.showWithGravity("Please Enter Your Name",ToastAndroid.LONG,ToastAndroid.BOTTOM);
+           return flag = false;
+        }
+        return flag;
+    }
+
+    render_OrderSend = async () => {
+       if(!this._validation()){
+            return
+       }
+        const data =  JSON.stringify({
+            Order:this.state.data,
+            shop:this.state.selectedShop.gro_shop_info_id,
+            address:"Name : "+this.state.profile.cname+" Phone :+91 "+this.state.phone+" Address :"+this.state.street+" , State : Bihar ,City : Bhagalpur , Picode "+this.state.profile.cpin,
+            realPrice:this.state.price,
+            cid:this.state.profile.user_id,
+            topay:this.state.topay,
+            offer:this.state.offerPrice
+          })
+
+         // console.log(data);
+        var connectionInfoLocal = '';
+        var KEY = await AsyncStorage.getItem('Token');
+        if(KEY == null ){
+            ToastAndroid.showWithGravityAndOffset(
+                'Oops! Somthing Wrong Retry',
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM
+            );
+        }
+        NetInfo.getConnectionInfo().then((connectionInfo) => {
+            console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
+            // connectionInfo.type = 'none';//force local loding
+            if(connectionInfo.type == 'none'){
+                console.log('no internet ');
+                ToastAndroid.showWithGravityAndOffset(
+                    'Oops! No Internet Connection',
+                    ToastAndroid.LONG,
+                    ToastAndroid.BOTTOM,
+                    25,
+                    50,
+                );
+                return;
+            }else{
+                console.log('yes internet '); 
+                this.setState({
+                    LodingModal:true,
+                });
+                fetch(Global.API_URL+'gro_order', {
+                    method: 'POST',
+                    headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization':'Bearer '+KEY,
+                        },
+                        body:data
+                    }).then((response) => response.json())
+                    .then((responseJson) => {
+                        var itemsToSet = responseJson.data;
+                        console.log('resp:',responseJson);
+                        if(responseJson.received == 'yes'){
+
+                        let title="Ther is new Order From "+this.state.profile.cname;
+                        let msg = "Price"+this.state.topay;
+                        let token = this.state.selectedShop.noti_token;
+                        sendNotification(title,msg,token);   
+                        this._reset(); 
+                        this.props.navigation.goBack();                        
+
+                        this.setState({
+                            LodingModal:false,
+                        });
+                        }else{
+                            ToastAndroid.showWithGravityAndOffset(
+                                'Internal Server Error',
+                                ToastAndroid.LONG,
+                                ToastAndroid.BOTTOM,
+                                25,
+                                50,
+                            );
+                        }
+                }).catch((error) => {
+                    ToastAndroid.showWithGravityAndOffset(
+                        'Network Failed!!! Retrying...',
+                        ToastAndroid.LONG,
+                        ToastAndroid.BOTTOM,
+                        25,
+                        50,
+                    );
+                    console.log('on error fetching:'+error);
+                    this.render_OrderSend();
+                });
+            }
+        });
+        console.log(connectionInfoLocal);
+    }
+
+    _reset=async()=>{
+        await AsyncStorage.setItem('CartList',JSON.stringify([]));
+    }
+
+    _calculation=()=>{
+        
+        let price=0;
+        let topay =0;
+        console.log(typeof this.state.data);
+        this.state.data.forEach(element=>{
+            console.log("Obj ",element.price);
+            price +=element.price*element.Quantity;
+            topay += element.price*element.Quantity - (element.offer*element.price*element.Quantity/100)
+        })
+        let offer = price - topay;
+        this.setState({price:price,topay:topay,offerPrice:offer});
+    }
    
 
-   /**Render iteam for shop this._selectShop(item)*/
-    _renderIteam =({item})=>{
-        //console.log(item.data[0].price);
-        return(
-            <List>
-                <ListItem avatar>
-                <Left>
-                    <Thumbnail large source={{uri: item.pic}} />
-                </Left>
-                <Body>
-                    <TouchableOpacity onPress={()=>{this._selectShop(item);}}>
-                    <Card>
-                        <Text style={{color:'#000000'}} >{item.name} </Text>
-                        <Subtitle style={{color:'#9698b7'}}>Address :{item.address}</Subtitle>
-                        
-                        <Grid style={{paddingHorizontal:8,marginVertical:2,flexDirection:'row'}}>
-                            <Text style={{fontSize:18}}><Icon name="currency-inr" size={18}/>{item.data[0].price}  </Text>
-                            <Text style={{fontSize:14}}> {item.data[0].quantity}/{item.data[0].unit} </Text>
-                            <Text style={{paddingHorizontal:4 ,color:'#4bb550',fontSize:15}}>  {item.data[0].offer} % off</Text>
-                        </Grid>   
-                    </Card>  
-                    </TouchableOpacity>
-                </Body>   
-                </ListItem>
-            </List>
-        );
-    }
-    setData = async() =>{
-        const { navigation } = this.props;
-       
-        const item = navigation.getParam('item', '[]');
-        console.log("Data not found ",item);
-        await this.setState({selectedProduct:item[0]});
-        await this.setState({pID:item[0].pid});
-        await this.setState({unitname:item[0].unit});
-        await this.setState({price:item[0].price});
-        await this.setState({info:item[0].info});
-        await this.setState({title:item[0].title});
-        await this.setState({pic:item[0].pic});
-        await this.setState({map:item[0].map});  
-        var name = item[0].size + ' ' + item[0].unit;
-        var list = [];
-        list.push(<Picker.Item label={name} value={0} />);
-        await this.setState({unit_name:0});
-        await this.setState({unitList:list});
-        console.log('Data seted successfully.');
-    }
-
-    unitChange = (indx) =>{
-
-        console.log(this.state.selectedShop.data[indx],indx);
-        var name = this.state.selectedShop.data[indx].quantity + ' ' + this.state.selectedShop.data[indx].unit;
-        
-        this.setState({unit_name:indx});
-        console.log(name);
-        this.setState({
-            price:this.state.selectedShop.data[indx].price,
-            offer:this.state.selectedShop.data[indx].offer,
-            unitname:this.state.selectedShop.data[indx].unit,
-        }); 
-    }
-
-    render(){
-      //  console.log(Global.API_URL+this.state.pic);
-        if(this.state.isLoad)
+    render() {
+        const {renderCoponentFlag} = this.state;
+        if(renderCoponentFlag){
             return(
-            <Container>
-                <Header>
-                    <Left>
-                        <Thumbnail source={{uri:this.state.path+ this.state.pic1}} />
-                    </Left>
-                    <Body>
-                        <Title style={{color:'#ffffff',fontSize:'600',fontSize:20}}>{this.state.shopName}</Title>
-                        <Subtitle style={{color:'#ffffff'}}>{this.state.address}</Subtitle>
-                    </Body>
-                </Header>
-                <Content>
-                    <Card>
-                        <CardItem cardBody>
-                            <Image 
-                                source={{uri:Global.API_URL+this.state.pic}} 
-                                style={{height: 200, width:'100%', flex: 1, resizeMode: 'contain'}}
-                            />
-                        </CardItem>
-                        <Grid style={{paddingHorizontal:8,marginVertical:2,flexDirection:'row'}}>
-                            <Body>
-                                <Text style={{fontSize:18}}>{this.state.title} - Local</Text>
-                            </Body>
-                        </Grid>
-
-                        <CardItem >
-                            <Picker
-                                style = {{borderColor:'black',borderRadius:10,borderWidth:1}} 
-                                selectedValue={this.state.unit_name}
-                                onValueChange={(itemValue, itemIndex) => {this.unitChange(itemIndex)}}>
-                                {this.state.unitList}
-                            </Picker>
-                        </CardItem>
-                        
-                        <Grid style={{paddingHorizontal:8,marginVertical:2,flexDirection:'row'}}>
-                            <Right>
-                                 <Text style={{fontSize:18}}><Icon name="currency-inr" size={18}/>{this.state.price }  </Text>
-                            </Right>
-                            <Body>
-                                <Text style={{fontSize:14,textDecorationLine: 'line-through'}}> MRP <Icon name="currency-inr" size={14}/> {this.state.price}</Text>
-                            </Body>                                        
-                            <Right>
-                                <Text style={{paddingHorizontal:4 ,color:'#4bb550',fontSize:15}}> {this.state.offer} % off</Text>
-                            </Right>
-                        </Grid>                    
-                        <CardItem footer>
-                            <Left> 
-                                <Text style={{color:'#000000'}}><Icon name="currency-inr" size={18}/>{this.state.price * this.state.selectedQunt}</Text>
-                            </Left>
-                            <Right>
-                                <View style={{flexDirection:'row'}}>          
-                                    <Button  onPress={()=>{let qunt=this.state.selectedQunt-1; qunt>1?'':qunt=1; this.setState({selectedQunt:qunt})}}>
-                                        <Text style={{color:'#ffffff',fontSize:'900',fontSize:25}}>   -   </Text>
-                                    </Button>
-                                    <View style={{borderWidth:1,width:50,alignItems:'center'}}>
-                                        <Title style={{color:'#000000'}}>{this.state.selectedQunt}</Title>
-                                    </View>                        
-                                    <Button  onPress={()=>{let qunt=this.state.selectedQunt+1;this.setState({selectedQunt:qunt})}}>
-                                        <Text style={{color:'#ffffff',fontSize:'900',fontSize:25}}>   +   </Text>
-                                    </Button>                          
+                <Container>
+                    <Content>
+                        <View style={{flex:1}}>
+                            <View style={{flex:4,backgroundColor:'#2873f0',height:height*(0.15)}}>
+                                <View style={{alignSelf:'center',alignContent:'center',alignItems:'center',marginVertical:10}}>
+                                    <Avatar 
+                                        onPress={()=>{alert("Change Image")}}
+                                        size='large'
+                                        source={{
+                                            uri:
+                                            'https://instagram.fpat1-1.fna.fbcdn.net/vp/dce4af24219a91eddff731d00cae9ed7/5CE9B8C6/t51.2885-19/s150x150/17933956_832093003610694_4703758160064675840_a.jpg?_nc_ht=instagram.fpat1-1.fna.fbcdn.net',
+                                        }}
+                                        showEditButton
+                                        rounded
+                                        title="MD"
+                                    />
                                 </View>
-                            </Right>
-                        </CardItem>
-
-                        <Button bordered full onPress={()=>{
-                            CartPrepare(this.state.selectedProduct,this.state.selectedQunt);this.props.navigation.goBack();
-                            }}>
-                                <Text>Add To Cart</Text>
-                        </Button>
-                    </Card>
-                <Card>
-                    <CardItem header>
-                        <Title style={{color:'#0d18e2'}}>Nearby Stores</Title>
-                    </CardItem>
-                    <FlatList
-                        data={this.state.data}
-                        renderItem={this._renderIteam}
-                        keyExtractor={item => item.key.toString()}
-                        ListFooterComponent={()=>{
-                            if(!this.state.isLoad) 
-                                return <View style={{height:20}}><ActivityIndicator size="large" color="#0000ff" /></View>
-                            else 
-                                return <View></View>}}              
-                    />   
-                </Card>
-                </Content>
-              </Container>);
-        else{
-            return <Loading/>
+                            </View>
+                           
+                            <View style={{flex:6,backgroundColor:'#fff'}}>
+                                <Card>
+                                    <CardItem header>
+                                        
+                                    </CardItem>
+                                </Card>
+                                
+                                
+                                <Card>
+                                    <CardItem>
+                                        <Item floatingLabel>
+                                            <Label style={{color:'#2873f0'}}>Name</Label>
+                                            <Input underlineColorAndroid="#2873f0" value={this.state.profile.cname}/>
+                                        </Item>
+                                    </CardItem>
+                                    <CardItem>
+                                        <Item floatingLabel>
+                                            <Label style={{color:'#2873f0'}}>Phone NO</Label>
+                                            <Input underlineColorAndroid="#2873f0" value="+91 "/>
+                                        </Item>
+                                    </CardItem>
+                                
+                                </Card>
+                                
+                                <Card>
+                                    <CardItem header>
+                                        <Text>Shipping Address</Text>
+                                    </CardItem>
+                                    <CardItem>
+                                        <Body>
+                                            <CardItem>
+                                                <Item floatingLabel>
+                                                    <Label style={{color:'#2873f0'}}>State</Label>
+                                                    <Input 
+                                                        underlineColorAndroid="#2873f0" 
+                                                        value="Bihar" 
+                                                        editable={false} />
+                                                </Item>
+                                            </CardItem>
+                                            <CardItem>
+                                                <Item floatingLabel>
+                                                    <Label style={{color:'#2873f0'}}>City</Label>
+                                                        <Input 
+                                                            underlineColorAndroid="#2873f0" 
+                                                            value="Bhagalpur" 
+                                                            editable={false} />
+                                                </Item>
+                                            </CardItem>
+                                            <CardItem>
+                                                <Item floatingLabel>
+                                                    <Label style={{color:'#2873f0'}}>Street</Label>
+                                                    <Input 
+                                                        underlineColorAndroid="#2873f0" 
+                                                        
+                                                        />
+                                                </Item>
+                                            </CardItem>
+                                            <CardItem>
+                                                <Item floatingLabel>
+                                                    <Label style={{color:'#2873f0'}}>Pincode</Label>
+                                                    <Input 
+                                                        underlineColorAndroid="#2873f0"
+                                                        value={""+this.state.profile.cpin}
+                                                        keyboardType='numeric' />
+                                                </Item>
+                                            </CardItem>
+                                            
+                                            
+                                            
+                                            
+                                        </Body>
+                                    </CardItem>
+                                        <Button transparent block onPress={()=>{this.render_OrderSend();}}>
+                                            <Text style={{fontSize:15,fontWeight:'500',color:'#2873f0'}}>SUBMIT</Text>
+                                        </Button>
+                                </Card>
+                                
+                            </View>
+                        </View>
+                    </Content>
+                </Container>
+            );
+        }else{
+            return (
+            <Loading/>
+            );
         }
     }
 }
