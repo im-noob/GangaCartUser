@@ -8,7 +8,6 @@ import {
     Text,Content,Header,Left,Right,Title,Body,Input,Card,CardItem,List,ListItem,Form,
     Picker,Item,Textarea,Label,Accordion,Thumbnail,
 } from 'native-base';
-import {createDrawerNavigator,DrawerItems, SafeAreaView,createStackNavigator,NavigationActions } from 'react-navigation';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 const {width,height} = Dimensions.get('window');
 import Global from  '../../constants/Global'; 

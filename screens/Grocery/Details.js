@@ -103,6 +103,7 @@ export default class ItemDetails extends React.Component{
             list.push(<Picker.Item label={item.data[index].quantity + ' ' + item.data[index].unit} value={index} />);   
         }
         const data = this.state.selectedProduct;
+        console.log(item);
         data[0].size = item.data[0].quantity;
         data[0].unit = item.data[0].unit;
         data[0].offer = item.data[0].offer;
@@ -122,12 +123,10 @@ export default class ItemDetails extends React.Component{
             pic1:item.pic,
             path:'http://gomarket.ourgts.com/public/'
         }); 
-        
         console.log('Shop Selected.');
     }
 
     
-
    /**Render iteam for shop this._selectShop(item)*/
     _renderIteam =({item})=>{
         //console.log(item.data[0].price);
@@ -146,7 +145,12 @@ export default class ItemDetails extends React.Component{
                         <Grid style={{paddingHorizontal:8,marginVertical:2,flexDirection:'row'}}>
                             <Text style={{fontSize:18}}><Icon name="currency-inr" size={18}/>{item.data[0].price}  </Text>
                             <Text style={{fontSize:14}}> {item.data[0].quantity}/{item.data[0].unit} </Text>
-                            <Text style={{paddingHorizontal:4 ,color:'#4bb550',fontSize:15}}>  {item.data[0].offer} % off</Text>
+                            {
+                                (item.data[0].offer > 0) ?
+                                    <Text style={{paddingHorizontal:4 ,color:'#4bb550',fontSize:15}}>  {item.data[0].offer} % off</Text>
+                                :
+                                <Text></Text>
+                            }
                         </Grid>   
                     </Card>  
                     </TouchableOpacity>
@@ -155,11 +159,13 @@ export default class ItemDetails extends React.Component{
             </List>
         );
     }
+
     setData = async() =>{
         const { navigation } = this.props;
         
         const item = navigation.getParam('data', '[]');
-        await this.setState({selectedProduct:item[0]});
+        console.log(item);
+        await this.setState({selectedProduct:item});
         await this.setState({pID:item[0].pid});
         await this.setState({unitname:item[0].unit});
         await this.setState({price:item[0].price});
@@ -236,14 +242,31 @@ export default class ItemDetails extends React.Component{
                         </CardItem>
                         
                         <Grid style={{paddingHorizontal:8,marginVertical:2,flexDirection:'row'}}>
-                            <Right>
-                                 <Text style={{fontSize:18}}><Icon name="currency-inr" size={18}/>{this.state.price }  </Text>
-                            </Right>
+                            
                             <Body>
-                                <Text style={{fontSize:14,textDecorationLine: 'line-through'}}> MRP <Icon name="currency-inr" size={14}/> {this.state.price}</Text>
+                               <Text style={{fontSize:18}}><Icon name="currency-inr" size={18}/>
+                                {
+                                    (this.state.offer > 0) ?
+                                        (this.state.price - (this.state.price)*(this.state.offer/100))
+                                    :
+                                        (this.state.price) 
+                                } 
+
+                                {
+                                    (this.state.offer > 0 ) ? 
+                                        <Text style={{fontSize:12,textDecorationLine: 'line-through',color:''}}>MRP <Icon name="currency-inr" size={12}/>{this.state.price}</Text>
+                                    :
+                                    <Text></Text>
+                                }
+                                </Text>
                             </Body>                                        
                             <Right>
-                                <Text style={{paddingHorizontal:4 ,color:'#4bb550',fontSize:15}}> {this.state.offer} % off</Text>
+                            {
+                                (this.state.offer > 0 ) ? 
+                                    <Text style={{paddingHorizontal:4 ,color:'#4bb550',fontSize:15}}> {this.state.offer} % off</Text>
+                                :
+                                <Text></Text>
+                            }
                             </Right>
                         </Grid>                    
                         <CardItem footer>

@@ -19,7 +19,7 @@ import { Toast } from 'native-base';
             try {
     
              // await AsyncStorage.setItem('CartList',JSON.stringify([]));
-              console.log(item);
+            //   console.log(item);
                
                let cartValue =[];
                 let temp =item;

@@ -37,7 +37,7 @@ export default createStackNavigator(
       MyOrderStack:{
           screen:MyOrderNavigation
       },
-      test:{
+      Login:{
         screen: LoginNavigation,
         navigationOptions: ({ navigation }) => ({
           header:null

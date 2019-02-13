@@ -13,6 +13,7 @@ import {
 import { PricingCard, Rating } from 'react-native-elements';
 import { Container, Header,Button,Content,Card,cardList,Grid,Title, List,Picker, ListItem, Left, Body, Right, Thumbnail, Text, CardItem, Spinner } from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {CartPrepare} from '../../constants/OrderListPrepare';
 
 export default class ShopProductDetails extends React.Component
 {
@@ -88,6 +89,7 @@ export default class ShopProductDetails extends React.Component
         await this.setState({pID:item[0].pid});
         await this.setState({unit:item[0].unit});
         await this.setState({price:item[0].data[0].price});
+        await this.setState({offer:item[0].data[0].offer});
         await this.setState({info:item[0].info});
         await this.setState({title:item[0].title});
         await this.setState({pic:item[0].pic});
@@ -218,13 +220,23 @@ export default class ShopProductDetails extends React.Component
                             
                             <Grid style={{paddingHorizontal:8,marginVertical:2,flexDirection:'row'}}>
                                 <Right>
-                                    <Text style={{fontSize:18}}><Icon name="currency-inr" size={18}/>{this.state.price }  </Text>
+                                    <Text style={{fontSize:18}}><Icon name="currency-inr" size={18}/>{
+                                        (this.state.offer > 0) ?
+                                           (this.state.price - (this.state.price)*(this.state.offer/100))
+                                            :
+                                            (this.state.price) 
+                                        }
+                                    </Text>
                                 </Right>
                                 <Body>
                                     <Text style={{fontSize:14,textDecorationLine: 'line-through'}}> MRP <Icon name="currency-inr" size={14}/> {this.state.price}</Text>
                                 </Body>                                        
                                 <Right>
-                                    <Text style={{paddingHorizontal:4 ,color:'#4bb550',fontSize:15}}> {this.state.offer} % off</Text>
+                                    {(this.state.offer > 0) ?
+                                        <Text style={{paddingHorizontal:4 ,color:'#4bb550',fontSize:15}}> {this.state.offer} % off</Text>
+                                        :
+                                        <Text></Text>
+                                    }
                                 </Right>
                             </Grid>                    
                             <CardItem footer>
@@ -244,6 +256,15 @@ export default class ShopProductDetails extends React.Component
                                         </Button>                          
                                     </View>
                                 </Right>
+                            </CardItem>
+                        </Card>
+                        <Card>
+                            <CardItem>
+                                <Body>
+                                    <Button bordered onPress={()=>{CartPrepare(this.state.selectedProduct,this.state.selectedQunt);}}>
+                                        <Text>ADD TO BASKET</Text>
+                                    </Button>
+                                </Body>
                             </CardItem>
                         </Card>
                     </Content>

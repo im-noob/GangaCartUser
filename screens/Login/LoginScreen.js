@@ -169,13 +169,13 @@ export default class LoginScreen extends Component {
     _signInAsync = async (token,profileData,userID) => {
         userID = userID + "";//converting to string
         console.log("setting token");
-        await AsyncStorage.setItem('userToken_S', token);
+        await AsyncStorage.setItem('Token', token);
         console.log("setting user data");
         await AsyncStorage.setItem('userID', userID);
 
         await AsyncStorage.setItem('userProfileData', profileData);
         console.log("sending to home");
-        this.props.navigation.navigate('Home');
+        this.props.navigation.goBack();
         console.log("seneing to app");
     };
     saveNotificationToken = () => {
@@ -197,7 +197,7 @@ export default class LoginScreen extends Component {
                                             <Text style={{color:'#fff',fontSize:25,fontWeight:'600',alignSelf:'center'}}>GangaCart</Text>
                                             <Image style={{height:30,width:30,alignSelf:'center',marginHorizontal:5}} source={{uri:'https://i.imgur.com/QtXcFQM.png'}}/>
                                         </View>
-                                        <TouchableOpacity style={{alignContent:'flex-end',alignItems:'flex-end',alignSelf:'center'}} onPress={this.forgotPasswordStart} >
+                                        <TouchableOpacity style={{alignContent:'flex-end',alignItems:'flex-end',alignSelf:'center'}} onPress={()=>{}} >
                                             <Icon name="close" style={{alignSelf:'flex-end',fontSize:30,color:'#fff'}}/>
                                         </TouchableOpacity>    
                                     </View>

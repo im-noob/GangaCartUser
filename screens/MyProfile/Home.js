@@ -45,11 +45,55 @@ export default class Home extends Component {
             LodingModal: false,
         }
     }
+   
     componentDidMount() {
-        setTimeout(() => {this.setState({renderCoponentFlag: true})}, 0);
+        this.Auth();
+        this.didFocusListener = this.props.navigation.addListener(
+            'didFocus',
+            ()=>{
+                console.log("Calling");
+                this.Auth();
+            }
+        )
+    }
+
+  componentWillUnmount(){
+      this.didFocusListener.remove();
+  }
+
+    LogOut=async()=>{
+            try{
+                await AsyncStorage.removeItem('Token');
+                await AsyncStorage.removeItem('userID');
+                await AsyncStorage.removeItem('userProfileData');
+       
+          this.Auth(); 
+           
+        } catch (error) {
+            
+        }
+        
+    }
+
+    Auth=async()=>{
+        try {
+         let token =   await AsyncStorage.getItem('Token');
+         let userId = await AsyncStorage.getItem('userID');
+         let profile = await AsyncStorage.getItem('userProfileData');
+        if(token==null||userId== null || profile == null){
+          this.props.navigation.navigate('Login') ;
+          setTimeout(() => {this.setState({renderCoponentFlag: false})}, 0);    
+        }
+        else
+        setTimeout(() => {this.setState({renderCoponentFlag: true})}, 0);    
+        } catch (error) {
+            
+        }
+        
     }
 
     render() {
+       
         const {renderCoponentFlag} = this.state;
         if(renderCoponentFlag){
             return(
@@ -135,6 +179,7 @@ export default class Home extends Component {
             );
         }else{
             return (
+                
             <AdvLoder/>
             );
         }
