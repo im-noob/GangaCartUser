@@ -19,7 +19,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Thumbnail,ListItem,Container,List,Grid,Picker,
      Header, Content, Spinner,Button, Title,Card,CardItem,Left,Body,Right,Subtitle, Form } from 'native-base';
 import { CartPrepare } from '../../constants/OrderListPrepare';
-import Global from '../../constants/Global';
+import Global from  '../../constants/Global';
 
 class Loading extends React.Component{
     constructor(props){
@@ -74,10 +74,8 @@ export default class ItemDetails extends React.Component{
     }
 
     fetech = async() =>{
-
-
         this.setState({isLoad:false});
-        await fetch('http://gomarket.ourgts.com/public/api/gro_product_shop', {
+        await fetch(Global.API_URL+'gro_product_shop', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -88,11 +86,10 @@ export default class ItemDetails extends React.Component{
             })
             }).then((response) => response.json())
             .then((responseJson) => {
-            //  console.log("Related shop Load ......",responseJson);
+              //console.log("Related shop Load ......",responseJson);
               this.setState({data:responseJson.data}); 
               this._selectShop(responseJson.data[0]);
             }).catch((error) => {        
-
                 console.log( error.message);
         }); 
         this.setState({isLoad:true});
@@ -105,6 +102,15 @@ export default class ItemDetails extends React.Component{
         for (let index = 0; index < item.data.length; index++) {
             list.push(<Picker.Item label={item.data[index].quantity + ' ' + item.data[index].unit} value={index} />);   
         }
+        const data = this.state.selectedProduct;
+        console.log(item);
+        data[0].size = item.data[0].quantity;
+        data[0].unit = item.data[0].unit;
+        data[0].offer = item.data[0].offer;
+        data[0].price = item.data[0].price;
+
+        this.setState({selectedProduct:data});
+
         this.setState({
             selectedShop:item,
             price:item.data[0].price,
@@ -117,12 +123,10 @@ export default class ItemDetails extends React.Component{
             pic1:item.pic,
             path:'http://gomarket.ourgts.com/public/'
         }); 
-        
         console.log('Shop Selected.');
     }
 
     
-
    /**Render iteam for shop this._selectShop(item)*/
     _renderIteam =({item})=>{
         //console.log(item.data[0].price);
@@ -141,7 +145,12 @@ export default class ItemDetails extends React.Component{
                         <Grid style={{paddingHorizontal:8,marginVertical:2,flexDirection:'row'}}>
                             <Text style={{fontSize:18}}><Icon name="currency-inr" size={18}/>{item.data[0].price}  </Text>
                             <Text style={{fontSize:14}}> {item.data[0].quantity}/{item.data[0].unit} </Text>
-                            <Text style={{paddingHorizontal:4 ,color:'#4bb550',fontSize:15}}>  {item.data[0].offer} % off</Text>
+                            {
+                                (item.data[0].offer > 0) ?
+                                    <Text style={{paddingHorizontal:4 ,color:'#4bb550',fontSize:15}}>  {item.data[0].offer} % off</Text>
+                                :
+                                <Text></Text>
+                            }
                         </Grid>   
                     </Card>  
                     </TouchableOpacity>
@@ -150,10 +159,13 @@ export default class ItemDetails extends React.Component{
             </List>
         );
     }
+
     setData = async() =>{
         const { navigation } = this.props;
+        
         const item = navigation.getParam('data', '[]');
-        await this.setState({selectedProduct:item[0]});
+        console.log(item);
+        await this.setState({selectedProduct:item});
         await this.setState({pID:item[0].pid});
         await this.setState({unitname:item[0].unit});
         await this.setState({price:item[0].price});
@@ -181,6 +193,14 @@ export default class ItemDetails extends React.Component{
             offer:this.state.selectedShop.data[indx].offer,
             unitname:this.state.selectedShop.data[indx].unit,
         }); 
+
+        const data = this.state.selectedProduct;
+        data[0].size = this.state.selectedShop.data[indx].quantity;
+        data[0].unit = this.state.selectedShop.data[indx].unit;
+        data[0].offer = this.state.selectedShop.data[indx].offer;
+        data[0].price = this.state.selectedShop.data[indx].price;
+
+        this.setState({selectedProduct:data});
     }
 
     render(){
@@ -201,13 +221,14 @@ export default class ItemDetails extends React.Component{
                     <Card>
                         <CardItem cardBody>
                             <Image 
-                                source={{uri:Global.API_URL+this.state.pic}} 
+                                source={{uri:'http://gangacart.com/public/'+this.state.pic}} 
                                 style={{height: 200, width:'100%', flex: 1, resizeMode: 'contain'}}
                             />
                         </CardItem>
                         <Grid style={{paddingHorizontal:8,marginVertical:2,flexDirection:'row'}}>
                             <Body>
-                                <Text style={{fontSize:18}}>{this.state.title} - Local</Text>
+                                <Text style={{fontSize:18,fontWeight:'600'}}>{this.state.title} - Local</Text>
+                                <Text style={{fontSize:16,fontWeight:'400'}}>{this.state.info}</Text>
                             </Body>
                         </Grid>
 
@@ -221,14 +242,31 @@ export default class ItemDetails extends React.Component{
                         </CardItem>
                         
                         <Grid style={{paddingHorizontal:8,marginVertical:2,flexDirection:'row'}}>
-                            <Right>
-                                 <Text style={{fontSize:18}}><Icon name="currency-inr" size={18}/>{this.state.price }  </Text>
-                            </Right>
+                            
                             <Body>
-                                <Text style={{fontSize:14,textDecorationLine: 'line-through'}}> MRP <Icon name="currency-inr" size={14}/> {this.state.price}</Text>
+                               <Text style={{fontSize:18}}><Icon name="currency-inr" size={18}/>
+                                {
+                                    (this.state.offer > 0) ?
+                                        (this.state.price - (this.state.price)*(this.state.offer/100))
+                                    :
+                                        (this.state.price) 
+                                } 
+
+                                {
+                                    (this.state.offer > 0 ) ? 
+                                        <Text style={{fontSize:12,textDecorationLine: 'line-through',color:''}}>MRP <Icon name="currency-inr" size={12}/>{this.state.price}</Text>
+                                    :
+                                    <Text></Text>
+                                }
+                                </Text>
                             </Body>                                        
                             <Right>
-                                <Text style={{paddingHorizontal:4 ,color:'#4bb550',fontSize:15}}> {this.state.offer} % off</Text>
+                            {
+                                (this.state.offer > 0 ) ? 
+                                    <Text style={{paddingHorizontal:4 ,color:'#4bb550',fontSize:15}}> {this.state.offer} % off</Text>
+                                :
+                                <Text></Text>
+                            }
                             </Right>
                         </Grid>                    
                         <CardItem footer>
@@ -251,7 +289,8 @@ export default class ItemDetails extends React.Component{
                         </CardItem>
 
                         <Button bordered full onPress={()=>{
-                            CartPrepare(this.state.selectedProduct,this.state.selectedQunt);
+                                console.log(this.state.selectedProduct);
+                                CartPrepare(this.state.selectedProduct,this.state.selectedQunt);
                             }}>
                                 <Text>Add To Cart</Text>
                         </Button>

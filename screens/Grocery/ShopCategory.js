@@ -10,6 +10,7 @@ import {
 } from 'native-base';
 import {createDrawerNavigator,DrawerItems, SafeAreaView,createStackNavigator,NavigationActions } from 'react-navigation';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
+import Global from "../../constants/Global";
 const {width,height} = Dimensions.get('window');
 
 export default class Category extends Component {
@@ -44,7 +45,7 @@ export default class Category extends Component {
             );        
         }else{
             console.log("yes internet ");
-            fetch('http://gomarket.ourgts.com/public/api/Grocery/Shop/category', {
+            fetch(Global.API_URL+'Grocery/Shop/category', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -55,12 +56,13 @@ export default class Category extends Component {
                 })
             }).then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson); 
+                //console.log(responseJson); 
                 if(Object.keys(responseJson.data).length > 0){
                     let list = [];
                     let content1 = [];
                     var ckeyT = 0;
-                    var last = responseJson.data[responseJson.data.length -1].sKey;
+                    var catTName = '';
+                    var last = responseJson.data[responseJson.data.length -1].gro_subcat_id;
                     //console.log(last);
                     for(let data of responseJson.data){
                         if(data.gro_cat_id == ckeyT){
@@ -68,12 +70,12 @@ export default class Category extends Component {
                             var temp = {
                                 sKey :data.gro_subcat_id,
                                 sName : data.subcat_name,
-                                sPic : (data.spic) ? data.spic : "http://gomarket.ourgts.com/storage/app/public/offer/ImageNotFound.png"
+                                sPic : (data.spic) ? data.spic : "http://gangacart.com/storage/app/public/offer/ImageNotFound.png"
                             }
                             content1.push(temp);
-                            if(data.sKey == last){
+                            if(data.gro_subcat_id == last){
                                 let title = {
-                                    title : data.gro_cat_name,
+                                    title : this.catTName ,
                                     content : content1 
                                 };
                                 list.push(title);
@@ -82,23 +84,25 @@ export default class Category extends Component {
                         else{
                             if( ckeyT != 0){
                                 let title = {
-                                    title : data.gro_cat_name,
+                                    title : this.catTName ,
                                     content : content1 
                                 };
                                 list.push(title);
                                 content1 = [];
+                                this.catTName = data.gro_cat_name;
                                 var temp = {
                                     sKey :data.gro_subcat_id,
                                     sName : data.subcat_name,
-                                    sPic : (data.spic) ? data.spic : "http://gomarket.ourgts.com/storage/app/public/offer/ImageNotFound.png"
+                                    sPic : (data.spic) ? data.spic : "http://gangacart.com/storage/app/public/offer/ImageNotFound.png"
                                 }
                                content1.push(temp);                                                                           
                             }
                             else{
+                                this.catTName = data.gro_cat_name;
                                 var temp = {
                                     sKey :data.gro_subcat_id,
                                     sName : data.subcat_name,
-                                    sPic : (data.spic) ? data.spic : "http://gomarket.ourgts.com/storage/app/public/offer/ImageNotFound.png"
+                                    sPic : (data.spic) ? data.spic : "http://gangacart.com/storage/app/public/offer/ImageNotFound.png"
                                 }
                                content1.push(temp);
                             }
@@ -145,7 +149,7 @@ export default class Category extends Component {
                 <FlatList 
                     data = {Item.content}
                     renderItem={({item}) => {return(
-                        <ListItem avatar onPress = {() => {props.navigation.navigate('itemList',{
+                        <ListItem avatar onPress = {() => {props.navigation.navigate('ShopsProductsList',{
                             sid: item.sKey
                         })}} >
                             <Left>

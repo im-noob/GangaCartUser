@@ -365,7 +365,7 @@ export default class SingupScreen extends Component {
                                 <View style={{margin:10,flexDirection:'row',justifyContent: 'space-between',}}>
                                     <View style={{flexDirection:'row'}}>
                                         <Text style={{color:'#fff',fontSize:25,fontWeight:'600',alignSelf:'center'}}>GangaCart</Text>
-                                        <Image style={{height:30,width:30,alignSelf:'center',marginHorizontal:5}} source={{uri:'https://facebook.github.io/react-native/docs/assets/favicon.png'}}/>
+                                        <Image style={{height:30,width:30,alignSelf:'center',marginHorizontal:5}} source={{uri:'https://i.imgur.com/QtXcFQM.png'}}/>
                                     </View>
                                     <TouchableOpacity style={{alignContent:'flex-end',alignItems:'flex-end',alignSelf:'center'}} onPress={this.forgotPasswordStart} >
                                         <Icon name="close" style={{alignSelf:'flex-end',fontSize:30,color:'#fff'}}/>
@@ -375,7 +375,7 @@ export default class SingupScreen extends Component {
                                     <Text style={{color:"#fff",width:'80%'}}>Sign UP to be in touch with us and get spiecal offer and products for you</Text>
                                     <Image
                                         style={{width: '20%', height: 50}}
-                                        source={{uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png'}}
+                                        source={{uri: 'https://i.imgur.com/QtXcFQM.png'}}
                                     />
                                 </View>
                                 

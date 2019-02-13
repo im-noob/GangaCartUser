@@ -44,7 +44,7 @@ export default class KeyboardShift extends Component {
         this.state.shift,
         {
           toValue: gap,
-          duration: 1000,
+          duration: 100,
           useNativeDriver: true,
         }
       ).start();
