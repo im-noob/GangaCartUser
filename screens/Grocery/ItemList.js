@@ -9,7 +9,6 @@ import {
     Textarea,Label,Thumbnail,
 } from 'native-base';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
-import HeaderTitle from './../../components/HeaderTitle';
 const {width,height} = Dimensions.get('window');
 import Global from  '../../constants/Global';
 
@@ -35,7 +34,7 @@ export default class ItemList extends Component {
         this.setState({renderCoponentFlag:false});
         var connectionInfoLocal = '';
         NetInfo.getConnectionInfo().then((connectionInfo) => {
-        console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
+     //   console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
         if(connectionInfo.type == 'none'){
             console.log("no internet ");
             ToastAndroid.showWithGravityAndOffset(
@@ -91,10 +90,10 @@ export default class ItemList extends Component {
                 <Content>
                     <Card style={{flex: 0}}>
                         <CardItem style={{height:200,width:(width-4)/2 }} button onPress={() => {  this.props.navigation.navigate('ItemDetails',{
-                            data:[item],
+                            data:[item]
                         })}}>
                             <Body>
-                                <Image source={{uri:'http://gangacart.com/public/'+item.pic}} style={{height:100, width: "100%", flex: 1}}/>
+                                <Image source={{uri:"http://gomarket.ourgts.com/public/"+item.pic}} style={{height:150, width: "100%",resizeMode: 'contain'}}/>
                             </Body>
                         </CardItem>
                         <Title style={{paddingHorizontal:8,marginVertical:2,fontSize:14,color:'#000000'}}>{item.title}</Title>

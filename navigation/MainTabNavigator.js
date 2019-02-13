@@ -28,6 +28,8 @@ import RewardNavigation from '../screens/Reward/RewardNavigation';
 import CartNavigation from '../screens/Cart/CartNavigation';
 import MyProfileNavigation from '../screens/MyProfile/MyProfileNavigation';
 import CartButton from '../components/CartButton';
+import HomeScreenStack from '../screens/Home/HomeScreenStack';
+// import { HomeScreenStack } from '../screens/Home/HomeScreenStack';
 
 
 const CustomDrawerContentComponent = (props) => (
@@ -58,7 +60,6 @@ const CustomDrawerContentComponent = (props) => (
 //       screen:ExampleScreenSecond,
 //     },
 // });
-
 // const ExampleScreenSecondStack = createStackNavigator(
 //   {
     
@@ -70,46 +71,6 @@ const CustomDrawerContentComponent = (props) => (
   
 // });
 
-
-
-const HomeScreenStack = createStackNavigator(
-  {
-    HomeScreen: {
-      screen: HomeScreen,
-      navigationOptions: ({ navigation }) => ({
-        headerTitle: HeaderTitle,
-        headerStyle: {
-          backgroundColor: '#2874f0'
-        },
-        headerLeft: <MenuButton obj={navigation}  />,
-        headerRight: <CartButton obj={navigation} value="10"  />,
-        
-      }),
-    },
-    Grocery: {
-      screen: GroceryNavigation,
-      navigationOptions: ({ navigation }) => ({
-        header:null
-      }),
-    },
-    ExampleScreenSecond: {
-      screen: ExampleScreenSecond,
-      navigationOptions: ({ navigation }) => ({
-        title: `Second Screen`,
-      }),
-    } ,
-  
-    ExampleThirdScreen: {
-        screen:ExampleScreenThird,
-        navigationOptions: ({ navigation }) => ({
-          title: `Thired Screen`,
-        }),
-    },
-  },
-  {
-   initialRouteName:'HomeScreen' 
-  }
-);
 
 
 const AppDrawerNavigator = createDrawerNavigator({

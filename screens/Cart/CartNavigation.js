@@ -1,13 +1,14 @@
-import React, { Component } from "react";
+import React from "react";
 
 import {createStackNavigator } from 'react-navigation';
 
 import MenuButton from "../../components/MenuButton";
 import HeaderTitle from "../../components/HeaderTitle";
 import Order from "./Order";
-import ChangeOrder from "./ChangeOrder";
+import ConifirmOrder from "./ConifirmOrder";
 import ComparePriceNavigation from "../ComparePrice/ComparePriceNavigation";
 import CartButton from "../../components/CartButton";
+
 
 
   export default createStackNavigator(
@@ -24,12 +25,13 @@ import CartButton from "../../components/CartButton";
           
         }),
       },
-      ChnageOrder:{
-          screen:ChangeOrder
+      Conifirm:{
+          screen:ConifirmOrder
       },
       ComparePriceStack:{
           screen:ComparePriceNavigation
       },
+    
 
     },
     {

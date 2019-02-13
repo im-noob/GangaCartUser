@@ -37,7 +37,7 @@ export default class Category extends Component {
         this.setState({renderCoponentFlag:false});
         var connectionInfoLocal = '';
         NetInfo.getConnectionInfo().then((connectionInfo) => {
-        console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
+     //   console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
         if(connectionInfo.type == 'none'){
             console.log("no internet ");
             ToastAndroid.showWithGravityAndOffset(
