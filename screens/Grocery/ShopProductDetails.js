@@ -44,9 +44,7 @@ export default class ShopProductDetails extends React.Component
         let value = await AsyncStorage.getItem('PID')
         let product = await AsyncStorage.getItem('Product')
         if(value ==null && product==null){
-            
            return; 
-   
         }
         product = JSON.parse(product);
         this.setState({selectedProduct:product});
@@ -89,7 +87,7 @@ export default class ShopProductDetails extends React.Component
         await this.setState({selectedProduct:item});
         await this.setState({pID:item[0].pid});
         await this.setState({unit:item[0].unit});
-        await this.setState({price:item[0].price});
+        await this.setState({price:item[0].data[0].price});
         await this.setState({info:item[0].info});
         await this.setState({title:item[0].title});
         await this.setState({pic:item[0].pic});

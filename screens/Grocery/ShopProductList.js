@@ -380,7 +380,8 @@ _renderIteam=({item})=>{
             //await AsyncStorage.setItem('PID',JSON.stringify(item.gro_product_list_id));
             //await AsyncStorage.setItem('Product',JSON.stringify(item));
             nvg.navigation.navigate('ShopProductDetails',{
-                data : [item]
+                data : [item],
+                
             });
         }
         catch(error){
