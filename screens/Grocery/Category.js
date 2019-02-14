@@ -11,6 +11,7 @@ import {
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 const {width,height} = Dimensions.get('window');
 import Global from  '../../constants/Global'; 
+import { ScrollView } from "react-native-gesture-handler";
 
 const dataArray = [
     { title: "Vegitables", content: [{id:1,name:'Green Vegitables',pic:'http://gomarket.ourgts.com/storage/app/public/offer/ImageNotFound.png'},
@@ -179,13 +180,20 @@ export default class Category extends Component {
             return(
                 <Container>
                     <Content padder style={{ backgroundColor: "#f4f3f7" }}>
-                        <Accordion
-                            dataArray={this.state.CategoryData}
-                            animation={true}
-                            expanded={true}
-                            renderHeader={this._renderHeader}
-                            renderContent={(item) => this._renderContent(item,this.props)}
-                        />
+                        <ScrollView>
+                            <Accordion
+                                dataArray={this.state.CategoryData}
+                                animation={true}
+                                expanded={true}
+                                renderHeader={this._renderHeader}
+                                renderContent={(item) => this._renderContent(item,this.props)}
+                            />
+                            <FlatList
+                            
+                            
+                            >
+                            </FlatList>
+                        </ScrollView>   
                     </Content>
                 </Container>
             );

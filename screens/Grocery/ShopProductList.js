@@ -262,29 +262,8 @@ changeQuantity = (index,dindex) =>{
 }
 
 _renderIteam=({item})=>{
-        
-    //console.log("Product ---",item );
-    /**
-         checked : true,
-        index : index++,
-        quntity : 1,
-        mapcid : element["cid"],
-        map : element["mid"],
-        pic : element["pic"],
-        info : element["pinfo"],
-        pid : element["plid"],
-        title : element["name"],
-        price : element["price"],
-        size : element["quantity"],
-        stock : element["stock"],
-        unit : element["unit_name"],
-     * 
-     * 
-     */
 
     let pName = item.title;
-    //let PID = item.pid;
-   // let sID = 2;
     let unit = item.unit;
     let price = item.price;
     let uri;

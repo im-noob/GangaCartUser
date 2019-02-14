@@ -86,14 +86,13 @@ export default class ItemDetails extends React.Component{
             })
             }).then((response) => response.json())
             .then((responseJson) => {
-              //console.log("Related shop Load ......",responseJson);
+              console.log("Related shop Load ......",responseJson);
               this.setState({data:responseJson.data}); 
-              this._selectShop(responseJson.data[0]);
+              //this._selectShop(responseJson.data[0]);
             }).catch((error) => {        
                 console.log( error.message);
         }); 
         this.setState({isLoad:true});
-
     }
 
     _selectShop= (item)=>{
@@ -130,6 +129,21 @@ export default class ItemDetails extends React.Component{
    /**Render iteam for shop this._selectShop(item)*/
     _renderIteam =({item})=>{
         //console.log(item.data[0].price);
+        var tempArray = [];
+        for (let index = 0; index < item.data.length; index++) {
+            tempArray.push(
+                <Grid style={{paddingHorizontal:8,marginVertical:2,flexDirection:'row'}}>
+                    <Text style={{fontSize:18}}><Icon name="currency-inr" size={18}/>{item.data[index].price}  </Text>
+                    <Text style={{fontSize:14}}> {item.data[index].quantity}/{item.data[index].unit} </Text>
+                    {
+                        (item.data[index].offer > 0) ?
+                            <Text style={{paddingHorizontal:4 ,color:'#4bb550',fontSize:15}}>  {item.data[index].offer} % off</Text>
+                        :
+                        <Text></Text>
+                    }
+                </Grid>
+            );            
+        }
         return(
             <List>
                 <ListItem avatar>
@@ -141,8 +155,8 @@ export default class ItemDetails extends React.Component{
                     <Card>
                         <Text style={{color:'#000000'}} >{item.name} </Text>
                         <Subtitle style={{color:'#9698b7'}}>Address :{item.address}</Subtitle>
-                        
-                        <Grid style={{paddingHorizontal:8,marginVertical:2,flexDirection:'row'}}>
+                        {tempArray}
+                        {/* <Grid style={{paddingHorizontal:8,marginVertical:2,flexDirection:'row'}}>
                             <Text style={{fontSize:18}}><Icon name="currency-inr" size={18}/>{item.data[0].price}  </Text>
                             <Text style={{fontSize:14}}> {item.data[0].quantity}/{item.data[0].unit} </Text>
                             {
@@ -151,7 +165,7 @@ export default class ItemDetails extends React.Component{
                                 :
                                 <Text></Text>
                             }
-                        </Grid>   
+                        </Grid>    */}
                     </Card>  
                     </TouchableOpacity>
                 </Body>   
@@ -164,8 +178,8 @@ export default class ItemDetails extends React.Component{
         const { navigation } = this.props;
         
         const item = navigation.getParam('data', '[]');
-        console.log(item);
-        await this.setState({selectedProduct:item});
+        //console.log(item);
+        await this.setState({selectedProduct:item[0]});
         await this.setState({pID:item[0].pid});
         await this.setState({unitname:item[0].unit});
         await this.setState({price:item[0].price});
@@ -174,10 +188,10 @@ export default class ItemDetails extends React.Component{
         await this.setState({pic:item[0].pic});
         await this.setState({map:item[0].map});  
         var name = item[0].size + ' ' + item[0].unit;
-        var list = [];
-        list.push(<Picker.Item label={name} value={0} />);
-        await this.setState({unit_name:0});
-        await this.setState({unitList:list});
+        // var list = [];
+        // list.push(<Picker.Item label={name} value={0} />);
+        await this.setState({unit_name:name});
+        //await this.setState({unitList:list});
         console.log('Data seted successfully.');
     }
 
@@ -233,12 +247,13 @@ export default class ItemDetails extends React.Component{
                         </Grid>
 
                         <CardItem >
-                            <Picker
+                            <Text style={{fontSize:18}}>{this.state.unit_name}</Text>
+                            {/* <Picker
                                 style = {{borderColor:'black',borderRadius:10,borderWidth:1}} 
                                 selectedValue={this.state.unit_name}
                                 onValueChange={(itemValue, itemIndex) => {this.unitChange(itemIndex)}}>
                                 {this.state.unitList}
-                            </Picker>
+                            </Picker> */}
                         </CardItem>
                         
                         <Grid style={{paddingHorizontal:8,marginVertical:2,flexDirection:'row'}}>
