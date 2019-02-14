@@ -1,38 +1,12 @@
 import React, { Component } from "react";
 import {
-    StyleSheet,
-    WebView ,
-    View,
-    TouchableOpacity,
-    Dimensions,
-    AsyncStorage,
-    ToastAndroid,
-    NetInfo,
-    Modal,
+    StyleSheet,WebView ,View,TouchableOpacity,Dimensions,AsyncStorage,ToastAndroid,NetInfo,Modal,
 } from "react-native";
 import { 
-    Container,
-    Spinner,
-    Button,
-    Text,
-    Content,
-    Header,
-    Left,
-    Right,
-    Title,
-    Body,
-    Input,
-    Card,
-    CardItem,
-    List,
-    ListItem,
-    Form,
-    Picker,
-    Item,
-    Textarea,
-    Label,
-    Thumbnail,
+    Container,Spinner,Button,Text,Content,Header,Left,Right,Title,Body,
+    Input,Card,CardItem,List,ListItem,Form,Picker,Item,Textarea,Label,Thumbnail,
 } from 'native-base';
+
 import {createDrawerNavigator,DrawerItems, SafeAreaView,createStackNavigator,NavigationActions } from 'react-navigation';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 const {width,height} = Dimensions.get('window');
@@ -42,8 +16,7 @@ export default class ItemDetails extends Component {
         super(props);
         this.state = {
             renderCoponentFlag: false,
-            LodingModal: false,
-            
+            LodingModal: false,            
         }
     }
     componentDidMount() {
@@ -56,6 +29,14 @@ export default class ItemDetails extends Component {
             return(
                 <Container>
                     <Content>
+                        <Card>
+                            <CardItem>
+                                <Picker
+                                    
+                                >
+                                </Picker>
+                            </CardItem>
+                        </Card>
                         <Button bordered dark onPress={()=>{
                             this.props.navigation.navigate('category',{});
                         }}>

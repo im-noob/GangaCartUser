@@ -35,7 +35,6 @@ import {
 } from 'native-base';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 import Category from "./Category";
-import ItemDetails from "./ItemDetails";
 import ItemList from "./ItemList";
 import MenuButton from "../../components/MenuButton";
 import HeaderTitle from "../../components/HeaderTitle";
