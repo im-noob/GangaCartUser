@@ -11,6 +11,8 @@ import {
     NetInfo,
     AsyncStorage,
     ToastAndroid,
+    BackHandler,
+    Alert
 
 } from "react-native";
 import { Container, Spinner, Button,Text, Item,Input,CheckBox,Body, Content} from 'native-base';
@@ -34,12 +36,44 @@ export default class LoginScreen extends Component {
             forgot_submitButtonDisable:false,
             email_or_phone:"",
             password:"",  
+            backPress:0,
         }
     }
     componentDidMount() {
         setTimeout(() => {this.setState({renderCoponentFlag: true})}, 0);
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     }
-    
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+    }
+
+    // handleBackButton() {
+    //     
+    // }
+    handleBackButton = () => {
+        if(this.state.backPress == 0 ){
+            ToastAndroid.show('Press Again to Exit App', ToastAndroid.SHORT);
+            this.setState({
+                backPress:1,
+            })
+            return true;
+        }
+        Alert.alert(
+            'Exit App',
+            'Exiting the application?', [{
+                text: 'Cancel',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel'
+            }, {
+                text: 'OK',
+                onPress: () => BackHandler.exitApp()
+            }, ], {
+                cancelable: false
+            }
+         )
+         return true;
+       } 
     // handle login 
     // _retrieveData = async () => {
     //     try {
@@ -174,9 +208,9 @@ export default class LoginScreen extends Component {
         await AsyncStorage.setItem('userID', userID);
 
         await AsyncStorage.setItem('userProfileData', profileData);
-        console.log("sending to home");
-        this.props.navigation.goBack();
-        console.log("seneing to app");
+        console.log("sending to back");
+        this.props.navigation.goBack(null);
+        console.log("sent to app");
     };
     saveNotificationToken = () => {
         console.log("noti");
