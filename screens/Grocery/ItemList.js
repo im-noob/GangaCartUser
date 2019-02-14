@@ -183,7 +183,7 @@ export default class ItemList extends Component {
                                  </View>
                              :
                                  <View style={{justifyContent:'space-around',padding:5,height:50,paddingBottom:5,alignSelf:'flex-end'}}>
-                                     <Button title= {this.state.ProductList[item.index].checked+" "+item.quantity+" "+item.index}   onPress={this._toggleCheckbox.bind(this, item.index)}/>
+                                     <Button title= {"Add +"}   onPress={this._toggleCheckbox.bind(this, item.index)}/>
                                  </View>
                              }
                          </View>   
