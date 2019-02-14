@@ -4,7 +4,7 @@ import {
     View,
     TouchableOpacity,
 } from "react-native";
-import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon  from 'react-native-vector-icons/Feather';
 
 export default class MenuButton extends React.Component{
 	render(){

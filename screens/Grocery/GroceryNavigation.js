@@ -33,7 +33,7 @@ import {
     Label,
     Thumbnail,
 } from 'native-base';
-import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon  from 'react-native-vector-icons/Feather';
 import Category from "./Category";
 import ItemList from "./ItemList";
 import MenuButton from "../../components/MenuButton";
@@ -169,9 +169,9 @@ const TabNavigator = createBottomTabNavigator(
         if(routeName == 'HomeStack'){
             iconName =`home${focused?'':''}`;
         } else if (routeName === 'Shopping') {
-            iconName = `shopping${focused ? '' : ''}`;
+            iconName = `lock${focused ? '' : ''}`;
         } else if (routeName === 'Cart') {
-            iconName = `cart${focused ? '' : ''}`;
+            iconName = `shopping-cart${focused ? '' : ''}`;
         }
         return <Icon name={iconName} size={30} color={tintColor} style={{fontWeight:'900'}}/>;
       },
