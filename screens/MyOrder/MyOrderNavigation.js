@@ -23,7 +23,8 @@ export default createStackNavigator(
       },
       OrderDetails:{
           screen:OrderDetails
-      }
+      },
+     
     },
     {
       
