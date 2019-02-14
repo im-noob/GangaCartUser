@@ -31,7 +31,7 @@ import {
 } from 'native-base';
 import {createDrawerNavigator,DrawerItems, SafeAreaView,createStackNavigator,NavigationActions } from 'react-navigation';
 import Icon  from 'react-native-vector-icons/Feather';
-import Global from "../Global";
+import Global from "../../../constants/Global";
 
 
 

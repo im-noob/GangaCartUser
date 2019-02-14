@@ -416,7 +416,8 @@ export default class SingupScreen extends Component {
                                                 }}
                                                 textContentType='telephoneNumber'
                                                 returnKeyType='next'
-                                                keyboardType='numeric'   
+                                                keyboardType='numeric' 
+                                                maxLength={10}  
 
 
                                             />

@@ -33,7 +33,7 @@ export default class Category extends Component {
 
     fatchCategory =async ()=> {
         
-        this.setState({renderCoponentFlag:false});
+        
         var connectionInfoLocal = '';
         NetInfo.getConnectionInfo().then((connectionInfo) => {
      //   console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
@@ -48,6 +48,7 @@ export default class Category extends Component {
             );        
         }else{
             console.log("yes internet ");
+            this.setState({renderCoponentFlag:false});
             fetch(Global.API_URL+'cat', {
                 method: 'GET',
                 headers: {
@@ -116,7 +117,7 @@ export default class Category extends Component {
                             ckeyT = data.cKey;
                         }
                     }
-                    this.setState({CategoryData:list});
+                    this.setState({CategoryData:list,renderCoponentFlag:true});
                 }
                 }).catch((error) => {
                     console.log("on error featching:"+error);
@@ -124,7 +125,6 @@ export default class Category extends Component {
         }
         });
         console.log(connectionInfoLocal);  
-        this.setState({renderCoponentFlag:false});
     }
 
     componentDidMount() {

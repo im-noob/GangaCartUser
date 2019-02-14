@@ -35,7 +35,8 @@ import {
 } from 'native-base';
 import {createDrawerNavigator,DrawerItems, SafeAreaView,createStackNavigator,NavigationActions } from 'react-navigation';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
-import Global from "../Global";
+import Global from "../../../constants/Global";
+
 const {width,height} = Dimensions.get('window');
 
 export default class HireMeScreen extends Component {

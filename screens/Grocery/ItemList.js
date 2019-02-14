@@ -31,7 +31,7 @@ export default class ItemList extends Component {
 
     fatchItem =async ()=> {
         
-        this.setState({renderCoponentFlag:false});
+        
         var connectionInfoLocal = '';
         NetInfo.getConnectionInfo().then((connectionInfo) => {
      //   console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
@@ -46,6 +46,7 @@ export default class ItemList extends Component {
             );        
         }else{
             console.log("yes internet ");
+            this.setState({renderCoponentFlag:false});
             fetch(Global.API_URL+'gro_product', {
                 method: 'POST',
                 headers: {
@@ -71,7 +72,7 @@ export default class ItemList extends Component {
                             map_id = data.map;
                         }
                     }
-                    this.setState({ProductList:list});
+                    this.setState({ProductList:list,renderCoponentFlag:true});
                     //console.log(responseJson.data.data);
                 }
                 }).catch((error) => {
@@ -80,7 +81,6 @@ export default class ItemList extends Component {
         }
         });
         console.log(connectionInfoLocal);  
-        this.setState({renderCoponentFlag:true});
     }
     render() {
         
