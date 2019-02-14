@@ -56,7 +56,7 @@ export default class Order extends Component {
             path:'http://gomarket.ourgts.com/public/',
             GroceryShop:[],
             priceTopay:0,
-            selectedShop:'',
+            selectedShop:{Key:''},
             priceData:[]
         }
     }
@@ -148,7 +148,7 @@ export default class Order extends Component {
                         });
                         this.state.GroceryShop.forEach(element=>{
                             if(value == element.gro_shop_info_id){
-                                //console.log(element);
+                               console.log(element);
                                 this.setState({selectedShop:element});
                             }
                         })

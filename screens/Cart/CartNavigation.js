@@ -24,7 +24,7 @@ import { Container, Content, Item,Title,Subtitle, View,Text, Button } from "nati
         this.setState({isItem:false})
         let a = await AsyncStorage.getItem('CartList');
         a = JSON.parse(a);
-        if(a != 0){
+        if(a.length != 0){
           this.setState({isItem:true})
         }
       } catch (error) {

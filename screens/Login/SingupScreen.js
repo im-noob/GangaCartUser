@@ -395,7 +395,7 @@ export default class SingupScreen extends Component {
                                                 textContentType='emailAddress'
                                                 returnKeyType='next'
                                                 keyboardType='email-address'
-                                                value="fuck@gmail.com"
+                               
 
                                             />
                                             <Icon name={this.state.reg_email_valid_icon} style={{color:this.state.reg_email_valid_color,fontSize:25}}/>
@@ -439,7 +439,7 @@ export default class SingupScreen extends Component {
                                                 textContentType='password' 
                                                 returnKeyType='next'
                                                 secureTextEntry={true}
-                                                value="123456"
+                                               
                                             />
                                             <Icon name={this.state.reg_password_valid_icon} style={{color:this.state.reg_password_valid_color,fontSize:25}}/>
                                         </Item>  

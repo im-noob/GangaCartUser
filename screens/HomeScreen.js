@@ -51,7 +51,79 @@ export default class HomeScreen extends Component {
     }
   }
   componentDidMount() {
+    this.render_Frequently()
     setTimeout(() => {this.setState({renderCoponentFlag: true})}, 5);
+  }
+
+  render_Frequently = async () => {
+
+    let profile = await AsyncStorage.getItem('userProfileData');
+    if(profile==null){
+      console.log("Profile na he bhi ");
+        return
+    }
+
+    var connectionInfoLocal = '';
+    var KEY = await AsyncStorage.getItem('Token');
+    NetInfo.getConnectionInfo().then((connectionInfo) => {
+      console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
+      // connectionInfo.type = 'none';//force local loding
+      if(connectionInfo.type == 'none'){
+        console.log('no internet ');
+        ToastAndroid.showWithGravityAndOffset(
+          'Oops! No Internet Connection',
+          ToastAndroid.LONG,
+          ToastAndroid.BOTTOM,
+          25,
+          50,
+        );
+        return;
+      }else{
+        console.log('yes internet '); 
+        this.setState({
+          LodingModal:true,
+        });
+        fetch(Global.API_URL+'Recent', {
+          method: 'POST',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'Authorization':'Bearer '+KEY,
+            },
+            body: JSON.stringify({ 
+              userID:profile.customer_info_id
+             })
+          }).then((response) => response.json())
+          .then((responseJson) => {
+           // var itemsToSet = responseJson.data;
+            console.log('resp:',responseJson);
+            if(responseJson.received == 'yes'){
+            this.setState({
+              LodingModal:false,
+            });
+            }else{
+              ToastAndroid.showWithGravityAndOffset(
+                'Internal Server Error',
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
+                25,
+                50,
+              );
+            }
+        }).catch((error) => {
+          ToastAndroid.showWithGravityAndOffset(
+            'Network Failed!!! Retrying...',
+            ToastAndroid.LONG,
+            ToastAndroid.BOTTOM,
+            25,
+            50,
+          );
+          console.log('on error fetching:'+error);
+          this.render_Frequently();
+        });
+      }
+    });
+    console.log(connectionInfoLocal);
   }
 
   _renderItem = ({item}) =>{
@@ -86,7 +158,9 @@ export default class HomeScreen extends Component {
                 <DeckSwiperAdvancedExample/>
              
             </Card>
+            <Card>
 
+            </Card>
 
             <Button bordered dark onPress={()=>{
               this.props.navigation.navigate('Gorcery');
