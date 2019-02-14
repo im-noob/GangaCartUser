@@ -39,6 +39,7 @@ import {
 } from 'native-base';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 import DeckSwiperAdvancedExample from "./ImageExample";
+import Global from "../constants/Global";
 const {width,height} = Dimensions.get('window');
 
 export default class HomeScreen extends Component {
