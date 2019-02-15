@@ -13,6 +13,10 @@ import LoginNavigation from "../Login/LoginNavigation";
 
 export default createStackNavigator(
     {
+     
+      Home:{
+          screen: Home
+      },
       EditProfile: {
         screen: EditProfile,
         navigationOptions: ({ navigation }) => ({
@@ -24,9 +28,6 @@ export default createStackNavigator(
           headerRight: <CartButton obj={navigation} value="10"  />,
           
         }),
-      },
-      Home:{
-          screen: Home
       },
       RewardStack:{
           screen:RewardNavigation
@@ -46,7 +47,6 @@ export default createStackNavigator(
       
     },
     {
-      initialRouteName :'EditProfile',
-
+      initialRouteName :'Home',
     }
   );

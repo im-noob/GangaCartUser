@@ -33,7 +33,7 @@ import {
     Label,
     Thumbnail,
 } from 'native-base';
-import {createDrawerNavigator,DrawerItems, SafeAreaView,createStackNavigator,NavigationActions } from 'react-navigation';
+import {createDrawerNavigator,DrawerItems, SafeAreaView,createStackNavigator,NavigationActions, } from 'react-navigation';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 const {width,height} = Dimensions.get('window');
 
@@ -67,7 +67,7 @@ export default class Home extends Component {
                 await AsyncStorage.removeItem('userID');
                 await AsyncStorage.removeItem('userProfileData');
        
-          this.Auth(); 
+          this.Auth();  
            
         } catch (error) {
             
@@ -77,15 +77,15 @@ export default class Home extends Component {
 
     Auth=async()=>{
         try {
-         let token =   await AsyncStorage.getItem('Token');
-         let userId = await AsyncStorage.getItem('userID');
-         let profile = await AsyncStorage.getItem('userProfileData');
-        if(token==null||userId== null || profile == null){
-          this.props.navigation.navigate('Login') ;
-          setTimeout(() => {this.setState({renderCoponentFlag: false})}, 0);    
-        }
-        else
-        setTimeout(() => {this.setState({renderCoponentFlag: true})}, 0);    
+            let token =   await AsyncStorage.getItem('Token');
+            let userId = await AsyncStorage.getItem('userID');
+            let profile = await AsyncStorage.getItem('userProfileData');
+            if(token==null||userId== null || profile == null){
+                this.props.navigation.navigate('Login') ;
+                //   setTimeout(() => {this.setState({renderCoponentFlag: false})}, 0);    
+            }
+            else
+                setTimeout(() => {this.setState({renderCoponentFlag: true})}, 0);    
         } catch (error) {
             
         }

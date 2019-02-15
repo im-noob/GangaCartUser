@@ -64,6 +64,7 @@ export default class ConifirmOrder extends React.Component {
             selectedProduct:[],
             profile:[],
             name:'',
+            userID:'',
             phone:'',
             street:'',
             state:'',
@@ -85,26 +86,33 @@ export default class ConifirmOrder extends React.Component {
         const { navigation } = this.props;
         const item = navigation.getParam('items',null);
         const shop =navigation.getParam('selectedShop',null);
-        const profile = navigation.getParam('profile',null)
+        const profile = navigation.getParam('profile',null);
+        
         if(shop == null || item == null || profile == null){
             ToastAndroid.showWithGravity("Select Any shop For Shoping",ToastAndroid.LONG,ToastAndroid.BOTTOM);
-            this.props.navigation.goBack();
+            this.props.navigation.navigate('Auth');
         }
-      await this.setState({data:item,selectedShop:shop,profile:profile,renderCoponentFlag:true});
-     console.log(item);
+      await this.setState({data:item,selectedShop:shop,userID:profile.user_id,name:profile.cname,pincode:profile.cpin,renderCoponentFlag:true});
+     
        this._calculation();
     }
 
     _validation = ()=>{
         let flag = true;
-        if(this.state.profile.cname.lenght==0)
+        console.log(this.state.phone.toString().length);
+        if(this.state.name.length==0)
         {
             ToastAndroid.showWithGravity("Please Enter Your Name",ToastAndroid.LONG,ToastAndroid.BOTTOM);
             return  flag = false;
         }
-        else if(this.state.phone.lenght>=10 && this.state.phone.lenght<=13)
+        else if(this.state.phone.toString().length != 10 )
         {
-            ToastAndroid.showWithGravity("Please Enter Your Name",ToastAndroid.LONG,ToastAndroid.BOTTOM);
+            ToastAndroid.showWithGravity("Please ! Enter Correct Phone Number",ToastAndroid.LONG,ToastAndroid.BOTTOM);
+           return flag = false;
+        }
+        else if(this.state.pincode.toString().length != 6)
+        {
+            ToastAndroid.showWithGravity("Please Enter Your Pincode",ToastAndroid.LONG,ToastAndroid.BOTTOM);
            return flag = false;
         }
         return flag;
@@ -117,9 +125,9 @@ export default class ConifirmOrder extends React.Component {
         const data =  JSON.stringify({
             Order:this.state.data,
             shop:this.state.selectedShop.gro_shop_info_id,
-            address:"Name : "+this.state.profile.cname+" Phone :+91 "+this.state.phone+" Address :"+this.state.street+" , State : Bihar ,City : Bhagalpur , Picode "+this.state.profile.cpin,
+            address:"Name : "+this.state.profile.cname+" Phone : +91 "+this.state.phone+" Address :"+this.state.street+" , State : Bihar ,City : Bhagalpur , Picode "+this.state.profile.cpin,
             realPrice:this.state.price,
-            cid:this.state.profile.user_id,
+            cid:this.state.userID,
             topay:this.state.topay,
             offer:this.state.offerPrice
           })
@@ -166,12 +174,12 @@ export default class ConifirmOrder extends React.Component {
                         console.log('resp:',responseJson);
                         if(responseJson.received == 'yes'){
 
-                        let title="Ther is new Order From "+this.state.profile.cname;
+                        let title="Ther is new Order From "+this.state.cname;
                         let msg = "Price"+this.state.topay;
                         let token = this.state.selectedShop.noti_token;
                         sendNotification(title,msg,token);   
                         this._reset(); 
-                        this.props.navigation.goBack();                        
+                                                
 
                         this.setState({
                             LodingModal:false,
@@ -203,13 +211,14 @@ export default class ConifirmOrder extends React.Component {
 
     _reset=async()=>{
         await AsyncStorage.setItem('CartList',JSON.stringify([]));
+        this.props.navigation.navigate('Auth');
     }
 
     _calculation=()=>{
         
         let price=0;
         let topay =0;
-        console.log(typeof this.state.data);
+
         this.state.data.forEach(element=>{
             console.log("Obj ",element.price);
             price +=element.price*element.Quantity;
@@ -233,8 +242,7 @@ export default class ConifirmOrder extends React.Component {
                                         onPress={()=>{alert("Change Image")}}
                                         size='large'
                                         source={{
-                                            uri:
-                                            'https://instagram.fpat1-1.fna.fbcdn.net/vp/dce4af24219a91eddff731d00cae9ed7/5CE9B8C6/t51.2885-19/s150x150/17933956_832093003610694_4703758160064675840_a.jpg?_nc_ht=instagram.fpat1-1.fna.fbcdn.net',
+                                            uri:'https://instagram.fpat1-1.fna.fbcdn.net/vp/dce4af24219a91eddff731d00cae9ed7/5CE9B8C6/t51.2885-19/s150x150/17933956_832093003610694_4703758160064675840_a.jpg?_nc_ht=instagram.fpat1-1.fna.fbcdn.net',
                                         }}
                                         showEditButton
                                         rounded
@@ -244,24 +252,26 @@ export default class ConifirmOrder extends React.Component {
                             </View>
                            
                             <View style={{flex:6,backgroundColor:'#fff'}}>
-                                <Card>
-                                    <CardItem header>
-                                        
-                                    </CardItem>
-                                </Card>
+                               
                                 
                                 
                                 <Card>
                                     <CardItem>
                                         <Item floatingLabel>
-                                            <Label style={{color:'#2873f0'}}>Name</Label>
-                                            <Input underlineColorAndroid="#2873f0" value={this.state.profile.cname}/>
+                                            <Label style={{color:'#2873f0'}}>Name (+91)</Label>
+                                            <Input underlineColorAndroid="#2873f0" 
+                                            onChangeText={(text)=>{this.setState({name:text})}}
+                                            value={this.state.name}/>
                                         </Item>
                                     </CardItem>
                                     <CardItem>
                                         <Item floatingLabel>
                                             <Label style={{color:'#2873f0'}}>Phone NO</Label>
-                                            <Input underlineColorAndroid="#2873f0" value="+91 "/>
+                                            <Input underlineColorAndroid="#2873f0" 
+                                            onChangeText={(text)=>{this.setState({phone:text+''});}}
+                                            value={this.state.phone}
+                                            keyboardType='numeric'
+                                            />
                                         </Item>
                                     </CardItem>
                                 
@@ -296,7 +306,8 @@ export default class ConifirmOrder extends React.Component {
                                                     <Label style={{color:'#2873f0'}}>Street</Label>
                                                     <Input 
                                                         underlineColorAndroid="#2873f0" 
-                                                        
+                                                        onChangeText={(text)=>{this.setState({street:text})}}
+                                                        value={this.state.street}
                                                         />
                                                 </Item>
                                             </CardItem>
@@ -305,7 +316,8 @@ export default class ConifirmOrder extends React.Component {
                                                     <Label style={{color:'#2873f0'}}>Pincode</Label>
                                                     <Input 
                                                         underlineColorAndroid="#2873f0"
-                                                        value={""+this.state.profile.cpin}
+                                                        onChangeText={(text)=>{this.setState({pincode:text+''})}}
+                                                        value={""+this.state.pincode}
                                                         keyboardType='numeric' />
                                                 </Item>
                                             </CardItem>
