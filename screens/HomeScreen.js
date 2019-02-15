@@ -35,11 +35,14 @@ import {
   Textarea,
   Label,
   Thumbnail,
+  Row,
+  Subtitle,
   
 } from 'native-base';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 import DeckSwiperAdvancedExample from "./ImageExample";
 import Global from "../constants/Global";
+import { CartPrepare } from "../constants/OrderListPrepare";
 const {width,height} = Dimensions.get('window');
 
 export default class HomeScreen extends Component {
@@ -48,6 +51,7 @@ export default class HomeScreen extends Component {
     this.state = {
       renderCoponentFlag: false,
       LodingModal: false,
+      DataRecent:[],
       data:[{key:'1',title:'Gorcery',navigationKey:'Grocery',pic:'https://upload.wikimedia.org/wikipedia/commons/1/13/Supermarkt.jpg'}]
     }
   }
@@ -63,7 +67,8 @@ export default class HomeScreen extends Component {
       console.log("Profile na he bhi ");
         return
     }
-
+    profile = JSON.parse(profile);
+    console.log("My user ID ",profile);
     var connectionInfoLocal = '';
     var KEY = await AsyncStorage.getItem('Token');
     NetInfo.getConnectionInfo().then((connectionInfo) => {
@@ -92,15 +97,15 @@ export default class HomeScreen extends Component {
               'Authorization':'Bearer '+KEY,
             },
             body: JSON.stringify({ 
-              userID:profile.customer_info_id
+              userID:profile.user_id
              })
           }).then((response) => response.json())
           .then((responseJson) => {
-           // var itemsToSet = responseJson.data;
-            console.log('resp:',responseJson);
+           var itemsToSet = responseJson.data;
+            console.log('resp:',itemsToSet);
             if(responseJson.received == 'yes'){
             this.setState({
-              LodingModal:false,
+              LodingModal:false,DataRecent:itemsToSet
             });
             }else{
               ToastAndroid.showWithGravityAndOffset(
@@ -138,6 +143,57 @@ export default class HomeScreen extends Component {
                               
                             )
                            } 
+  
+    _renderRecent = ({item}) =>{
+      
+      let pName = item.gro_product_name;
+      let sName = item.gro_product_name;
+      let PID = item.gro_product_list_id;
+      let sID = 2;
+     // let unit = item.unit_name;
+     // let price = item.gro_price;
+      let Qun = item.gro_quantity;
+      let pListID =4;
+      let uri;
+      return(
+       
+              
+        
+        <View style={{ flex:1,
+                        backgroundColor:'#fcfcfc', 
+                        padding:5,
+                        width:150,
+                        height:250, 
+                        borderWidth:0.5,
+                        borderColor:'#cecece',
+                        borderRadius:1
+                        }}>
+
+           
+             <View style={{width:100, height: 150,borderRadius:5}}>
+           
+                <Image style={{width:100, height: 150,borderRadius:5,resizeMode: 'contain',}} source={{uri:Global.Image_URL+item.pic}}/>
+            </View>
+
+            <View style={{flex:1,paddingLeft:1}}>
+
+          
+             <View style={{alignItems:'center', justifyContent:'center',padding:3}}>
+                <Text style={{fontSize:14,fontWeight:'300'}}>{pName} </Text>
+            </View> 
+            </View>
+            
+            <View style={{padding:3}}>
+              <Button bordered onPress={()=>{CartPrepare(item,2)}}>
+                <Text>Add to Cart</Text>
+              </Button>
+            </View>
+       
+    </View>
+    
+    
+      )
+    }
 
   render() {
     const {renderCoponentFlag} = this.state;
@@ -159,9 +215,21 @@ export default class HomeScreen extends Component {
                 <DeckSwiperAdvancedExample/>
              
             </Card>
-            <Card>
+            {
+              this.state.DataRecent.length != 0?
+              <Card>
+                <CardItem header>
+                    <Subtitle style={{color:'#202123'}}>Recent Buy Product</Subtitle>
+                </CardItem>
+                  <FlatList
+                  data={this.state.DataRecent}
+                  renderItem={this._renderRecent}
+                  horizontal
+                  />
+              </Card>
+              :<View></View>
+            }
 
-            </Card>
 
             <Button bordered dark onPress={()=>{
               this.props.navigation.navigate('Gorcery');
