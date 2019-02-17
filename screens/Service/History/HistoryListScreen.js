@@ -131,7 +131,7 @@ export default class HistoryListScreen extends Component {
 
     render_userServiceHist = async (argument) => {
         var connectionInfoLocal = '';
-        var KEY = await AsyncStorage.getItem('userToken_S');
+        var KEY = await AsyncStorage.getItem('Token');
         var customerID = await AsyncStorage.getItem('UserID');
         NetInfo.getConnectionInfo().then((connectionInfo) => {
             console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);

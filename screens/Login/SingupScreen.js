@@ -63,7 +63,7 @@ export default class SingupScreen extends Component {
     _signInAsync = async (token,profileData,userID) => {
         userID = userID + "";//converting to string
         console.log("setting token");
-        await AsyncStorage.setItem('userToken_S', token);
+        await AsyncStorage.setItem('Token', token);
         console.log("setting user data");
         await AsyncStorage.setItem('userID', userID);
 

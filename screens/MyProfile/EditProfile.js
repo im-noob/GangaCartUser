@@ -241,7 +241,7 @@ export default class EditProfile extends Component {
     }
     render_setBasicProfile = async (argument) => {
         var connectionInfoLocal = '';
-        var KEY = await AsyncStorage.getItem('userToken_S');
+        var KEY = await AsyncStorage.getItem('Token');
         NetInfo.getConnectionInfo().then((connectionInfo) => {
             console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
             // connectionInfo.type = 'none';//force local loding
@@ -337,7 +337,7 @@ export default class EditProfile extends Component {
     }
     render_setShippingAddress = async (argument) => {
         var connectionInfoLocal = '';
-        var KEY = await AsyncStorage.getItem('userToken_S');
+        var KEY = await AsyncStorage.getItem('Token');
         NetInfo.getConnectionInfo().then((connectionInfo) => {
             console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
             // connectionInfo.type = 'none';//force local loding
