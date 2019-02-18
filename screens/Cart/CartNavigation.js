@@ -80,7 +80,7 @@ import { Container, Content, Item,Title,Subtitle, View,Text, Button } from "nati
       Auth:{
         screen:MyAuthScreen,
         navigationOptions: ({ navigation }) => ({
-          headerTitle: HeaderTitle,
+          headerTitle: "Cart",
           headerStyle: {
             backgroundColor: '#2874f0'
           },

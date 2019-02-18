@@ -3,7 +3,6 @@ import React from 'react';
 import {
             ActivityIndicator,
             AsyncStorage,
-            Button,
             StatusBar,
             StyleSheet,
             TouchableOpacity,
@@ -15,12 +14,15 @@ import {
             Modal,
             TouchableHighlight,
             Alert,
-            Picker,
             NetInfo,
             ToastAndroid
         } from 'react-native';
 
-
+import { 
+    Container,Spinner,Button,Grid,
+    Content,Header,Left,Right,Title,Body,Input,Card,CardItem,List,ListItem,Form,
+    Picker,Item,Textarea,Label,Accordion,Thumbnail,
+} from 'native-base';
 import Global from  '../../constants/Global';
 import {CartPrepare} from '../../constants/OrderListPrepare';
 import { SearchBar } from 'react-native-elements';
@@ -61,7 +63,6 @@ export default class ShopsProductsList extends React.Component
         if(value ==null && id == null){
             return; 
         }
-
         this.setState({process:true});
         var connectionInfoLocal = '';
         NetInfo.getConnectionInfo().then((connectionInfo) => {
@@ -263,6 +264,7 @@ changeQuantity = (index,dindex) =>{
 
 _renderIteam=({item})=>{
 
+    console.log({item});
     let pName = item.title;
     let unit = item.unit;
     let price = item.price;
@@ -285,81 +287,73 @@ _renderIteam=({item})=>{
     //  console.log(uri);
     
     return(    
-            <View style={{ flex:1,
-                            backgroundColor:'#fcfcfc', 
-                            padding:5,
-                            flexDirection:"row",
-                            height:150, 
-                            borderWidth:0.5,
-                            borderColor:'#cecece'
-                            }}>
-
-                <TouchableOpacity onPress={()=>{this._storeData(this.props,item)}}>
-                    <View style={{padding:5,width:100, height: 160,borderRadius:5}}>
+        <Card>
+            <CardItem>
+                <Grid style={{flexDirection:'row'}}>
+                    <Grid style={{flex:1}}>
                         <Image style={{width:100, height: 150,borderRadius:5,resizeMode: 'contain',}} source={{uri:uri}}/>
-                    </View>
-                </TouchableOpacity>
-                
-                <View style={{flex:1,paddingLeft:10}}>
-                    
-                    <Text style={{fontSize:14,fontWeight:'900'}}>{pName}</Text>
-                    <Text style={{fontSize:14,fontWeight:'400'}}>{item.info} </Text>
-                    {/* <View style={{justifyContent:'space-around',flexDirection:'row'}}>
-                        <Text style={{fontSize:15,fontWeight:'900',paddingHorizontal:7,color:'#fcfcfc',backgroundColor:'#02490b'}}>*3.5</Text>
-                        <Text style={{fontSize:15,fontWeight:'400',paddingHorizontal:7,color:'#878787',}}>Rating 1,657</Text>
-                    </View> */}
-                    {(len > 1) ?
-                        <View style={{borderWidth:1,margin:5}}> 
-                            <Picker
-                                selectedValue={item.size+" "+unit}
-                                onValueChange={(itemValue, itemIndex) => {this.changeQuantity(item.index,itemIndex)}}>
-                                {PickerItem}
-                            </Picker>
-                        </View>
-                        :
-                        <Text style={{fontSize:14,fontWeight:'600',height:30,margin:5}}>{item.size+" "+unit}</Text>
-                    }
-                    
-                    <View style={{flexDirection:'row',justifyContent:'space-around',padding:5,height:50,paddingBottom:5}}>
-                        <View style={{flexDirection:'column',paddingBottom:5}}>
-                            <Text style={{fontSize:16,fontWeight:'900'}}><Icon name={'currency-inr'} size={15}/>{
-                                (item.offer > 0 ) ? 
-                                  (price - (price)*(item.offer/100))
-
-                                    :
-                                    price
-                                }
-                                {
+                    </Grid>
+                    <Grid style={{paddingHorizontal:8,marginVertical:2,flexDirection:'column',flex:2}}>
+                        <Text style={{fontSize:14,fontWeight:'900'}}>{pName}</Text>
+                        <Text style={{fontSize:14,fontWeight:'400'}}>{item.info} </Text>
+                        {(len > 1) ?
+                            <View style={{borderWidth:1,margin:5}}> 
+                                <Picker
+                                    selectedValue={item.size+" "+unit}
+                                    style={{height:30}}
+                                    onValueChange={(itemValue, itemIndex) => {this.changeQuantity(item.index,itemIndex)}}>
+                                    {PickerItem}
+                                </Picker>
+                            </View>
+                            :
+                            <Text style={{fontSize:14,fontWeight:'600',height:30,margin:5}}>{item.size+" "+unit}</Text>
+                        } 
+                        <Grid style={{flexDirection:'row'}}>
+                            <Grid style={{flexDirection:'column'}}>
+                                <Text style={{fontSize:16,fontWeight:'900'}}><Icon name={'currency-inr'} size={15}/>{
                                     (item.offer > 0 ) ? 
-                                        <Text style={{fontSize:12,textDecorationLine: 'line-through'}}>  MRP <Icon name="currency-inr" size={12}/>{price}</Text>
+                                    (price - (price)*(item.offer/100))
+                                        :
+                                        price
+                                    }
+                                    {
+                                        (item.offer > 0 ) ? 
+                                            <Text style={{fontSize:12,textDecorationLine: 'line-through'}}>  MRP <Icon name="currency-inr" size={12}/>{price}</Text>
+                                        :
+                                        null
+                                    } 
+                                    </Text>
+                                {(item.offer > 0.1) ?
+                                    <Text style={{fontSize:14,fontWeight:'500',color:'green'}}>{item.offer}% off</Text>
                                     :
-                                    <Text></Text>
+                                    null
                                 }
-                                </Text>
-                            {(item.offer > 0.1) ?
-                                <Text style={{fontSize:14,fontWeight:'500',color:'green'}}>{item.offer}% off</Text>
-                                :
-                                <Text></Text>
+                            </Grid>
+                            {item.checked ?
+                                <Button success onPress={this._toggleCheckbox.bind(this, item.index)}>
+                                    <Text style={{fontSize:15,fontWeight:'500'}}>Add+</Text>
+                                </Button>    
+                            :
+                            <View style={{borderWidth:1,height:40,flexDirection:'row'}}>
+                                <Button  onPress={this._subQuantity.bind(this,item.index)}
+                                    style={{height:40}}
+                                >
+                                    <Text style={{fontSize:20,fontWeight:'500'}}> - </Text>
+                                </Button>                
+                                <View style={{width:50,height:50,paddingBottom:5}}><Text style={{fontSize:20,alignSelf:'center'}}>{item.Quantity}</Text></View>
+                                <Button onPress={this._addQuantity.bind(this,item.index)}
+                                    style={{height:40}}
+                                >
+                                    <Text style={{fontSize:20,fontWeight:'500'}}> + </Text>
+                                </Button>
+                            </View>
                             }
-                        </View>
-
-                        {item.checked ?
-                            <View style={{flexDirection:'row',justifyContent:'space-around',padding:5,height:50,paddingBottom:5,alignSelf:'flex-end'}}>
-                                <Button title="Add+" onPress={this._toggleCheckbox.bind(this, item.index)}/>
-                            </View>
-                        :
-                            <View style={{borderWidth:1,height:50,flexDirection:'row',paddingBottom:5}}>
-                            <Button title=' - '  onPress={this._subQuantity.bind(this,item.index)}/>
-                            <TouchableOpacity onPress={()=>{}}>
-                            <View style={{width:50,height:50,paddingBottom:5}}><Text style={{fontSize:20,alignSelf:'center'}}>{item.Quantity}</Text></View>
-                            </TouchableOpacity>
-                            <Button title=' + ' onPress={this._addQuantity.bind(this,item.index)}/>
-                            </View>
-                        }
-                    </View>   
-                </View>
-        </View>              
-    );
+                        </Grid>  
+                    </Grid>
+                </Grid>
+            </CardItem>
+        </Card>              
+);
 } 
 
 
@@ -406,13 +400,8 @@ _onChangeText=(text) =>{
         //this._retrieveData();
         // console.log("From state  ",this.state.data);
         return(
-            <View style={{flex:1,width:'100%'}}>
-                <SearchBar
-                    round
-                    value = {this.state.serachText}
-                    onChangeText={this._onChangeText}
-                    placeholder='Type Here...' 
-                />
+            <Container>
+                <Content>
                 <ScrollView>  
                     <FlatList
                             data={this.state.checkboxes}
@@ -432,7 +421,8 @@ _onChangeText=(text) =>{
                                         </View>)}}          
                     />   
             </ScrollView>      
-        </View>
+            </Content>
+        </Container>
         )
     }
 }

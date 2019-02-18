@@ -36,6 +36,7 @@ export default class Category extends Component {
         console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
         if(connectionInfo.type == 'none'){
             console.log("no internet ");
+            this.setState({renderCoponentFlag:false});
             ToastAndroid.showWithGravityAndOffset(
             'Oops! No Internet Connection',
             ToastAndroid.LONG,
@@ -109,7 +110,7 @@ export default class Category extends Component {
                             ckeyT = data.gro_cat_id;
                         }
                     }
-                    this.setState({CategoryData:list});
+                    this.setState({CategoryData:list,renderCoponentFlag:true});
                 }
                 }).catch((error) => {
                     console.log("on error featching:"+error);

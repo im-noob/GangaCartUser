@@ -48,13 +48,14 @@ import {createDrawerNavigator,DrawerItems,createAppContainer, SafeAreaView,creat
 import ShopDetail from './shopDetails';
 import ShopsProductsList from './ShopProductList';
 import ShopProductDetails from './ShopProductDetails';
+import MostBuying from './MostBuying';
 
 const StackNav =  createStackNavigator(
     {
       category: {
         screen: Category,
         navigationOptions: ({ navigation }) => ({
-          headerTitle: HeaderTitle,
+          headerTitle: "Category List",
           headerStyle: {
             backgroundColor: '#2874f0'
           },
@@ -84,6 +85,25 @@ const StackNav =  createStackNavigator(
     {
       
     }
+);
+
+const DailyLife =  createStackNavigator(
+  {
+    daily: {
+      screen: MostBuying,
+      navigationOptions: ({ navigation }) => ({
+        headerTitle: "Daily Use",
+        headerStyle: {
+          backgroundColor: '#2874f0'
+        },
+        headerLeft: <MenuButton obj={navigation}  />,
+        headerRight: <CartButton obj={navigation} value="10"  />,
+      }),
+    }
+  },
+  {
+    
+  }
 );
 
 
@@ -157,7 +177,8 @@ const ShoppingScreen =  createStackNavigator(
 
 const TabNavigator = createBottomTabNavigator(
   {
-      HomeStack: StackNav,
+      HomeStack: DailyLife,
+      Category:StackNav,
       Shopping: ShoppingScreen,
       Cart: CartNavigation,
   },
@@ -168,6 +189,8 @@ const TabNavigator = createBottomTabNavigator(
         let iconName='worker';
         if(routeName == 'HomeStack'){
             iconName =`home${focused?'':''}`;
+        } else if(routeName == 'Category'){
+            iconName =`grid${focused?'':''}`;
         } else if (routeName === 'Shopping') {
             iconName = `lock${focused ? '' : ''}`;
         } else if (routeName === 'Cart') {
