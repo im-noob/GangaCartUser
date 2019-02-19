@@ -18,7 +18,7 @@ import { Toast } from 'native-base';
 
             try {
     
-             // await AsyncStorage.setItem('CartList',JSON.stringify([]));
+            // await AsyncStorage.setItem('CartList',JSON.stringify([]));
             //   console.log(item);
                
                let cartValue =[];
@@ -48,7 +48,7 @@ import { Toast } from 'native-base';
                         tempArray.push(temp);
                         console.log("New add");
                     }
-                    console.log(tempArray);
+                   // console.log(tempArray);
                     await AsyncStorage.setItem('CartList',JSON.stringify(tempArray));
                 }
                

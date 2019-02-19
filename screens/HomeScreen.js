@@ -55,11 +55,13 @@ export default class HomeScreen extends Component {
       data:[{key:'1',title:'Gorcery',navigationKey:'Grocery',pic:'https://upload.wikimedia.org/wikipedia/commons/1/13/Supermarkt.jpg'}]
     }
   }
+ 
   componentDidMount() {
     this.render_Frequently()
     setTimeout(() => {this.setState({renderCoponentFlag: true})}, 5);
   }
 
+ 
   render_Frequently = async () => {
 
     let profile = await AsyncStorage.getItem('userProfileData');
@@ -102,7 +104,7 @@ export default class HomeScreen extends Component {
           }).then((response) => response.json())
           .then((responseJson) => {
            var itemsToSet = responseJson.data;
-            console.log('resp:',itemsToSet);
+           // console.log('resp:',itemsToSet);
             if(responseJson.received == 'yes'){
             this.setState({
               LodingModal:false,DataRecent:itemsToSet
@@ -146,15 +148,9 @@ export default class HomeScreen extends Component {
   
     _renderRecent = ({item}) =>{
       
-      let pName = item.gro_product_name;
-      let sName = item.gro_product_name;
-      let PID = item.gro_product_list_id;
-      let sID = 2;
-     // let unit = item.unit_name;
-     // let price = item.gro_price;
-      let Qun = item.gro_quantity;
-      let pListID =4;
-      let uri;
+      let pName = item.title;
+     
+     
       return(
        
               
@@ -184,9 +180,25 @@ export default class HomeScreen extends Component {
             </View>
             
             <View style={{padding:3}}>
-              <Button bordered onPress={()=>{CartPrepare(item,2)}}>
+            {
+              
+              item.flag ?
+              <Button bordered onPress={()=>{this._addItem(item.map); console.log("Flag :",item.flag)}}>
                 <Text>Add to Cart</Text>
               </Button>
+              :
+              <View style={{flexDirection:'row'}}>
+                 <Button style={{height:30,width:25,alignItems:'center'}}  onPress={()=>{this._subQuantity(item.map); /**this.setState({item:{Quantity:qunt}})*/}}>
+                                        <Text style={{color:'#ffffff',textAlign:'center',alignSelf:'center', fontSize:'900',fontSize:15}}>-</Text>
+                                    </Button>
+                                    <View style={{borderWidth:1,width:50,alignItems:'center'}}>
+                                        <Title style={{color:'#000000'}}>{item.Quantity}</Title>
+                                    </View>                        
+                                    <Button style={{height:30,width:25,alignItems:'center'}}  onPress={()=>{this._addQuantity(item.map); /** this.setState({item:{Quantity:qunt}})*/}}>
+                                      <Text style={{color:'#ffffff',textAlign:'center',alignSelf:'center', fontSize:'900',fontSize:15}}>+</Text>
+                                     </Button>   
+              </View>
+            }
             </View>
        
     </View>
@@ -194,6 +206,62 @@ export default class HomeScreen extends Component {
     
       )
     }
+
+       
+_addQuantity=(index) =>{
+  
+  let array=[];
+  this.state.DataRecent.forEach(element =>{
+      if(element.map == index){
+        console.log(element);
+          element.Quantity++; 
+          CartPrepare(element,element.Quantity);
+      }
+
+      array.push(element);
+  })
+  this.setState({DataRecent:array});
+ 
+  console.log("In add quintity");
+}
+
+
+_subQuantity=(index) =>{
+
+  
+  let array=[];
+  this.state.DataRecent.forEach(element =>{ 
+    
+      if(element.map == index){
+        console.log(element);
+          CartPrepare(element,element.Quantity > 1? --element.Quantity :element.Quantity);
+      }
+
+      array.push(element);
+  })
+  this.setState({DataRecent:array});
+  
+  console.log("In sub qantity")
+
+}
+
+_addItem =(id)=>{
+
+  let tempArray =[];
+  this.state.DataRecent.forEach(element=>{
+      
+      if(element.map == id){
+          element.flag = false;
+          console.log(element);
+      }
+      tempArray.push(element);      
+  })
+
+  this.setState({DataRecent:tempArray});
+  console.log("In add Item");
+}
+
+
 
   render() {
     const {renderCoponentFlag} = this.state;

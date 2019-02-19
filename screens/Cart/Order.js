@@ -223,7 +223,7 @@ export default class Order extends Component {
                      }).then((response) => response.json())
                      .then((responseJson) => {
                          var itemsToSet = responseJson.data;
-                         console.log('resp in p:',responseJson.data);
+                         console.log('resp in p:',responseJson);
                          if(responseJson.received == 'yes'){
                          this.setState({
                              LodingModal:false,
