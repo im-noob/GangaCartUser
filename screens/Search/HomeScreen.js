@@ -44,46 +44,44 @@ import {CartPrepare} from "../../constants/OrderListPrepare";
 
 const {width,height} = Dimensions.get('window');
 
-class ShowSearchResult extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            renderCoponentFlag: false,
-            LodingModal: false,
-            gro_searchData: this.props.gro_searchData,
-            res_searchData: this.props.res_searchData,
-            ser_searchData: this.props.ser_searchData,
-        }
-    }
-    componentDidMount() {
-        setTimeout(() => {this.setState({renderCoponentFlag: true})}, 0);
-    }
+// class ShowSearchResult extends Component {
+//     constructor(props){
+//         super(props);
+//         this.state = {
+//             renderCoponentFlag: false,
+//             LodingModal: false,
+//             gro_searchData: this.props.gro_searchData,
+//             res_searchData: this.props.res_searchData,
+//             ser_searchData: this.props.ser_searchData,
+//         }
+//     }
+//     componentDidMount() {
+//         setTimeout(() => {this.setState({renderCoponentFlag: true})}, 0);
+//     }
 
-    render() {
-        const {renderCoponentFlag} = this.state;
-        // console.log("in show seachResult ",this.state.gro_searchData);
-        if(renderCoponentFlag){
-            return(
-                <Container>
-                    <Content>
-                        <Card>
-                            <CardItem header bordered>
-                                <Text>Grocery</Text>
-                            </CardItem>
-                        </Card> 
-                    </Content>
-                    <ShopsProductsList gro_searchData ={this.state.gro_searchData}
-                                navigation = {this.props.navigation}
-                            />
-                </Container>
-            );
-        }else{
-            return (
-            <AdvLoder/>
-            );
-        }
-    }
-}
+//     render() {
+//         const {renderCoponentFlag} = this.state;
+//         // console.log("in show seachResult ",this.state.gro_searchData);
+//         if(renderCoponentFlag){
+//             return(
+//                 <View>
+//                         <Card>
+//                             <CardItem header bordered>
+//                                 <Text>Grocery</Text>
+//                             </CardItem>
+//                         </Card> 
+//                         {/* <ShopsProductsList gro_searchData ={this.state.gro_searchData}
+//                             navigation = {this.props.navigation}
+//                         /> */}
+//                 </View>
+//             );
+//         }else{
+//             return (
+//             <AdvLoder/>
+//             );
+//         }
+//     }
+// }
 
 
 class ShopsProductsList extends React.Component
@@ -417,7 +415,7 @@ _onChangeText=(text) =>{
     render(){
         
         return( 
-            <ScrollView>
+            // <Content>
                 <FlatList
                     data={this.state.checkboxes}
                     renderItem={this._renderIteam}
@@ -427,14 +425,14 @@ _onChangeText=(text) =>{
                         if(this.state.isEmpty =='Wait List is Loading.....')
                             return(<View style={{justifyContent:'center'}}>
                                 <ActivityIndicator size="large" color="#0000ff" />
-                                <Text>{this.state.isEmpty}</Text>
+                                <Text style={{justifyContent:'center',alignItems:'center',alignContent: 'center',alignSelf:'center',}}>{this.state.isEmpty}</Text>
                             </View>);
                         else
                             return(<View style={{justifyContent:'center'}}>
-                                    <Text>{this.state.isEmpty}</Text>
+                                    <Text style={{justifyContent:'center',alignItems:'center',alignContent: 'center',alignSelf:'center',}}>{this.state.isEmpty}</Text>
                                 </View>)}}          
                 />  
-            </ScrollView>      
+            // </Content>      
         )
     }
 }
@@ -499,6 +497,8 @@ export default class HomeScreen extends Component {
                     }).then((response) => response.json())
                     .then((responseJson) => {
                         var itemsToSet = responseJson.data;
+                        console.log('resp Length:',responseJson.data.length);
+
                         console.log('resp:',responseJson);
                         if(responseJson.received == 'yes'){
                             
@@ -559,10 +559,13 @@ export default class HomeScreen extends Component {
                         {
                             this.state.searchingStatus ?
                                 <AdvLoder/>:
-                                <ShowSearchResult 
-                                    gro_searchData = {this.state.gro_searchData}
-                                    res_searchData = {this.state.res_searchData}
-                                    ser_searchData = {this.state.ser_searchData}
+                                // <ShowSearchResult 
+                                //     gro_searchData = {this.state.gro_searchData}
+                                //     res_searchData = {this.state.res_searchData}
+                                //     ser_searchData = {this.state.ser_searchData}
+                                //     navigation = {this.props.navigation}
+                                // />
+                                <ShopsProductsList gro_searchData ={this.state.gro_searchData}
                                     navigation = {this.props.navigation}
                                 />
                         }
