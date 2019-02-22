@@ -52,15 +52,79 @@ export default class HomeScreen extends Component {
       renderCoponentFlag: false,
       LodingModal: false,
       DataRecent:[],
+      adData:[],
+     
       data:[{key:'1',title:'Gorcery',navigationKey:'Grocery',pic:'https://upload.wikimedia.org/wikipedia/commons/1/13/Supermarkt.jpg'}]
     }
   }
  
   componentDidMount() {
-    this.render_Frequently()
+    this.render_Frequently();
+    this.render_Offer();
     setTimeout(() => {this.setState({renderCoponentFlag: true})}, 5);
   }
 
+  
+  render_Offer = async () => {
+    var connectionInfoLocal = '';
+    var KEY = await AsyncStorage.getItem('userToken_S');
+    NetInfo.getConnectionInfo().then((connectionInfo) => {
+      console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
+      // connectionInfo.type = 'none';//force local loding
+      if(connectionInfo.type == 'none'){
+        console.log('no internet ');
+        ToastAndroid.showWithGravityAndOffset(
+          'Oops! No Internet Connection',
+          ToastAndroid.LONG,
+          ToastAndroid.BOTTOM,
+          25,
+          50,
+        );
+        return;
+      }else{
+        console.log('yes internet '); 
+        this.setState({
+          LodingModal:true,
+        });
+        fetch(Global.API_URL+'Offer', {
+          method: 'POST',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({  })
+          }).then((response) => response.json())
+          .then((responseJson) => {
+            var itemsToSet = responseJson.data;
+           console.log('Offer resp:',responseJson);
+            if(responseJson.received == 'yes'){
+            this.setState({
+              LodingModal:false,adData:responseJson.data
+            });
+            }else{
+              ToastAndroid.showWithGravityAndOffset(
+                'Internal Server Error',
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
+                25,
+                50,
+              );
+            }
+        }).catch((error) => {
+          ToastAndroid.showWithGravityAndOffset(
+            'Network Failed!!! Retrying...',
+            ToastAndroid.LONG,
+            ToastAndroid.BOTTOM,
+            25,
+            50,
+          );
+          console.log('on error fetching:'+error);
+          this.render_Offer();
+        });
+      }
+    });
+    console.log(connectionInfoLocal);
+  }
  
   render_Frequently = async () => {
 
@@ -146,7 +210,7 @@ export default class HomeScreen extends Component {
                             )
                            } 
   
-    _renderRecent = ({item}) =>{
+  _renderRecent = ({item}) =>{
       
       let pName = item.title;
      
@@ -207,6 +271,13 @@ export default class HomeScreen extends Component {
       )
     }
 
+  _renderItemAdd = ({item}) =>{
+    return(
+       <Card style={{justifyContent:'center'}}>
+         <Image style={{height:200,width:width,resizeMode:'contain'}} source={{uri:item.pic}}/>
+       </Card>
+    );
+  }
        
 _addQuantity=(index) =>{
   
@@ -281,7 +352,7 @@ _addItem =(id)=>{
             <Card style={{height:150}}>
               
                 <DeckSwiperAdvancedExample/>
-             
+            
             </Card>
             {
               this.state.DataRecent.length != 0?
@@ -298,12 +369,18 @@ _addItem =(id)=>{
               :<View></View>
             }
 
-
-            <Button bordered dark onPress={()=>{
+          
+           <FlatList
+              data={this.state.adData}
+              renderItem={this._renderItemAdd}
+              
+            />
+         
+            {/* <Button bordered dark onPress={()=>{
               this.props.navigation.navigate('Gorcery');
             }}>
               <Text> Go to Profile screen</Text>
-            </Button>
+            </Button> */}
           </Content>
         </Container>
       );
