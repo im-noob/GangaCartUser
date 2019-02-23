@@ -23,8 +23,15 @@ const cards = [
 export default class DeckSwiperAdvancedExample extends Component {
 
   _Retrive = (t)=>{
-   // console.log('Heloo : ',t)
-   // t._deckSwiper._root.swipeLeft();   h
+    setInterval(function(){ 
+    try{
+    //  console.log('Heloo : ',t._root)
+
+      t._root.swipeLeft();
+    }catch(e){
+
+    }},5000);
+  
 }
 
   render() {
@@ -37,6 +44,7 @@ export default class DeckSwiperAdvancedExample extends Component {
         <View>
           <DeckSwiper
             ref={this._Retrive/** (c) => this._deckSwiper = c*/}
+         //  ref={(c) => this._deckSwiper = c}
             dataSource={cards}
             renderEmpty={() =>
               <View style={{ alignSelf: "center" }}>
@@ -57,15 +65,15 @@ export default class DeckSwiperAdvancedExample extends Component {
         </View>
        
         {/* <View style={{ flexDirection: "row", flex: 1, position: "absolute", bottom: 50, left: 0, right: 0, justifyContent: 'space-between', padding: 15 }}>
-          <Button iconLeft onPress={() => this._deckSwiper._root.swipeLeft()}>
+          <Button iconLeft onPress={() =>{ this._deckSwiper._root.swipeLeft();console.log("Hellll",this._deckSwiper._root)}}>
             <Icon name="arrow-back" />
             <Text>Swipe Left</Text>
           </Button>
-          <Button iconRight onPress={() => this._deckSwiper._root.swipeRight()}>
+          <Button iconRight onPress={() =>{this._deckSwiper._root.swipeRight();console.log("Hellll",this._deckSwiper._root)}}>
             <Icon name="arrow-forward" />
             <Text>Swipe Right</Text>
           </Button>
-        </View> */}
+        </View>  */}
      </Container>
     );
   }

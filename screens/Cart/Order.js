@@ -148,7 +148,7 @@ export default class Order extends Component {
                         });
                         this.state.GroceryShop.forEach(element=>{
                             if(value == element.gro_shop_info_id){
-                               console.log(element);
+                            //   console.log(element);
                                 this.setState({selectedShop:element});
                             }
                         })
@@ -189,6 +189,10 @@ export default class Order extends Component {
            return; 
    
         }
+        console.log("Data for fetech :",JSON.stringify({ 
+            id:this.state.data,
+            Shopid: value
+          }));
        // this.setState({selectedShop:value});
          var connectionInfoLocal = '';
          var KEY = await AsyncStorage.getItem('Token');
@@ -354,7 +358,7 @@ _subQuantity=(index) =>{
                    </View>
                  </ImageBackground></Left>
                  <Right>
-                    <View style={{flexDirection:'row',paddingRight:2,}}>
+                    <View style={{flexDirection:'row',padding:5,}}>
                           <Title style={{color:'#000000',fontSize:15}}>{item.title}</Title>
                       </View>
                        <View style={{flexDirection:'row',height:30}}>          
@@ -381,18 +385,18 @@ _subQuantity=(index) =>{
         <TouchableHighlight onPress={()=>{this._store(item);}}>
             <View style={{borderWidth:0.5}}>
                 <View style={{padding:10}}>
-                <View style={{alignItems:'center',flexDirection:'row'}}> 
-                    <Title style={{color:'#020aed'}}>{item.name}</Title>
-                </View>
-                <View style={{alignItems:'center',flexDirection:'row'}}> 
-                    <Subtitle style={{color:'#7f7f8e'}}> {item.address}</Subtitle>
-                </View>
-                <View style={{alignItems:'center',flexDirection:'row'}}> 
-                    <Subtitle style={{color:'#14012b'}}>Mobile 1: {item.mobile1}</Subtitle>
-                </View>
-                <View style={{alignItems:'center',flexDirection:'row'}}> 
-                    <Subtitle style={{color:'#14012b'}}>Mobile 2: {item.mobile2}</Subtitle>
-                </View>
+                    <View style={{alignItems:'center',flexDirection:'row'}}> 
+                        <Title style={{color:'#020aed'}}>{item.name}</Title>
+                    </View>
+                    <View style={{alignItems:'center',flexDirection:'row'}}> 
+                        <Subtitle style={{color:'#7f7f8e'}}> {item.address}</Subtitle>
+                    </View>
+                    <View style={{alignItems:'center',flexDirection:'row'}}> 
+                        <Subtitle style={{color:'#14012b'}}>Mobile 1: {item.mobile1}</Subtitle>
+                    </View>
+                    <View style={{alignItems:'center',flexDirection:'row'}}> 
+                        <Subtitle style={{color:'#14012b'}}>Mobile 2: {item.mobile2}</Subtitle>
+                    </View>
 
                 </View>     
             </View>
@@ -404,7 +408,7 @@ _subQuantity=(index) =>{
         return( 
             <CardItem >
                 <Left>
-                <Text style={{color:'#000000',fontSize:15,fontWeight:'700'}}>{item.title} ( {item.Quantity} )</Text>
+                <Text style={{color:'#000000',fontSize:15,fontWeight:'700'}}>{item.title} ( {item.Quantity} Items )</Text>
                 </Left>
                 <Right>
                 <Text style={{color:'#000000',fontSize:15,fontWeight:'700'}}><Icon name="currency-inr" size={15}/>{item.price}</Text>
