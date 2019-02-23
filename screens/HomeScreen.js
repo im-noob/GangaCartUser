@@ -191,7 +191,7 @@ export default class HomeScreen extends Component {
             50,
           );
           console.log('on error fetching:'+error);
-          this.render_Frequently();
+          // this.render_Frequently();
         });
       }
     });
