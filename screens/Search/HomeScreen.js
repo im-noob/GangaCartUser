@@ -268,7 +268,7 @@ class ShopsProductsList extends React.Component
         checkboxes[parseInt(index)].checked = !checkboxes[index].checked;
          this.setState({fullData:checkboxes});
          CartPrepare(checkboxes[parseInt(index)],checkboxes[parseInt(index)].quntity);
-         //console.log(checkboxes[index]);
+         console.log(checkboxes[index]);
     }
 
 changeQuantity = (index,dindex) =>{
