@@ -55,14 +55,24 @@ export default class Order extends Component {
             data:[],
             path:'http://gomarket.ourgts.com/public/',
             GroceryShop:[],
-            priceTopay:0,
+
+            priceToPay:0,
+            savePrice:0,
+            save:0,
             selectedShop:{Key:''},
-            priceData:[]
+            priceData:[],
+            DefaultShop:{},
+            name:'',
+            address:'',
+            zipCode:'',
+            pic:'',
+            
+
         }
     }
 
     componentDidMount() {
-         this._start();
+        
         this.setState({path:Global.Image_URL});
         this.didFocusListener = this.props.navigation.addListener(
             'didFocus',
@@ -71,7 +81,8 @@ export default class Order extends Component {
                 this._start();
             }
         )
-     
+            
+        console.log("On componentDidMount");
     }
 
     componentWillUnmount(){
@@ -80,11 +91,27 @@ export default class Order extends Component {
 
     _store =async(item)=>{
         try {
-            await AsyncStorage.setItem('ShopID',JSON.stringify(item.gro_shop_info_id));
-           await this.setState({selectedShop:item});
-            this.render_price();
-           
-            console.log(this.state.selectedShop);
+          await this.setState({name:item.shop.shopName,pic:item.shop.pic,priceToPay:item.priceToPay,savePrice:item.savePrice,address:item.shop.address,zipCode:item.shop.pincode,priceData:item.item});
+           console.log("Selected Shop ",this.state.selectedShop)
+         } catch (error) {
+            
+        }
+    }
+
+    _cartCalc = async()=>{
+        try {
+            
+            var   data =await AsyncStorage.getItem('CartList');
+            data = JSON.parse(data);
+
+            data.forEach(ele=>{
+            
+                this.state.selectedShop.item(ele1=>{
+                        
+                })
+            })
+
+
         } catch (error) {
             
         }
@@ -94,14 +121,32 @@ export default class Order extends Component {
 
     _start =async()=>{
      
-        data =await AsyncStorage.getItem('CartList');
+     var   data =await AsyncStorage.getItem('CartList');
         data = JSON.parse(data);
      this.setState({data:data});
-        await this.render_shop();
+      
     await this.render_price();
+       data =await AsyncStorage.getItem('ShopID');  
+        if(data !=null){
+           
+       
+
+        this.state.GroceryShop.forEach(element=>{
+           // console.log(element);
+            if(element.shop.shopInfoID == JSON.parse(data)){
+                console.log("Shop id :",element);
+                this.setState({selectedShop:element});
+                this._store(element);
+            }
+            else{
+                console.log("In else me he ");
+            }
+        })
+
+    }
       
      await this.setState({renderCoponentFlag: true});
-   
+     console.log("In start Button ");
     }
 
     /**Shop List */
@@ -162,15 +207,15 @@ export default class Order extends Component {
                             );
                         }
                 }).catch((error) => {
-                    // ToastAndroid.showWithGravityAndOffset(
-                    //     'Network Failed!!! Retrying...',
-                    //     ToastAndroid.LONG,
-                    //     ToastAndroid.BOTTOM,
-                    //     25,
-                    //     50,
-                    // );
+                    ToastAndroid.showWithGravityAndOffset(
+                        'Network Failed!!! Retrying...',
+                        ToastAndroid.LONG,
+                        ToastAndroid.BOTTOM,
+                        25,
+                        50,
+                    );
                     console.log('on error fetching:'+error);
-                    //this.render_shop();
+                    this.render_shop();
                 });
             }
         });
@@ -182,23 +227,14 @@ export default class Order extends Component {
 
      /** fetch price  */
      render_price = async () => {
-        let value = await AsyncStorage.getItem('ShopID');
+        await this.setState({renderCoponentFlag: false});
         
-        if(value ==null ){
-        
-           return; 
-   
-        }
-        console.log("Data for fetech :",JSON.stringify({ 
-            id:this.state.data,
-            Shopid: value
-          }));
-       // this.setState({selectedShop:value});
+     
          var connectionInfoLocal = '';
-         var KEY = await AsyncStorage.getItem('Token');
+        
          NetInfo.getConnectionInfo().then((connectionInfo) => {
              console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
-             // connectionInfo.type = 'none';//force local loding
+            
              if(connectionInfo.type == 'none'){
                  console.log('no internet ');
                  ToastAndroid.showWithGravityAndOffset(
@@ -214,7 +250,7 @@ export default class Order extends Component {
                  this.setState({
                      LodingModal:true,
                  });
-                 fetch(Global.API_URL+'Grocery/Shop/product/price', {
+                 fetch(Global.API_URL+'Grocery/Shop/product/p', {
                      method: 'POST',
                      headers: {
                              'Accept': 'application/json',
@@ -222,18 +258,15 @@ export default class Order extends Component {
                          },
                          body: JSON.stringify({ 
                             id:this.state.data,
-                            Shopid: value
+                           
                           })
                      }).then((response) => response.json())
                      .then((responseJson) => {
-                         var itemsToSet = responseJson.data;
-                         console.log('resp in p:',responseJson);
+                        
                          if(responseJson.received == 'yes'){
-                         this.setState({
-                             LodingModal:false,
-                             priceTopay:responseJson.price,
-                             priceData:responseJson.data
-                         });
+                          
+                            this._prepareList(responseJson.data);
+                          
                          }else{
                              ToastAndroid.showWithGravityAndOffset(
                                  'Internal Server Error',
@@ -244,95 +277,134 @@ export default class Order extends Component {
                              );
                          }
                  }).catch((error) => {
-                    //  ToastAndroid.showWithGravityAndOffset(
-                    //      'Network Failed!!! Retrying...',
-                    //      ToastAndroid.LONG,
-                    //      ToastAndroid.BOTTOM,
-                    //      25,
-                    //      50,
-                    //  );
+                     ToastAndroid.showWithGravityAndOffset(
+                         'Network Failed!!! Retrying...',
+                         ToastAndroid.LONG,
+                         ToastAndroid.BOTTOM,
+                         25,
+                         50,
+                     );
                      console.log('on error fetching:'+error);
-                     //this.render_price();
+                     this.render_price();
                  });
              }
          });
          console.log(connectionInfoLocal);
      }
 
-    //  fetchPrice = async() =>{
-
-    //     let value = this.state.selectedShop;
-        
-    //     if(value ==null ){
-            
-    //        return; 
-   
-    //     }
-      
-    // //   console.log("Pass value for price ",this.state.GrocerySelectedProduct)
-        
-    //     await  fetch('http://gomarket.ourgts.com/public/api/Grocery/Shop/product/price', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Accept': 'application/json',
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body:JSON.stringify({
-    //             id:this.state.data,
-    //             Shopid:shop
-    //             })
-    //         }).then((response) => response.json())
-    //             .then((responseJson) => {
-                
-                
-    //           this.setState({avilableItem:responseJson.data});
-    //           this.setState({priceTopay:responseJson.price})
-              
+     /**Calculation of the data  */
+     _calculation =async ()=>{
+       try {
+            let tempArray=[];
            
-    //         }).catch((error) => {
-                    
+            this.state.GroceryShop.forEach(ele=>{
+              
+                var   totalPrice=0;
+                var   savePrice=0;
+                ele.item.forEach(ele2=>{
+                      totalPrice +=parseInt(ele2.Quantity,10)*parseInt(ele2.price,10);
+                      savePrice +=((parseInt(ele2.Quantity,10)*parseInt(ele2.price,10))*parseInt(ele2.offer,10))/100;
+                   })
+                   ele["priceToPay"]=totalPrice;
+                   ele["savePrice"]=savePrice;
+                 
+                  tempArray.push(ele);
+            })
+            await   this.setState({GroceryShop:tempArray});
+         
+            await this.setState({
+                LodingModal:false,
+            });
+            
+        } catch (error) {
+            console.log("Error in calculation he re beta :",error);
+        }
+            
+
+     }
+
+     _prepareList =async(allData)=>{
+         try {
+
+            console.log(allData);
+           let tempArray=[];
+            let i=0;
+         if(allData.length!=0){
+               this.setState({DefaultShop:allData[0],selectedShop:allData[0]});
+               let d = this.state.DefaultShop;
+               
+              await  allData.forEach(element=>{
                 
-    //             console.log("Erro during Price fetech", error.message);
-    //             // log.error({error:err})
-    //             //   value.flag=false;
-    //             //   value.data = "Network request failed" ==error.message?  console.log("Check internet connection"):error;
-    
-    //             }); 
+                 d.item.forEach(element1=>{
+                       i =0;
+                      
+                       element.item.forEach(element2=>{
+                        if(element1.map==element2.map)
+                            i++;
+                    })
+                    if(i==0){
+                        element.item.push(element1);
+                    }
+                   })
+                      tempArray.push(element);
+                })
+            }
+           
+            await   this.setState({GroceryShop:tempArray});
+           
+           await this._calculation();
+        
+             
+         } catch (error) {
+             console.log("Error he calculation part me re :",error);
+             
+         }
+        
+     }
 
-    // }
-
     
-_addQuantity=(index) =>{
+_addQuantity=async(index) =>{
     const data = this.state.data;
     let array=[];
-    data.forEach(element =>{
+    let totalPrice=0,savePrice=0;
+   await data.forEach(element =>{
         if(element.map == index){
             element.Quantity++; 
             CartPrepare(element,element.Quantity++);
         }
-
+       
+           
         array.push(element);
+
+ 
+  
+
     })
-    this.setState({data:array});
+    this.render_price();
    
+
     console.log(data)
 }
 
  
-_subQuantity=(index) =>{
+_subQuantity=async(index) =>{
 
     const data = this.state.data;
     let array=[];
-    data.forEach(element =>{
+  await  data.forEach(element =>{
         if(element.map == index){
            
             CartPrepare(element,element.Quantity > 1? element.Quantity-1 :element.Quantity);
         }
 
+
         array.push(element);
+       
+ 
     })
-    this.setState({data:array});
-    
+    this.render_price();
+   
+   
     console.log(data)
   
 }
@@ -340,7 +412,7 @@ _subQuantity=(index) =>{
     
 
     _renderCartItem =({item})=>{
-        console.log(item);
+      //  console.log(item);
         return(
            
             <Card>
@@ -383,23 +455,53 @@ _subQuantity=(index) =>{
     _renderShopItem =({item})=>{
        return( 
         <TouchableHighlight onPress={()=>{this._store(item);}}>
-            <View style={{borderWidth:0.5}}>
-                <View style={{padding:10}}>
-                    <View style={{alignItems:'center',flexDirection:'row'}}> 
-                        <Title style={{color:'#020aed'}}>{item.name}</Title>
-                    </View>
-                    <View style={{alignItems:'center',flexDirection:'row'}}> 
-                        <Subtitle style={{color:'#7f7f8e'}}> {item.address}</Subtitle>
-                    </View>
-                    <View style={{alignItems:'center',flexDirection:'row'}}> 
-                        <Subtitle style={{color:'#14012b'}}>Mobile 1: {item.mobile1}</Subtitle>
-                    </View>
-                    <View style={{alignItems:'center',flexDirection:'row'}}> 
-                        <Subtitle style={{color:'#14012b'}}>Mobile 2: {item.mobile2}</Subtitle>
-                    </View>
+           
+            <Card>
+                <Header style={{backgroundColor:'#07c60e'}}>
+                    <Left>
+                     <Thumbnail small source={{uri: item.shop.pic}} />
+                    </Left>
+                    <Right>
+                         <Title>{item.shop.shopName}</Title>
+                    </Right>
+                 
+                </Header>
+                <CardItem style={{backgroundColor:'#ffffff'}}>
+                    <Left>
+                        <Title style={{color:'#000000'}} >Price</Title>
+                    </Left>
+                    <Right>
+                     <Title style={{color:'#000000'}} >{item.priceToPay - item.savePrice} Rs</Title>
+                        {item.savePrice==0?
+                         <Subtitle></Subtitle>
+                         :
+                         <Subtitle style={{color:'#19751b'}} > save {item.savePrice} Rs Off</Subtitle>
+                        }
+                       
+                    </Right>
+                    
+                </CardItem>
 
-                </View>     
-            </View>
+                <CardItem style={{backgroundColor:'#d4d8d4',borderTopWidth:0.5}}>
+                    <Left>
+                        <Text>Address</Text>
+                    </Left>
+                    <Right>
+                        <Text>{item.shop.address}</Text>
+                    </Right>
+                    
+                </CardItem>
+                <CardItem style={{backgroundColor:'#d4d8d4'}}>
+                    <Left>
+                        <Text>Pin Code</Text>
+                    </Left>
+                    <Right>
+                        <Text>{item.shop.pin}</Text>
+                    </Right>
+                    
+                </CardItem>
+
+            </Card>
         </TouchableHighlight> 
         );
     }
@@ -411,27 +513,17 @@ _subQuantity=(index) =>{
                 <Text style={{color:'#000000',fontSize:15,fontWeight:'700'}}>{item.title} ( {item.Quantity} Items )</Text>
                 </Left>
                 <Right>
-                <Text style={{color:'#000000',fontSize:15,fontWeight:'700'}}><Icon name="currency-inr" size={15}/>{item.price}</Text>
+                <Text style={{color:'#000000',fontSize:15,fontWeight:'700'}}><Icon name="currency-inr" size={15}/>{(item.price * item.Quantity)-((item.price * item.Quantity)*item.offer/100) }</Text>
+                {
+                    ((item.price * item.Quantity)*item.offer/100) != 0?
+                    <Text style={{color:'#068406',fontSize:15,fontWeight:'700'}}>Save <Icon name="currency-inr" size={15}/>{((item.price * item.Quantity)*item.offer/100) } Off</Text>
+                    :
+                    <Text></Text>
+                }
                 </Right>
             </CardItem>
         
-            //  <View style={{borderWidth:0.5}}>
-            //      <View style={{padding:10}}>
-            //      <View style={{alignItems:'center',flexDirection:'row'}}> 
-            //          <Title style={{color:'#020aed'}}>{item.title} ( {item.Quantity} )</Title>
-            //      </View>
-            //      <View style={{alignItems:'center',flexDirection:'row'}}> 
-            //          <Subtitle style={{color:'#7f7f8e'}}> {item.address}</Subtitle>
-            //      </View>
-            //      <View style={{alignItems:'center',flexDirection:'row'}}> 
-            //          <Subtitle style={{color:'#14012b'}}>Mobile 1: {item.mobile1}</Subtitle>
-            //      </View>
-            //      <View style={{alignItems:'center',flexDirection:'row'}}> 
-            //          <Subtitle style={{color:'#14012b'}}>Mobile 2: {item.mobile2}</Subtitle>
-            //      </View>
- 
-            //      </View>     
-            //  </View>
+
          
          );
      }
@@ -473,38 +565,49 @@ _subQuantity=(index) =>{
                     
                     <Card >
                             
-                        <CardItem style={{backgroundColor:'#221793'}} header>
-                            <Title style={{color:'#ffffff'}}>{this.state.selectedShop.name}</Title>
-                        </CardItem>
+                        <Header style={{backgroundColor:'#221793'}}>
+                            <Title style={{color:'#ffffff'}}>{this.state.name}</Title>
+                        </Header>
                        
                         <CardItem>
-                               <Image style={{height:250,width:width-35,resizeMode:'contain'}} source={{uri:this.state.selectedShop.pic}}/>
+                               <Image style={{height:250,width:width-35,resizeMode:'contain'}} source={{uri:this.state.pic}}/>
                         </CardItem>
-                        <CardItem>
-                                        <View >
-                                <View style={{padding:10}}>
-                                <View style={{alignItems:'center',flexDirection:'row'}}> 
-                                    <Title style={{color:'#020aed'}}>{this.state.selectedShop.name}</Title>
-                                </View>
-                                <View style={{alignItems:'center',flexDirection:'row'}}> 
-                                    <Subtitle style={{color:'#7f7f8e'}}> {this.state.selectedShop.address}</Subtitle>
-                                </View>
-                                <View style={{alignItems:'center',flexDirection:'row'}}> 
-                                    <Subtitle style={{color:'#14012b'}}>Mobile 1: {this.state.selectedShop.mobile1}</Subtitle>
-                                </View>
-                                <View style={{alignItems:'center',flexDirection:'row'}}> 
-                                    <Subtitle style={{color:'#14012b'}}>Mobile 2: {this.state.selectedShop.mobile2}</Subtitle>
-                                </View>
+                       
+                <CardItem style={{backgroundColor:'#d4d8d4',borderTopWidth:0.5}}>
+                    <Left>
+                        <Text>Address</Text>
+                    </Left>
+                    <Right>
+                        <Text>{this.state.address}</Text>
+                    </Right>
+                    
+                </CardItem>
+                <CardItem style={{backgroundColor:'#d4d8d4'}}>
+                    <Left>
+                        <Text>Pin Code</Text>
+                    </Left>
+                    <Right>
+                        <Text>{this.state.zipCode}</Text>
+                    </Right>
+                    
+                </CardItem>
 
-                                </View>     
-                            </View>    
+                        <CardItem style={{backgroundColor:'#ffffff'}}>
+                            <Left>
+                                <Title style={{color:'#000000'}} >Price</Title>
+                            </Left>
+                            <Right>
+                            <Title style={{color:'#000000'}} >{this.state.priceToPay - this.state.savePrice} Rs</Title>
+                                {this.state.savePrice==0?
+                                <Subtitle></Subtitle>
+                                :
+                                <Subtitle style={{color:'#19751b'}} > save {this.state.savePrice} Rs Off</Subtitle>
+                                }
+                            
+                            </Right>
+                            
                         </CardItem>
-                        <CardItem>
-                             <Item>
-                                 <Title style={{color:'#000000'}}>Total Price :  {this.state.priceTopay} </Title>
-                            </Item>     
-                        </CardItem>
-                       
+
                    </Card>
                        <Card >
                             
@@ -537,7 +640,7 @@ _subQuantity=(index) =>{
                                 <Title style={{color:'#035904',fontSize:15,fontWeight:'700'}}>Total Price :</Title>
                             </Left>
                             <Right>
-                            <Text style={{color:'#035904',fontSize:15,fontWeight:'700'}}><Icon name="currency-inr" color="#035904" size={15}/>{this.state.priceTopay}</Text>
+                            <Text style={{color:'#035904',fontSize:15,fontWeight:'700'}}><Icon name="currency-inr" color="#035904" size={15}/>{this.state.priceToPay-this.state.savePrice}</Text>
                
                             </Right>
                             
