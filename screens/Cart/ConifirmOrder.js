@@ -194,15 +194,15 @@ export default class ConifirmOrder extends React.Component {
                             );
                         }
                 }).catch((error) => {
-                    ToastAndroid.showWithGravityAndOffset(
-                        'Network Failed!!! Retrying...',
-                        ToastAndroid.LONG,
-                        ToastAndroid.BOTTOM,
-                        25,
-                        50,
-                    );
+                    // ToastAndroid.showWithGravityAndOffset(
+                    //     'Network Failed!!! Retrying...',
+                    //     ToastAndroid.LONG,
+                    //     ToastAndroid.BOTTOM,
+                    //     25,
+                    //     50,
+                    // );
                     console.log('on error fetching:'+error);
-                    this.render_OrderSend();
+                   // this.render_OrderSend();
                 });
             }
         });

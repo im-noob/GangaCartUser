@@ -27,8 +27,6 @@ export default createStackNavigator(
           header:null
         }),
       },
-     
-     
     },
     {
      initialRouteName:'HomeScreen' 

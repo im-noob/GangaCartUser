@@ -162,15 +162,15 @@ export default class Order extends Component {
                             );
                         }
                 }).catch((error) => {
-                    ToastAndroid.showWithGravityAndOffset(
-                        'Network Failed!!! Retrying...',
-                        ToastAndroid.LONG,
-                        ToastAndroid.BOTTOM,
-                        25,
-                        50,
-                    );
+                    // ToastAndroid.showWithGravityAndOffset(
+                    //     'Network Failed!!! Retrying...',
+                    //     ToastAndroid.LONG,
+                    //     ToastAndroid.BOTTOM,
+                    //     25,
+                    //     50,
+                    // );
                     console.log('on error fetching:'+error);
-                    this.render_shop();
+                    //this.render_shop();
                 });
             }
         });
@@ -244,15 +244,15 @@ export default class Order extends Component {
                              );
                          }
                  }).catch((error) => {
-                     ToastAndroid.showWithGravityAndOffset(
-                         'Network Failed!!! Retrying...',
-                         ToastAndroid.LONG,
-                         ToastAndroid.BOTTOM,
-                         25,
-                         50,
-                     );
+                    //  ToastAndroid.showWithGravityAndOffset(
+                    //      'Network Failed!!! Retrying...',
+                    //      ToastAndroid.LONG,
+                    //      ToastAndroid.BOTTOM,
+                    //      25,
+                    //      50,
+                    //  );
                      console.log('on error fetching:'+error);
-                     this.render_price();
+                     //this.render_price();
                  });
              }
          });
