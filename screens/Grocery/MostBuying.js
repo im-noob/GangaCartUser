@@ -47,6 +47,7 @@ export default class ShopsProductsList extends React.Component
 
     fetech = async() =>{
         this.setState({process:true});
+        var KEY = await AsyncStorage.getItem('Token');
         var connectionInfoLocal = '';
         NetInfo.getConnectionInfo().then((connectionInfo) => {
             console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
@@ -67,6 +68,7 @@ export default class ShopsProductsList extends React.Component
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
+                        'Authorization':'Bearer '+KEY,
                     },
                     body:JSON.stringify({
                         userID:1,
