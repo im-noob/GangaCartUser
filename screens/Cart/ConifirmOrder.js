@@ -122,9 +122,10 @@ export default class ConifirmOrder extends React.Component {
        if(!this._validation()){
             return
        }
+       console.log(this.state.selectedShop);
         const data =  JSON.stringify({
             Order:this.state.data,
-            shop:this.state.selectedShop.gro_shop_info_id,
+            shop:this.state.selectedShop.shop.shopInfoID,
             address:"Name : "+this.state.profile.cname+" Phone : +91 "+this.state.phone+" Address :"+this.state.street+" , State : Bihar ,City : Bhagalpur , Picode "+this.state.profile.cpin,
             realPrice:this.state.price,
             cid:this.state.userID,
@@ -132,7 +133,7 @@ export default class ConifirmOrder extends React.Component {
             offer:this.state.offerPrice
           })
 
-         // console.log(data);
+         console.log(data);
         var connectionInfoLocal = '';
         var KEY = await AsyncStorage.getItem('Token');
         if(KEY == null ){

@@ -20,6 +20,12 @@ import { Toast } from 'native-base';
     
             // await AsyncStorage.setItem('CartList',JSON.stringify([]));
             //   console.log(item);
+            if( item.map == null || item.size == null || item.unit == null){
+                ToastAndroid.showWithGravity("Item Not add On Cart",ToastAndroid.LONG,ToastAndroid.BOTTOM);
+                console.log('Error ',item);
+                return;
+                         
+            }
                
                let cartValue =[];
                 let temp =item;
