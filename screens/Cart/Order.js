@@ -424,7 +424,7 @@ _subQuantity=async(index) =>{
                         <Text>Pin Code</Text>
                     </Left>
                     <Right>
-                        <Text>{item.shop.pin}</Text>
+                        <Text>{item.shop.pincode}</Text>
                     </Right>
                     
                 </CardItem>
@@ -562,6 +562,7 @@ _subQuantity=async(index) =>{
                            <FlatList
                             data={this.state.priceData}
                             renderItem={this._renderPrice}
+                            keyExtractor={(item)=>item.pid}
                            />
                         <CardItem footer style={{backgroundColor:'#cccecc'}}>
                             <Left>
@@ -588,6 +589,7 @@ _subQuantity=async(index) =>{
                            <FlatList
                             data={this.state.GroceryShop}
                             renderItem={this._renderShopItem}
+                            keyExtractor={(item)=>{console.log(item.shop.shopInfoID)}}
                            />
                         
                     </Card>
