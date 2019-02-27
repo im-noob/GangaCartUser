@@ -149,6 +149,78 @@ export default class Order extends Component {
      console.log("In start Button ");
     }
 
+    /**Shop List */
+    render_shop = async () => {
+        let value = await AsyncStorage.getItem('ShopID');
+        
+        this.setState({selectedShop:value});
+        var connectionInfoLocal = '';
+        var KEY = await AsyncStorage.getItem('userToken_S');
+        NetInfo.getConnectionInfo().then((connectionInfo) => {
+            console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
+            // connectionInfo.type = 'none';//force local loding
+            if(connectionInfo.type == 'none'){
+                console.log('no internet ');
+                ToastAndroid.showWithGravityAndOffset(
+                    'Oops! No Internet Connection',
+                    ToastAndroid.LONG,
+                    ToastAndroid.BOTTOM,
+                    25,
+                    50,
+                );
+                return;
+            }else{
+                console.log('yes internet '); 
+                this.setState({
+                    LodingModal:true,
+                });
+                fetch(Global.API_URL+'Grocery/Shop/List', {
+                    method: 'GET',
+                    headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                           
+                        },
+                       
+                    }).then((response) => response.json())
+                    .then((responseJson) => {
+                        var itemsToSet = responseJson.data;
+                      // console.log('resp:',itemsToSet);
+                        if(responseJson.received == 'yes'){
+                        this.setState({GroceryShop:responseJson.data.data}); 
+                        this.setState({
+                            LodingModal:false,
+                        });
+                        this.state.GroceryShop.forEach(element=>{
+                            if(value == element.gro_shop_info_id){
+                            //   console.log(element);
+                                this.setState({selectedShop:element});
+                            }
+                        })
+                        }else{
+                            ToastAndroid.showWithGravityAndOffset(
+                                'Internal Server Error',
+                                ToastAndroid.LONG,
+                                ToastAndroid.BOTTOM,
+                                25,
+                                50,
+                            );
+                        }
+                }).catch((error) => {
+                    ToastAndroid.showWithGravityAndOffset(
+                        'Network Failed!!! Retrying...',
+                        ToastAndroid.LONG,
+                        ToastAndroid.BOTTOM,
+                        25,
+                        50,
+                    );
+                    console.log('on error fetching:'+error);
+                    this.render_shop();
+                });
+            }
+        });
+        console.log(connectionInfoLocal);
+    }
    
     
       
@@ -213,7 +285,7 @@ export default class Order extends Component {
                          50,
                      );
                      console.log('on error fetching:'+error);
-                   this.render_price();
+                     this.render_price();
                  });
              }
          });

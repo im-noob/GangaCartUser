@@ -202,7 +202,7 @@ export default class ShopsProductsList extends React.Component
                 temp_map_id = element["mid"];
             }
         });
-        //console.log(list);
+        console.log(list);
         this.setState({checkboxes:list})
         this.setState({fullData:list})
     }
@@ -272,7 +272,6 @@ _renderIteam=({item})=>{
     //  console.log(uri);
     
     return(    
-            <Card>
                 <CardItem>
                     <Grid style={{flexDirection:'row'}}>
                         <Grid style={{flex:1}}>
@@ -336,8 +335,7 @@ _renderIteam=({item})=>{
                             </Grid>  
                         </Grid>
                     </Grid>
-                </CardItem>
-            </Card>              
+                </CardItem>              
     );
 } 
 
@@ -379,8 +377,7 @@ _renderIteam=({item})=>{
     render(){
         return(
             <Container>
-                <Content>
-                <ScrollView>
+                <Card>
                     <FlatList
                             data={this.state.checkboxes}
                             renderItem={this._renderIteam}
@@ -398,8 +395,7 @@ _renderIteam=({item})=>{
                                             <Text>{this.state.isEmpty}</Text>
                                         </View>)}}          
                     />
-                </ScrollView>
-                </Content>
+                </Card>
             </Container>      
         )
     }

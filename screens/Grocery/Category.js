@@ -58,7 +58,7 @@ export default class Category extends Component {
                 }
             }).then((response) => response.json())
             .then((responseJson) => {
-                //console.log(responseJson); 
+               // console.log(responseJson); 
                 if(responseJson.received == "yes"){
                     let list = [];
                     let content1 = [];
