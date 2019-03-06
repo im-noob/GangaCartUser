@@ -8,7 +8,7 @@ import {
   Image,
   AsyncStorage,
   ToastAndroid,
-  FlatList,
+  FlatList,ImageBackground,
   NetInfo,
   Modal,
 } from "react-native";
@@ -129,11 +129,11 @@ export default class HomeScreen extends Component {
     console.log(connectionInfoLocal);
   }
  
-
-  render_category = async () => {
+ render_category = async () => {
+  
     var connectionInfoLocal = '';
         NetInfo.getConnectionInfo().then((connectionInfo) => {
-     //   console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
+//console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
         if(connectionInfo.type == 'none'){
             console.log("no internet ");
             ToastAndroid.showWithGravityAndOffset(
@@ -145,7 +145,7 @@ export default class HomeScreen extends Component {
             );        
         }else{
             console.log("yes internet ");
-            fetch(Global.API_URL+'cat', {
+            fetch(Global.API_URL+'gro_category', {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
@@ -153,10 +153,10 @@ export default class HomeScreen extends Component {
                 }
             }).then((response) => response.json())
             .then((responseJson) => {
-                 
+             // console.log(responseJson)
                 if(responseJson.received == "yes"){
-                  console.log(responseJson);
-                    this.setState({CategoryData:responseJson.data});
+                //  console.log(responseJson);
+                  this.setState({CategoryData:responseJson.data.data});
                 }
                 }).catch((error) => {
                     console.log("on error featching:"+error);
@@ -242,9 +242,9 @@ export default class HomeScreen extends Component {
 
   _renderItem = ({item}) =>{
       return(
-        <TouchableOpacity onPress={()=>{this.props.navigation.navigate(item.navigationKey)}}>
+        <TouchableOpacity onPress={()=>{this.props.navigation.navigate('TopSubCategory',{id:item.mapcid});/** this.props.navigation.navigate(item.navigationKey)*/}}>
         <View  style={{justifyContent:'center',width:60,paddingHorizontal:10,paddingVertical:4,borderColor:"#040504"}}>
-            <Image style={{height:50,width:50,resizeMode: 'contain'}} source={{uri: item.pic}}/>
+            <Image style={{height:50,width:50,resizeMode: 'contain'}} source={{uri:Global.Image_URL+item.pic}}/>
             <Text style={{color:'#000000',fontSize:10}}>{item.title}</Text>   
         </View>
         </TouchableOpacity>
@@ -276,19 +276,16 @@ export default class HomeScreen extends Component {
             <View style={{flex:1,paddingLeft:1}}>
 
           
-             <View style={{alignItems:'center', justifyContent:'center',padding:3}}>
-                <Text style={{fontSize:14,fontWeight:'300'}}>{pName} </Text>
-            </View> 
+              <View style={{alignItems:'center', justifyContent:'center',padding:3}}>
+                  <Text style={{fontSize:14,fontWeight:'300'}}>{pName} </Text>
+              </View> 
             </View>
             
             <View style={{padding:3}}>
             {
               
               item.flag ?
-              <Button bordered onPress={()=>{this._addItem(item.map); console.log("Flag :",item.flag)}}>
-                <Text>Add to Cart</Text>
-              </Button>
-              :
+             
               <View style={{flexDirection:'row'}}>
                   <Button style={{height:30,width:25,alignItems:'center'}}  onPress={()=>{this._subQuantity(item.map); /**this.setState({item:{Quantity:qunt}})*/}}>
                       <Text style={{color:'#ffffff',textAlign:'center',alignSelf:'center', fontSize:'900',fontSize:15}}>-</Text>
@@ -300,6 +297,11 @@ export default class HomeScreen extends Component {
                     <Text style={{color:'#ffffff',textAlign:'center',alignSelf:'center', fontSize:'900',fontSize:15}}>+</Text>
                   </Button>   
               </View>
+              :
+              <Button bordered onPress={()=>{this._addItem(item.map); console.log("Flag :",item.flag)}}>
+              <Text>Add to Cart</Text>
+            </Button>
+            
             }
             </View>
         </View>
@@ -352,7 +354,7 @@ _addItem =(id)=>{
   let tempArray =[];
   this.state.DataRecent.forEach(element=>{
       if(element.map == id){
-          element.flag = false;
+          element.flag = true;
           console.log(element);
       }
       tempArray.push(element);      
@@ -385,8 +387,9 @@ render() {
           <Content>
             <Card style={{height:100,width:500}} transparent >
               <FlatList
-                data={this.state.data}
+                data={this.state.CategoryData}
                 renderItem={this._renderItem}
+                keyExtractor={(item)=>item.mapcid+''}
                 horizontal
               />
             </Card>
@@ -402,33 +405,68 @@ render() {
                   <FlatList
                   data={this.state.DataRecent}
                   renderItem={this._renderRecent}
+                  keyExtractor={(item)=>item.map+''}
                   horizontal
                   />
               </Card>
               :<View></View>
             }
+           <ImageBackground style={{height:200,width:width,paddingVertical:10,marginVertical:10}} source={{uri:"https://previews.123rf.com/images/grapestock/grapestock1801/grapestock180100026/92840961-mail-icon-on-finger-over-light-gradient-blue-background-contact-us-concept.jpg"}} > 
+             
+                <View style={{padding:10}}>
+                    <Text style={{color:'#ffffff',fontSize:25}}>Get your Groceries delivered from local stores</Text>
+                    <Text style={{color:'#ffffff'}}>Free Delivery order know!</Text>
+                </View >
+                {/* 
+                <View style={{padding:10,flexDirection:'row',justifyContent:'space-around'}}>
+                  <View>
+                    <Input style={{height:20,width:200}}/>
+                  </View>
+                  <View>
+                    <Button><Text>Submit</Text></Button>
+                  </View>
 
+                </View> 
+                */}
+             
+           </ImageBackground>
           
-            <Card>
-              <CardItem header>
-                  <Subtitle style={{color:'#202123'}}>Category List</Subtitle>
-              </CardItem>
-                <FlatList
-                  data={this.state.CategoryData}
-                  renderItem={this._renderCategory}
-                  keyExtractor = {item => item.sKey}
-                  horizontal
-                />
-            </Card>
+            
+            
+            <View>
+              <Image source={{uri:Global.Image_URL+"Banner/Don't%20Pay.jpg"}} style={{height:150,width:width,resizeMode:'contain'}}/>
+            </View>
+
+            <View>
+              <Image source={{uri:Global.Image_URL+"Banner/Beverages.jpg"}} style={{height:100,width:width,resizeMode:'contain'}}/>
+            </View>
 
 
-           <FlatList
+            <View>
+              <Image source={{uri:Global.Image_URL+"Banner/BreadBakery.jpg"}} style={{height:150,width:width,resizeMode:'contain'}}/>
+            </View>
+
+            <View>
+              <Image source={{uri:Global.Image_URL+"Banner/Our Gaurantees(2).jpg"}} style={{height:150,width:width,resizeMode:'contain'}}/>
+            </View>
+
+            <View>
+              <Image source={{uri:Global.Image_URL+"Banner/NearStore.jpg"}} style={{height:150,width:width,resizeMode:'contain'}}/>
+            </View>
+
+            <View>
+              <Image source={{uri:Global.Image_URL+"Banner/Save Money.jpg"}} style={{height:150,width:width,resizeMode:'contain'}}/>
+            </View>
+
+           
+
+           {/* <FlatList
               data={this.state.adData}
               renderItem={this._renderItemAdd}
               
             />
          
-            {/* <Button bordered dark onPress={()=>{
+            <Button bordered dark onPress={()=>{
               this.props.navigation.navigate('Gorcery');
             }}>
               <Text> Go to Profile screen</Text>

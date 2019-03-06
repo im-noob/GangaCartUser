@@ -43,8 +43,7 @@ const CustomDrawerContentComponent = (props) => (
 //     },
 // });
 // const ExampleScreenSecondStack = createStackNavigator(
-//   {
-    
+//   {   
 //   },
 // );
 

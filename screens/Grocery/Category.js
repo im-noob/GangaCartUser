@@ -29,6 +29,7 @@ export default class Category extends Component {
             renderCoponentFlag: false,
             LodingModal: false,
             CategoryData: [],
+            
         }
     }
 

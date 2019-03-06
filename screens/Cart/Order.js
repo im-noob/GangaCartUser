@@ -65,15 +65,15 @@ export default class Order extends Component {
             name:'',
             address:'',
             zipCode:'',
-            pic:'',
-            
+            pic:'iui',
+            priceList:[],
 
         }
     }
 
     componentDidMount() {
         
-        this.setState({path:Global.Image_URL});
+        
         this.didFocusListener = this.props.navigation.addListener(
             'didFocus',
             ()=>{
@@ -91,11 +91,18 @@ export default class Order extends Component {
 
     _store =async(item)=>{
         try {
-          await this.setState({name:item.shop.shopName,pic:item.shop.pic,priceToPay:item.priceToPay,savePrice:item.savePrice,address:item.shop.address,zipCode:item.shop.pincode,priceData:item.item});
-           console.log("Selected Shop ",this.state.selectedShop)
-         } catch (error) {
+            if(item.shop == null){
+                console.log("I am in if part of store ");
+            }
+            console.log("In Store ");
+            await AsyncStorage.setItem('ShopID',""+item.shop.shopInfoID);
             
+            await this.setState({name:item.shop.shopName,pic:item.shop.pic,priceToPay:item.priceToPay,savePrice:item.savePrice,address:item.shop.address,zipCode:item.shop.pincode,priceData:item.item});
+            //console.log("Selected Shop ",this.state.selectedShop)
+         } catch (error) {
+            console.log("Selected shop me error he re  ",error);
         }
+        console.log("Out of Store ");
     }
 
     _cartCalc = async()=>{
@@ -120,113 +127,32 @@ export default class Order extends Component {
 
 
     _start =async()=>{
-     
+    try {
+        
+   
+        this.setState({path:Global.Image_URL});
+        console.log("\nIn Start\n");
      var   data =await AsyncStorage.getItem('CartList');
         data = JSON.parse(data);
      this.setState({data:data});
       
     await this.render_price();
-       data =await AsyncStorage.getItem('ShopID');  
-        if(data !=null){
-           
-       
-
-        this.state.GroceryShop.forEach(element=>{
-           // console.log(element);
-            if(element.shop.shopInfoID == JSON.parse(data)){
-                console.log("Shop id :",element);
-                this.setState({selectedShop:element});
-                this._store(element);
-            }
-            else{
-                console.log("In else me he ");
-            }
-        })
-
-    }
+     
       
      await this.setState({renderCoponentFlag: true});
-     console.log("In start Button ");
+     console.log("Out start");
+    } catch (error) {
+        console.log("Error he ",error);
+    }
     }
 
-    /**Shop List */
-    render_shop = async () => {
-        let value = await AsyncStorage.getItem('ShopID');
-        
-        this.setState({selectedShop:value});
-        var connectionInfoLocal = '';
-        var KEY = await AsyncStorage.getItem('userToken_S');
-        NetInfo.getConnectionInfo().then((connectionInfo) => {
-            console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
-            // connectionInfo.type = 'none';//force local loding
-            if(connectionInfo.type == 'none'){
-                console.log('no internet ');
-                ToastAndroid.showWithGravityAndOffset(
-                    'Oops! No Internet Connection',
-                    ToastAndroid.LONG,
-                    ToastAndroid.BOTTOM,
-                    25,
-                    50,
-                );
-                return;
-            }else{
-                console.log('yes internet '); 
-                this.setState({
-                    LodingModal:true,
-                });
-                fetch(Global.API_URL+'Grocery/Shop/List', {
-                    method: 'GET',
-                    headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json',
-                           
-                        },
-                       
-                    }).then((response) => response.json())
-                    .then((responseJson) => {
-                        var itemsToSet = responseJson.data;
-                      // console.log('resp:',itemsToSet);
-                        if(responseJson.received == 'yes'){
-                        this.setState({GroceryShop:responseJson.data.data}); 
-                        this.setState({
-                            LodingModal:false,
-                        });
-                        this.state.GroceryShop.forEach(element=>{
-                            if(value == element.gro_shop_info_id){
-                            //   console.log(element);
-                                this.setState({selectedShop:element});
-                            }
-                        })
-                        }else{
-                            ToastAndroid.showWithGravityAndOffset(
-                                'Internal Server Error',
-                                ToastAndroid.LONG,
-                                ToastAndroid.BOTTOM,
-                                25,
-                                50,
-                            );
-                        }
-                }).catch((error) => {
-                    ToastAndroid.showWithGravityAndOffset(
-                        'Network Failed!!! Retrying...',
-                        ToastAndroid.LONG,
-                        ToastAndroid.BOTTOM,
-                        25,
-                        50,
-                    );
-                    console.log('on error fetching:'+error);
-                    this.render_shop();
-                });
-            }
-        });
-        console.log(connectionInfoLocal);
-    }
    
     
       
 
      /** fetch price  */
      render_price = async () => {
+        console.log("\nIn render Price\n");
         await this.setState({renderCoponentFlag: false});
         
      
@@ -285,48 +211,124 @@ export default class Order extends Component {
                          50,
                      );
                      console.log('on error fetching:'+error);
-                     this.render_price();
+                   this.render_price();
                  });
              }
          });
-         console.log(connectionInfoLocal);
+         console.log("\nOut Render Price\n");
+        
      }
 
      /**Calculation of the data  */
      _calculation =async ()=>{
        try {
+           console.log("\nIn Calculation\n");
             let tempArray=[];
-           
-            this.state.GroceryShop.forEach(ele=>{
-              
+
+            /** 
+             * this.state.priceList=
+             * [{
+             *      "item":[{}]
+             *      "shop":{}
+             *  } 
+             * ]
+             */
+
+           let cartList = await AsyncStorage.getItem('CartList');
+           if(cartList == null){
+               console.log("\n : There is not any Data in cart \n");
+               this.props.navigation.navigate('Auth');
+               return;
+           }
+
+           cartList=this.state.data; //JSON.parse(this.state.data);
+
+           /**
+            * cartList=
+            * [{map,mapcid,size,unit,title}]
+            */
+              console.log(cartList); 
+                       
+        
+            this.state.priceList.forEach(ele=>{
+              /**
+               *ele= {
+               * "item":[{Quntity,info,map,mapcid,offer,pic,pid,price,shopID,Size,spid,title,unit}]
+               * "shop":{address,city,ntoken,pic,pincode,rating,shopInfoID,shopName,uid}
+               * }
+               */
                 var   totalPrice=0;
                 var   savePrice=0;
-                ele.item.forEach(ele2=>{
+                cartList.forEach(ele2=>{
+                    /**
+                     * ele2 ={map,mapcid,size,unit,title,Quantity}
+                     */
+                    ele.item.forEach(ele3=>{
+                        /**
+                         * ele3 ={Quntity,info,map,mapcid,offer,pic,pid,price,shopID,Size,spid,title,unit}
+                         */
+
+                         if(ele2.map==ele3.map && ele2.mapcid == ele3.mapcid && ele2.size == ele3.size && ele2.unit == ele3.unit && ele2.title == ele3.title){
+                            totalPrice +=parseInt(ele2.Quantity,10)*parseInt(ele3.price,10);
+                            savePrice +=((parseInt(ele2.Quantity,10)*parseInt(ele3.price,10))*parseInt(ele3.offer,10))/100;
+                            ele3.Quantity =ele2.Quantity;
+                        }
+                     })
+
+                })
+              /**   ele.item.forEach(ele2=>{
                       totalPrice +=parseInt(ele2.Quantity,10)*parseInt(ele2.price,10);
                       savePrice +=((parseInt(ele2.Quantity,10)*parseInt(ele2.price,10))*parseInt(ele2.offer,10))/100;
-                   })
+                   })*/
                    ele["priceToPay"]=totalPrice;
                    ele["savePrice"]=savePrice;
                  
                   tempArray.push(ele);
             })
             await   this.setState({GroceryShop:tempArray});
-         
-            await this.setState({
-                LodingModal:false,
-            });
-            
+            console.log("\nOut Calculation\n");
+           
+
+            data =await AsyncStorage.getItem('ShopID');  
+            if(data !=null){          
+           
+    
+            this.state.GroceryShop.forEach(element=>{
+               
+                if(element.shop.shopInfoID == JSON.parse(data)){
+                   
+                    this.setState({selectedShop:element});
+                    this._store(element);
+                    console.log("In start : ",element);
+                }
+                else{
+                    console.log("In else me he ");
+                }
+            })
+    
+    
+    
+        }
+        else{
+            console.log("In class data it is avilabel ",this.state.DefaultShop);
+            this.setState({selectedShop:DefaultShop});
+            this._store(this.state.selectedShop);
+            console.log("In start : ",this.state.selectedShop);
+        }
+        await this.setState({
+            LodingModal:false,
+        });    
         } catch (error) {
             console.log("Error in calculation he re beta :",error);
         }
             
-
+       
      }
 
      _prepareList =async(allData)=>{
          try {
 
-            console.log(allData);
+            console.log("\nIn Prepare List\n");
            let tempArray=[];
             let i=0;
          if(allData.length!=0){
@@ -350,8 +352,8 @@ export default class Order extends Component {
                 })
             }
            
-            await   this.setState({GroceryShop:tempArray});
-           
+           // await   this.setState({GroceryShop:tempArray});priceList
+           await   this.setState({priceList:tempArray});
            await this._calculation();
         
              
@@ -359,57 +361,63 @@ export default class Order extends Component {
              console.log("Error he calculation part me re :",error);
              
          }
-        
+         console.log("\nOut Prepare List\n");
      }
 
-    
-_addQuantity=async(index) =>{
-    const data = this.state.data;
-    let array=[];
-    let totalPrice=0,savePrice=0;
-   await data.forEach(element =>{
-        if(element.map == index){
-            element.Quantity++; 
-            CartPrepare(element,element.Quantity++);
-        }
-       
-           
-        array.push(element);
+        
+    _addQuantity=async(index) =>{
+            const data = this.state.data;
+            let array=[];
+            let totalPrice=0,savePrice=0;
+            await data.forEach(element =>{
+                if(element.map == index){
+                    element.Quantity++; 
+                    CartPrepare(element,element.Quantity++);
+                
+                }
+            array.push(element);
+            })
+            this.setState({data:array});
+            await this._calculation();
 
- 
-  
-
-    })
-    this.render_price();
-   
-
-    console.log(data)
-}
-
- 
-_subQuantity=async(index) =>{
-
-    const data = this.state.data;
-    let array=[];
-  await  data.forEach(element =>{
-        if(element.map == index){
-           
-            CartPrepare(element,element.Quantity > 1? element.Quantity-1 :element.Quantity);
+            console.log(data)
         }
 
-
-        array.push(element);
-       
- 
-    })
-    this.render_price();
-   
-   
-    console.log(data)
-  
-}
-
     
+    _subQuantity=async(index) =>{
+
+                const data = this.state.data;
+                let array=[];
+                await  data.forEach(element =>{
+                    if(element.map == index){
+                    
+                        CartPrepare(element,element.Quantity > 1? element.Quantity-1 :element.Quantity);
+                    }
+
+
+                    array.push(element);
+                
+            
+                })
+                this.setState({data:array});
+                await this._calculation();
+                 console.log(data)
+            
+        }
+
+    _removeItem=async(index) =>{
+        try{
+            console.log("In remove item");
+           await CartRemoveItem(index);
+           var   data =await AsyncStorage.getItem('CartList');
+           data = JSON.parse(data);
+        this.setState({data:data});
+           await this._calculation();
+        }
+         catch(error){
+            console.log("Error in remove data :",error);
+         }
+    }
 
     _renderCartItem =({item})=>{
       //  console.log(item);
@@ -420,7 +428,7 @@ _subQuantity=async(index) =>{
                 <Left><ImageBackground style={{height:100,width:90}} source={{uri:this.state.path+item.pic}}>
                    <View style={{flexDirection:'row',justifyContent:'space-between'}}>
                    <View style={{borderRadius:4,width:20,backgroundColor:'#ffffff',alignSelf:'flex-end',borderWidth:0.1,borderColor:'#000000'}}>
-                   <TouchableHighlight onPress={()=>{CartRemoveItem(item);this._start();}}>
+                   <TouchableHighlight onPress={()=>{this._removeItem(item)}}>
                       <Text style={{fontWeight:'900',fontSize:14,alignSelf:'center',color:'#ce0000'}}>X</Text>
                    </TouchableHighlight>
                    </View>
@@ -620,6 +628,7 @@ _subQuantity=async(index) =>{
                                        <FlatList
                                        data={this.state.data}
                                        renderItem={this._renderCartItem}
+                                       extraData={this.state}
                                        />
                                     
                             </CardItem>
@@ -635,6 +644,7 @@ _subQuantity=async(index) =>{
                             data={this.state.priceData}
                             renderItem={this._renderPrice}
                             keyExtractor={(item)=>item.pid}
+                            extraData={this.state}
                            />
                         <CardItem footer style={{backgroundColor:'#cccecc'}}>
                             <Left>
@@ -662,6 +672,7 @@ _subQuantity=async(index) =>{
                             data={this.state.GroceryShop}
                             renderItem={this._renderShopItem}
                             keyExtractor={(item)=>{console.log(item.shop.shopInfoID)}}
+                            extraData={this.state}
                            />
                         
                     </Card>

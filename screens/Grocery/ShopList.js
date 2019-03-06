@@ -1,10 +1,11 @@
 import React from 'react';
 import {ActivityIndicator,AsyncStorage,ToastAndroid,StyleSheet,
-        TouchableOpacity,Image,View,FlatList,ScrollView,NetInfo
+        TouchableOpacity,Image,View,FlatList,ScrollView,NetInfo,Dimensions
         } from 'react-native';
-import { SearchBar } from 'react-native-elements'
-import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail, Text } from 'native-base';
+import { SearchBar, Card } from 'react-native-elements'
+import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail, Text, Title, CardItem, Subtitle } from 'native-base';
 import Global from  '../../constants/Global';
+const {width,height} = Dimensions.get('window');
 
 export default class ShopList extends React.Component{
     constructor(props){
@@ -15,7 +16,7 @@ export default class ShopList extends React.Component{
             obj:this.props,
             serachText:"",
             fullData:'',
-            isEmpty:'',
+            isEmpty:'', 
         }
     }
     componentDidMount(){  
@@ -83,41 +84,74 @@ export default class ShopList extends React.Component{
             uri="https://pvsmt99345.i.lithium.com/t5/image/serverpage/image-id/10546i3DAC5A5993C8BC8C?v=1.0"
         }
         return(
-              <List style={{backgroundColor:'#f9f9f9'}}>
-                <ListItem avatar>
-                    <Left>
-                        <TouchableOpacity onPress={()=>{this.props.navigation.navigate('ShopDetail',{item:item});}}>
-                            <Thumbnail large source={{uri: uri}} />
-                        </TouchableOpacity>
-                    </Left>
-                    <Body style={{backgroundColor:"#f9f9f9"}}>
-                        <TouchableOpacity onPress={()=>{this._storeData(item.gro_shop_info_id);}}>
-                            <View>
-                                <Text>{item.name}</Text>
-                                <Text note>Address : {item.address}</Text>
-                            </View>
-                            <View style={{flexDirection:'row',alignItems:'center'}}>
+            //   <List style={{backgroundColor:'#f9f9f9'}}>
+            //     <ListItem avatar>
+            //         <Left>
+            //             <TouchableOpacity onPress={()=>{this.props.navigation.navigate('ShopDetail',{item:item});}}>
+            //                 <Thumbnail large source={{uri: uri}} />
+            //             </TouchableOpacity>
+            //         </Left>
+            //         <Body style={{backgroundColor:"#f9f9f9"}}>
+            //             <TouchableOpacity onPress={()=>{this._storeData(item.gro_shop_info_id);}}>
+            //                 <View>
+            //                     <Text>{item.name}</Text>
+            //                     <Text note>Address : {item.address}</Text>
+            //                 </View>
+            //                 <View style={{flexDirection:'row',alignItems:'center'}}>
                                 
-                                {/* <View>
-                                <Text note>Ratting : {item.address}</Text>
-                                </View> */}
-                            </View>
-                        </TouchableOpacity>
-                    </Body>
-                    <Right>
-                        <Text style={{
-                                fontWeight:'500',
-                                fontSize:15,
-                                backgroundColor:'#ffa329',
-                                color:'white',
-                                borderRadius:5,
-                                paddingHorizontal:5
-                            }}>
-                                {(item.rating ) ? (item.rating+'*') : 0+'*'}
-                        </Text>
-                    </Right>
-                </ListItem>
-              </List>
+            //                     {/* <View>
+            //                     <Text note>Ratting : {item.address}</Text>
+            //                     </View> */}
+            //                 </View>
+            //             </TouchableOpacity>
+            //         </Body>
+            //         <Right>
+            //             <Text style={{
+            //                     fontWeight:'500',
+            //                     fontSize:15,
+            //                     backgroundColor:'#ffa329',
+            //                     color:'white',
+            //                     borderRadius:5,
+            //                     paddingHorizontal:5
+            //                 }}>
+            //                     {(item.rating ) ? (item.rating+'*') : 0+'*'}
+            //             </Text>
+            //         </Right>
+            //     </ListItem>
+            //   </List>
+                    <Card>
+                                            
+                            <Header style={{backgroundColor:'#221793'}}>
+                                <Title style={{color:'#ffffff'}}>{item.name}</Title>
+                                {/* <Subtitle>{(item.rating ) ? (item.rating+'*') : 0+'*'}</Subtitle> */}
+                            </Header>
+                            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('ShopDetail',{item:item});}}>
+                   
+                            <CardItem>
+                                    {/* <Thumbnail large source={{uri: uri}} /> */}
+                                <Image style={{height:150,width:width-90,resizeMode:'contain',borderRadius:50,}} source={{uri:uri}}/>
+                            </CardItem>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={()=>{this._storeData(item.gro_shop_info_id);}}>
+                            <CardItem style={{backgroundColor:'#d4d8d4',borderTopWidth:0.5}}>
+                            <Left>
+                                <Text>Address</Text>
+                            </Left>
+                            <Right>
+                                <Text>{item.address}</Text>
+                            </Right>
+                            </CardItem>
+                            </TouchableOpacity>
+                    {/* <CardItem style={{backgroundColor:'#d4d8d4'}}>
+                        <Left>
+                            <Text>Pin Code</Text>
+                        </Left>
+                        <Right>
+                            <Text>{this.state.zipCode}</Text>
+                        </Right>
+                        
+                    </CardItem> */}
+            </Card>
             );
     }   
 
@@ -143,14 +177,16 @@ export default class ShopList extends React.Component{
     
     render(){    
         return(
-            <View style={{width:'100%',flex:1,padding:10,}}>
-                <SearchBar
-                    round
-                    value = {this.state.serachText}
-                    onChangeText={this._onChangeText}
-                    placeholder='Type Here...' 
-                />
-                <ScrollView>                   
+            <Container>
+                 <SearchBar
+                        round
+                        value = {this.state.serachText}
+                        onChangeText={this._onChangeText}
+                        placeholder='Type Here...' 
+                    />
+                <Content>
+                   
+                                 
                     <FlatList
                         data={this.state.data}
                         renderItem={this._renderIteam}
@@ -171,8 +207,9 @@ export default class ShopList extends React.Component{
                                 );
                         }}  
                     />
-                </ScrollView>
-            </View>
+                
+                </Content>
+            </Container>
         );
     }
 }
