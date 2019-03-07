@@ -91,7 +91,7 @@ export default class ShopsProductsList extends React.Component
                     })
                     }).then((response) => response.json())
                         .then((responseJson) => {  
-                        //console.log("Shop List Load ......",responseJson);
+                        console.log("Shop List Load ......",responseJson);
                         if(Object.keys(responseJson.data).length > 0) {
                             this.setState({
                                 data:responseJson.data,
@@ -264,7 +264,7 @@ changeQuantity = (index,dindex) =>{
 
 _renderIteam=({item})=>{
 
-    console.log({item});
+    //console.log({item});
     let pName = item.title;
     let unit = item.unit;
     let price = item.price;

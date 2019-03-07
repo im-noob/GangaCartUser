@@ -12,7 +12,7 @@ import CartNavigation from '../screens/Cart/CartNavigation';
 import MyProfileNavigation from '../screens/MyProfile/MyProfileNavigation';
 import HomeScreenStack from '../screens/Home/HomeScreenStack';
 import SearchNavigation from '../screens/Search/SearchNavigation';
-
+import RestaurantNavigation from '../screens/Resturant/ResturantNavigation';
 
 const CustomDrawerContentComponent = (props) => (
   
@@ -43,8 +43,7 @@ const CustomDrawerContentComponent = (props) => (
 //     },
 // });
 // const ExampleScreenSecondStack = createStackNavigator(
-//   {
-    
+//   {   
 //   },
 // );
 
@@ -70,12 +69,12 @@ const AppDrawerNavigator = createDrawerNavigator({
 			drawerIcon: ({ tintColor }) => (<Icon name="truck" size={24} style={{ color: tintColor }} />),
 		}
   },
-  // Restaurant:{
-	// 	screen:ResturantNavigation,
-	// 	navigationOptions: {
-	// 		drawerIcon: ({ tintColor }) => (<Icon name="home-outline" size={24} style={{ color: tintColor }} />),
-	// 	}
-  // },
+//   Restaurant:{
+// 		screen:RestaurantNavigation,	
+// 		navigationOptions: {
+// 			drawerIcon: ({ tintColor }) => (<Icon name="home-outline" size={24} style={{ color: tintColor }} />),
+// 		}
+//   },
   Services:{
 		screen:ServiceNavigation,
 		navigationOptions: {

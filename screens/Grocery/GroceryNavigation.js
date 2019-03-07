@@ -1,91 +1,24 @@
-import React, { Component } from "react";
+import React from "react";
 import {
-    StyleSheet,
-    WebView ,
     View,
-    TouchableOpacity,
     Dimensions,
-    AsyncStorage,
-    ToastAndroid,
-    NetInfo,
-    Modal,
 } from "react-native";
 import { 
-    Container,
-    Spinner,
-    Button,
     Text,
-    Content,
-    Header,
-    Left,
-    Right,
-    Title,
-    Body,
-    Input,
-    Card,
-    CardItem,
-    List,
-    ListItem,
-    Form,
-    Picker,
-    Item,
-    Textarea,
-    Label,
-    Thumbnail,
 } from 'native-base';
 import Icon  from 'react-native-vector-icons/Feather';
-import Category from "./Category";
-import ItemList from "./ItemList";
 import MenuButton from "../../components/MenuButton";
-import HeaderTitle from "../../components/HeaderTitle";
-import Details from "./Details";
 import CartNavigation from "../Cart/CartNavigation";
 import CartButton from "../../components/CartButton";
 import ShoppingPage from  "./ShopList";
 import ShopCategory from './ShopCategory';
-const {width,height} = Dimensions.get('window');
-import {createDrawerNavigator,DrawerItems,createAppContainer, SafeAreaView,createStackNavigator,NavigationActions,createBottomTabNavigator } from 'react-navigation';
+import {createAppContainer, createStackNavigator,createBottomTabNavigator } from 'react-navigation';
 import ShopDetail from './shopDetails';
 import ShopsProductsList from './ShopProductList';
 import ShopProductDetails from './ShopProductDetails';
 import MostBuying from './MostBuying';
+import { StackNav } from "./StackNav";
 
-const StackNav =  createStackNavigator(
-    {
-      category: {
-        screen: Category,
-        navigationOptions: ({ navigation }) => ({
-          headerTitle: "Category List",
-          headerStyle: {
-            backgroundColor: '#2874f0'
-          },
-          headerLeft: <MenuButton obj={navigation}  />,
-          headerRight: <CartButton obj={navigation} value="10"  />,
-        }),
-      },
-      ItemDetails:{
-          screen: Details,
-          navigationOptions: ({ navigation }) => ({
-            headerTitle:"Item Details",
-           headerStyle: {
-             backgroundColor: '#2874f0'
-           },
-         }),
-      },
-      itemList:{
-          screen:ItemList,
-          navigationOptions: ({ navigation }) => ({
-            headerTitle:"Item Details",
-           headerStyle: {
-             backgroundColor: '#2874f0'
-           },
-         }),
-      }
-    },
-    {
-      
-    }
-);
 
 const DailyLife =  createStackNavigator(
   {
@@ -108,15 +41,6 @@ const DailyLife =  createStackNavigator(
 
 
 
-class ShoppingScreen1 extends React.Component {
-  render() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Settings!</Text>
-      </View>
-    );
-  }
-}
 
 const ShoppingScreen =  createStackNavigator(
   {
@@ -133,7 +57,7 @@ const ShoppingScreen =  createStackNavigator(
     },
     CategoryList:{
         screen: ShopCategory,
-        navigationOptions: ({ navigation }) => ({
+        navigationOptions: () => ({
           headerTitle:"Catrgory",
          headerStyle: {
            backgroundColor: '#2874f0'
@@ -142,7 +66,7 @@ const ShoppingScreen =  createStackNavigator(
     },
     ShopDetail:{
         screen:ShopDetail,
-        navigationOptions: ({ navigation }) => ({
+        navigationOptions: () => ({
           headerTitle:"Details",
          headerStyle: {
            backgroundColor: '#2874f0'
@@ -151,7 +75,7 @@ const ShoppingScreen =  createStackNavigator(
     },
     ShopsProductsList:{
       screen: ShopsProductsList,
-      navigationOptions: ({ navigation }) => ({
+      navigationOptions: () => ({
         headerTitle:"Prodoct List",
        headerStyle: {
          backgroundColor: '#2874f0'
@@ -160,7 +84,7 @@ const ShoppingScreen =  createStackNavigator(
     },
     ShopProductDetails:{
         screen:ShopProductDetails,
-        navigationOptions: ({ navigation }) => ({
+        navigationOptions: () => ({
           headerTitle:"Details",
         headerStyle: {
           backgroundColor: '#2874f0'
@@ -184,7 +108,7 @@ const TabNavigator = createBottomTabNavigator(
   },
   {
     defaultNavigationOptions  : ({ navigation }) => ({
-    tabBarIcon: ({ focused, horizontal, tintColor }) => {
+    tabBarIcon: ({ focused, tintColor }) => {
         const { routeName } = navigation.state;
         let iconName='worker';
         if(routeName == 'HomeStack'){

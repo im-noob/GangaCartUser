@@ -8,7 +8,7 @@ import {
   Image,
   AsyncStorage,
   ToastAndroid,
-  FlatList,
+  FlatList,ImageBackground,
   NetInfo,
   Modal,
 } from "react-native";
@@ -26,7 +26,6 @@ import {
   Input,
   Card,
   CardItem,
-  
   List,
   ListItem,
   Form,
@@ -37,12 +36,15 @@ import {
   Thumbnail,
   Row,
   Subtitle,
+  Grid,
   
 } from 'native-base';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 import DeckSwiperAdvancedExample from "./ImageExample";
+import MostBuying from "./Grocery/MostBuying";
 import Global from "../constants/Global";
 import { CartPrepare } from "../constants/OrderListPrepare";
+import ItemList from "./Grocery/ItemList";
 const {width,height} = Dimensions.get('window');
 
 export default class HomeScreen extends Component {
@@ -53,7 +55,7 @@ export default class HomeScreen extends Component {
       LodingModal: false,
       DataRecent:[],
       adData:[],
-     
+      CategoryData:[],
       data:[{key:'1',title:'Gorcery',navigationKey:'Grocery',pic:'https://upload.wikimedia.org/wikipedia/commons/1/13/Supermarkt.jpg'}]
     }
   }
@@ -61,6 +63,7 @@ export default class HomeScreen extends Component {
   componentDidMount() {
     this.render_Frequently();
     this.render_Offer();
+    this.render_category();
     setTimeout(() => {this.setState({renderCoponentFlag: true})}, 5);
   }
 
@@ -96,7 +99,7 @@ export default class HomeScreen extends Component {
           }).then((response) => response.json())
           .then((responseJson) => {
             var itemsToSet = responseJson.data;
-           console.log('Offer resp:',responseJson);
+           //console.log('Offer resp:',responseJson);
             if(responseJson.received == 'yes'){
             this.setState({
               LodingModal:false,adData:responseJson.data
@@ -126,6 +129,45 @@ export default class HomeScreen extends Component {
     console.log(connectionInfoLocal);
   }
  
+ render_category = async () => {
+  
+    var connectionInfoLocal = '';
+        NetInfo.getConnectionInfo().then((connectionInfo) => {
+//console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
+        if(connectionInfo.type == 'none'){
+            console.log("no internet ");
+            ToastAndroid.showWithGravityAndOffset(
+            'Oops! No Internet Connection',
+            ToastAndroid.LONG,
+            ToastAndroid.BOTTOM,
+            25,
+            50,
+            );        
+        }else{
+            console.log("yes internet ");
+            fetch(Global.API_URL+'gro_category', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                }
+            }).then((response) => response.json())
+            .then((responseJson) => {
+             // console.log(responseJson)
+                if(responseJson.received == "yes"){
+                //  console.log(responseJson);
+                  this.setState({CategoryData:responseJson.data.data});
+                }
+                }).catch((error) => {
+                    console.log("on error featching:"+error);
+            });
+        }
+        });
+        console.log(connectionInfoLocal);
+  }
+
+
+
   render_Frequently = async () => {
 
     let profile = await AsyncStorage.getItem('userProfileData');
@@ -134,7 +176,7 @@ export default class HomeScreen extends Component {
         return
     }
     profile = JSON.parse(profile);
-    console.log("My user ID ",profile);
+    //console.log("My user ID ",profile);
     var connectionInfoLocal = '';
     var KEY = await AsyncStorage.getItem('Token');
     NetInfo.getConnectionInfo().then((connectionInfo) => {
@@ -168,7 +210,7 @@ export default class HomeScreen extends Component {
           }).then((response) => response.json())
           .then((responseJson) => {
            var itemsToSet = responseJson.data;
-           // console.log('resp:',itemsToSet);
+            //console.log('resp:',itemsToSet);
             if(responseJson.received == 'yes'){
             this.setState({
               LodingModal:false,DataRecent:itemsToSet
@@ -199,26 +241,22 @@ export default class HomeScreen extends Component {
   }
 
   _renderItem = ({item}) =>{
-                            return(
-                             <TouchableOpacity onPress={()=>{this.props.navigation.navigate(item.navigationKey)}}>
-                             <View  style={{justifyContent:'center',width:60,paddingHorizontal:10,paddingVertical:4,borderColor:"#040504"}}>
-                                  <Image style={{height:50,width:50,resizeMode: 'contain'}} source={{uri: item.pic}}/>
-                                  <Text style={{color:'#000000',fontSize:10}}>{item.title}</Text>   
-                              </View>
-                              </TouchableOpacity>
-                              
-                            )
-                           } 
+      return(
+        <TouchableOpacity onPress={()=>{this.props.navigation.navigate('TopSubCategory',{id:item.mapcid});/** this.props.navigation.navigate(item.navigationKey)*/}}>
+        <View  style={{justifyContent:'center',width:60,paddingHorizontal:10,paddingVertical:4,borderColor:"#040504"}}>
+            <Image style={{height:50,width:50,resizeMode: 'contain'}} source={{uri:Global.Image_URL+item.pic}}/>
+            <Text style={{color:'#000000',fontSize:10}}>{item.title}</Text>   
+        </View>
+        </TouchableOpacity>
+        
+      )
+  } 
   
   _renderRecent = ({item}) =>{
       
       let pName = item.title;
-     
-     
       return(
-       
-              
-        
+
         <View style={{ flex:1,
                         backgroundColor:'#fcfcfc', 
                         padding:5,
@@ -238,36 +276,35 @@ export default class HomeScreen extends Component {
             <View style={{flex:1,paddingLeft:1}}>
 
           
-             <View style={{alignItems:'center', justifyContent:'center',padding:3}}>
-                <Text style={{fontSize:14,fontWeight:'300'}}>{pName} </Text>
-            </View> 
+              <View style={{alignItems:'center', justifyContent:'center',padding:3}}>
+                  <Text style={{fontSize:14,fontWeight:'300'}}>{pName} </Text>
+              </View> 
             </View>
             
             <View style={{padding:3}}>
             {
               
               item.flag ?
-              <Button bordered onPress={()=>{this._addItem(item.map); console.log("Flag :",item.flag)}}>
-                <Text>Add to Cart</Text>
-              </Button>
-              :
+             
               <View style={{flexDirection:'row'}}>
-                 <Button style={{height:30,width:25,alignItems:'center'}}  onPress={()=>{this._subQuantity(item.map); /**this.setState({item:{Quantity:qunt}})*/}}>
-                                        <Text style={{color:'#ffffff',textAlign:'center',alignSelf:'center', fontSize:'900',fontSize:15}}>-</Text>
-                                    </Button>
-                                    <View style={{borderWidth:1,width:50,alignItems:'center'}}>
-                                        <Title style={{color:'#000000'}}>{item.Quantity}</Title>
-                                    </View>                        
-                                    <Button style={{height:30,width:25,alignItems:'center'}}  onPress={()=>{this._addQuantity(item.map); /** this.setState({item:{Quantity:qunt}})*/}}>
-                                      <Text style={{color:'#ffffff',textAlign:'center',alignSelf:'center', fontSize:'900',fontSize:15}}>+</Text>
-                                     </Button>   
+                  <Button style={{height:30,width:25,alignItems:'center'}}  onPress={()=>{this._subQuantity(item.map); /**this.setState({item:{Quantity:qunt}})*/}}>
+                      <Text style={{color:'#ffffff',textAlign:'center',alignSelf:'center', fontSize:'900',fontSize:15}}>-</Text>
+                  </Button>
+                  <View style={{borderWidth:1,width:50,alignItems:'center'}}>
+                      <Title style={{color:'#000000'}}>{item.Quantity}</Title>
+                  </View>                        
+                  <Button style={{height:30,width:25,alignItems:'center'}}  onPress={()=>{this._addQuantity(item.map); /** this.setState({item:{Quantity:qunt}})*/}}>
+                    <Text style={{color:'#ffffff',textAlign:'center',alignSelf:'center', fontSize:'900',fontSize:15}}>+</Text>
+                  </Button>   
               </View>
+              :
+              <Button bordered onPress={()=>{this._addItem(item.map); console.log("Flag :",item.flag)}}>
+              <Text>Add to Cart</Text>
+            </Button>
+            
             }
             </View>
-       
-    </View>
-    
-    
+        </View>
       )
     }
 
@@ -278,13 +315,13 @@ export default class HomeScreen extends Component {
        </Card>
     );
   }
-       
+     
 _addQuantity=(index) =>{
   
   let array=[];
   this.state.DataRecent.forEach(element =>{
       if(element.map == index){
-        console.log(element);
+        //console.log(element);
           element.Quantity++; 
           CartPrepare(element,element.Quantity);
       }
@@ -292,49 +329,57 @@ _addQuantity=(index) =>{
       array.push(element);
   })
   this.setState({DataRecent:array});
- 
   console.log("In add quintity");
 }
 
 
 _subQuantity=(index) =>{
 
-  
   let array=[];
   this.state.DataRecent.forEach(element =>{ 
-    
       if(element.map == index){
-        console.log(element);
+        //console.log(element);
           CartPrepare(element,element.Quantity > 1? --element.Quantity :element.Quantity);
       }
-
       array.push(element);
   })
   this.setState({DataRecent:array});
-  
   console.log("In sub qantity")
 
 }
+
 
 _addItem =(id)=>{
 
   let tempArray =[];
   this.state.DataRecent.forEach(element=>{
-      
       if(element.map == id){
-          element.flag = false;
+          element.flag = true;
           console.log(element);
       }
       tempArray.push(element);      
-  })
-
+  });
   this.setState({DataRecent:tempArray});
   console.log("In add Item");
 }
 
 
+_renderCategory = ({item}) =>{
+  //console.log(item); 
+  return(
+      
+        <View  style={{justifyContent:'center',borderWidth:1,borderColor:"#cecece",width:150}}>
+          <TouchableOpacity onPress={()=> {this.props.navigation.navigate('itemList',{
+                            sid: item.sKey
+                        })}}>
+            <Image style={{height:150,width:150,borderRadius:5}} source={{uri:Global.Image_URL+item.cpic}}/>
+            <Text >{item.sName}</Text>
+          </TouchableOpacity>   
+        </View>
+    );
+}
 
-  render() {
+render() {
     const {renderCoponentFlag} = this.state;
     if(renderCoponentFlag){
       return(
@@ -342,17 +387,14 @@ _addItem =(id)=>{
           <Content>
             <Card style={{height:100,width:500}} transparent >
               <FlatList
-                data={this.state.data}
-               
-               
+                data={this.state.CategoryData}
                 renderItem={this._renderItem}
+                keyExtractor={(item)=>item.mapcid+''}
                 horizontal
               />
             </Card>
             <Card style={{height:150}}>
-              
                 <DeckSwiperAdvancedExample/>
-            
             </Card>
             {
               this.state.DataRecent.length != 0?
@@ -363,24 +405,93 @@ _addItem =(id)=>{
                   <FlatList
                   data={this.state.DataRecent}
                   renderItem={this._renderRecent}
+                  keyExtractor={(item)=>item.map+''}
                   horizontal
                   />
               </Card>
               :<View></View>
             }
+           <ImageBackground style={{height:200,width:width,paddingVertical:10,marginVertical:10}} source={{uri:"https://previews.123rf.com/images/grapestock/grapestock1801/grapestock180100026/92840961-mail-icon-on-finger-over-light-gradient-blue-background-contact-us-concept.jpg"}} > 
+             
+                <View style={{padding:10}}>
+                    <Text style={{color:'#ffffff',fontSize:25}}>Get your Groceries delivered from local stores</Text>
+                    <Text style={{color:'#ffffff'}}>Free Delivery order know!</Text>
+                </View >
+                {/* 
+                <View style={{padding:10,flexDirection:'row',justifyContent:'space-around'}}>
+                  <View>
+                    <Input style={{height:20,width:200}}/>
+                  </View>
+                  <View>
+                    <Button><Text>Submit</Text></Button>
+                  </View>
 
+                </View> 
+                */}
+             
+           </ImageBackground>
           
-           <FlatList
+            
+            
+            <View>
+              <Image source={{uri:Global.Image_URL+"Banner/Don't%20Pay.jpg"}} style={{height:150,width:width,resizeMode:'contain'}}/>
+            </View>
+
+            <View>
+              <Image source={{uri:Global.Image_URL+"Banner/Beverages.jpg"}} style={{height:100,width:width,resizeMode:'contain'}}/>
+            </View>
+
+
+            <View>
+              <Image source={{uri:Global.Image_URL+"Banner/BreadBakery.jpg"}} style={{height:150,width:width,resizeMode:'contain'}}/>
+            </View>
+
+            <View>
+              <Image source={{uri:Global.Image_URL+"Banner/Our Gaurantees(2).jpg"}} style={{height:150,width:width,resizeMode:'contain'}}/>
+            </View>
+
+            <View>
+              <Image source={{uri:Global.Image_URL+"Banner/NearStore.jpg"}} style={{height:150,width:width,resizeMode:'contain'}}/>
+            </View>
+
+            <View>
+              <Image source={{uri:Global.Image_URL+"Banner/Save Money.jpg"}} style={{height:150,width:width,resizeMode:'contain'}}/>
+            </View>
+
+           
+
+           {/* <FlatList
               data={this.state.adData}
               renderItem={this._renderItemAdd}
               
             />
          
-            {/* <Button bordered dark onPress={()=>{
+            <Button bordered dark onPress={()=>{
               this.props.navigation.navigate('Gorcery');
             }}>
               <Text> Go to Profile screen</Text>
             </Button> */}
+
+            {/* <Card>
+              <CardItem header>
+                <Text>Shop By Category</Text>
+              </CardItem>
+              <CardItem cardBody  >
+                <Body>
+                  <Grid style={{flexDirection:'row'}}>
+                    <Image onPress = {() => {console.log('Image Clicked')}} style={{width:'50%', height: 150,borderRadius:5}} source={{uri:'https://thecouponx.com/files/2018/04/faasos-50-off-coupon.png'}}/>
+                    <Image onPress = {() => {console.log('Image Clicked')}} style={{width:'50%', height: 150,borderRadius:5}} source={{uri:'https://i.ytimg.com/vi/xyYD96pkXqM/maxresdefault.jpg'}}/>
+                  </Grid>
+                  <Grid style={{flexDirection:'row'}}>
+                    <Image onPress = {() => {console.log('Image Clicked')}} style={{width:'50%', height: 150,borderRadius:5}} source={{uri:'https://i.ytimg.com/vi/xyYD96pkXqM/maxresdefault.jpg'}}/>
+                    <Image onPress = {() => {console.log('Image Clicked')}} style={{width:'50%', height: 150,borderRadius:5}} source={{uri:'https://thecouponx.com/files/2018/04/faasos-50-off-coupon.png'}}/>
+                  </Grid>
+                </Body>
+              </CardItem>
+              <CardItem onPress = {() => {this.props.navigation.navigate('category')}}>                
+                   <Text>Browse More > </Text>
+              </CardItem>
+            </Card> */}
           </Content>
         </Container>
       );
@@ -391,7 +502,6 @@ _addItem =(id)=>{
     }
   }
 }
-
 
 class AdvLoder extends Component{
   render(){

@@ -6,13 +6,15 @@ import GroceryNavigation from '../Grocery/GroceryNavigation';
 import HeaderTitle from '../../components/HeaderTitle';
 import MenuButton from '../../components/MenuButton';
 import CartButton from '../../components/CartButton';
+import TopSubCategory from '../TopSubCategory';
 
 export default createStackNavigator(
     {
+      
       HomeScreen: {
         screen: HomeScreen,
         navigationOptions: ({ navigation }) => ({
-          headerTitle: HeaderTitle,
+          headerTitle: HeaderTitle, 
           headerStyle: {
             backgroundColor: '#2874f0'
           },
@@ -22,13 +24,15 @@ export default createStackNavigator(
         }),
       },
       Grocery: {
-        screen: GroceryNavigation,
+        screen: GroceryNavigation, 
         navigationOptions: ({ navigation }) => ({
           header:null
         }),
       },
      
-     
+      TopSubCategory: {
+        screen: TopSubCategory       
+      }
     },
     {
      initialRouteName:'HomeScreen' 

@@ -34,6 +34,11 @@ export default class ItemList extends Component {
     }
 
     fatchItem =async ()=> {
+
+        if(!this.state.value){
+            console.log("Data not found");
+            return null;
+        }
         
         var connectionInfoLocal = '';
         NetInfo.getConnectionInfo().then((connectionInfo) => {
@@ -92,7 +97,7 @@ export default class ItemList extends Component {
                         }
                     }
                     this.setState({ProductList:list,data:list,renderCoponentFlag:true});
-                   // console.log(responseJson.data.data);
+                    //console.log(responseJson.data.data);
                     console.log("Fstch Dsta printed");
                 }
                 }).catch((error) => {
