@@ -36,6 +36,7 @@ import {
     Textarea,
     Label,
     Thumbnail,
+    Fab
 } from 'native-base';
 import {createDrawerNavigator,DrawerItems, SafeAreaView,createStackNavigator,NavigationActions } from 'react-navigation';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -93,7 +94,7 @@ class ShopsProductsList extends React.Component
         this.state={
             data: this.props.gro_searchData,//store data of sub-category items
             process:false,
-            isEmpty:'"List is empty..."',
+            isEmpty:'"List is emptyshop_searchData..."',
             serachText:"",
             fullData:this.props.gro_searchData,
             Qun:1,
@@ -392,25 +393,25 @@ _storeData=async( nvg,item) =>{
     }
 }
 
-_onChangeText=(text) =>{
-    this.setState({serachText:text});
-    try {
-             const newData = this.state.fullData.filter(item => {      
-                const itemData = `${item.title.toUpperCase()}`;
-                 const textData = text.toUpperCase();
-                 return itemData.indexOf(textData) > -1;    
-              });    
-              this.setState({checkboxes: newData });
-            if(newData.length == 0){
-                this.setState({isEmpty:'No Data Found'});
-            }  
-            else{
-                this.setState({isEmpty:''});
-            }
-        } catch (error) {
-             console.log(error)
-        }
-    }
+// _onChangeText=(text) =>{
+//     this.setState({serachText:text});
+//     try {
+//              const newData = this.state.fullData.filter(item => {      
+//                 const itemData = `${item.title.toUpperCase()}`;
+//                  const textData = text.toUpperCase();
+//                  return itemData.indexOf(textData) > -1;    
+//               });    
+//               this.setState({checkboxes: newData });
+//             if(newData.length == 0){
+//                 this.setState({isEmpty:'No Data Found'});
+//             }  
+//             else{
+//                 this.setState({isEmpty:''});
+//             }
+//         } catch (error) {
+//              console.log(error)
+//         }
+//     }
 
     render(){
         
@@ -443,6 +444,220 @@ _onChangeText=(text) =>{
 
 
 
+class ShopList extends React.Component{
+    constructor(props){
+        super(props);
+        this.state={
+            data:[],//store data of category items
+            process:false,
+            obj:this.props,
+            serachText:"",
+            fullData:'',
+            isEmpty:'No Data Found', 
+        }
+    }
+    componentDidMount(){  
+        this.fetech(this.props.shop_searchData);
+        console.log("shoppp data:",this.props.shop_searchData);
+    }
+
+    fetech = async(shop_searchData) =>{    
+        console.log("Shop List Load ......",shop_searchData);
+        if(Object.keys(shop_searchData).length > 0) {
+            resdata = shop_searchData.data
+            this.setState({data:resdata,
+                fullData:resdata
+            });
+        }
+        else{
+            this.setState({isEmpty:'No Data Found'});
+        }
+        this.setState({process:false});
+    }
+    _storeData=async(sID) =>{
+        try{
+            await AsyncStorage.setItem('ShopID',JSON.stringify(sID))
+            this.props.navigation.navigate('CategoryList');
+        }
+        catch(error){
+            console.log("Eroor he Product list me ",error);
+        }
+    }
+
+
+    _renderIteam=({item})=>{    
+        let uri;
+        try {
+          (item.pic == null ||item.pic.length == 0) ? uri="https://pvsmt99345.i.lithium.com/t5/image/serverpage/image-id/10546i3DAC5A5993C8BC8C?v=1.0":uri=item.pic;  
+        } catch (error) {
+            uri="https://pvsmt99345.i.lithium.com/t5/image/serverpage/image-id/10546i3DAC5A5993C8BC8C?v=1.0"
+        }
+        return(
+            //   <List style={{backgroundColor:'#f9f9f9'}}>
+            //     <ListItem avatar>
+            //         <Left>
+            //             <TouchableOpacity onPress={()=>{this.props.navigation.navigate('ShopDetail',{item:item});}}>
+            //                 <Thumbnail large source={{uri: uri}} />
+            //             </TouchableOpacity>
+            //         </Left>
+            //         <Body style={{backgroundColor:"#f9f9f9"}}>
+            //             <TouchableOpacity onPress={()=>{this._storeData(item.gro_shop_info_id);}}>
+            //                 <View>
+            //                     <Text>{item.name}</Text>
+            //                     <Text note>Address : {item.address}</Text>
+            //                 </View>
+            //                 <View style={{flexDirection:'row',alignItems:'center'}}>
+                                
+            //                     {/* <View>
+            //                     <Text note>Ratting : {item.address}</Text>
+            //                     </View> */}
+            //                 </View>
+            //             </TouchableOpacity>
+            //         </Body>
+            //         <Right>
+            //             <Text style={{
+            //                     fontWeight:'500',
+            //                     fontSize:15,
+            //                     backgroundColor:'#ffa329',
+            //                     color:'white',
+            //                     borderRadius:5,
+            //                     paddingHorizontal:5
+            //                 }}>
+            //                     {(item.rating ) ? (item.rating+'*') : 0+'*'}
+            //             </Text>
+            //         </Right>
+            //     </ListItem>
+            //   </List>
+                    <Card>
+                                            
+                            <Header style={{backgroundColor:'#221793'}}>
+                                <Title style={{color:'#ffffff'}}>{item.name}</Title>
+                                {/* <Subtitle>{(item.rating ) ? (item.rating+'*') : 0+'*'}</Subtitle> */}
+                            </Header>
+                            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('ShopDetail',{item:item});}}>
+                   
+                            <CardItem>
+                                    {/* <Thumbnail large source={{uri: uri}} /> */}
+                                <Image style={{height:150,width:width-90,resizeMode:'contain',borderRadius:50,}} source={{uri:uri}}/>
+                            </CardItem>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={()=>{this._storeData(item.gro_shop_info_id);}}>
+                            <CardItem style={{backgroundColor:'#d4d8d4',borderTopWidth:0.5}}>
+                            <Left>
+                                <Text>Address</Text>
+                            </Left>
+                            <Right>
+                                <Text>{item.address}</Text>
+                            </Right>
+                            </CardItem>
+                            </TouchableOpacity>
+                    {/* <CardItem style={{backgroundColor:'#d4d8d4'}}>
+                        <Left>
+                            <Text>Pin Code</Text>
+                        </Left>
+                        <Right>
+                            <Text>{this.state.zipCode}</Text>
+                        </Right>
+                        
+                    </CardItem> */}
+            </Card>
+            );
+    }   
+
+    _onChangeText=(text) =>{
+        this.setState({serachText:text});
+        try {
+             const newData = this.state.fullData.filter(item => {      
+                const itemData = `${item.name.toUpperCase()}`;
+                 const textData = text.toUpperCase();
+                 return itemData.indexOf(textData) > -1;    
+              });    
+              this.setState({data: newData });
+            if(newData.length == 0){
+                this.setState({isEmpty:'No Data Found'});
+            }  
+            else{
+                this.setState({isEmpty:''});
+            }
+        } catch (error) {
+             console.log(error)
+        }
+    }
+    
+    render(){    
+        return(
+            <View>
+                 {/* <SearchBar
+                        round
+                        value = {this.state.serachText}
+                        onChangeText={this._onChangeText}
+                        placeholder='Type Here...' 
+                    /> */}
+                
+                   
+                                 
+                    <FlatList
+                        data={this.state.data}
+                        renderItem={this._renderIteam}
+                        keyExtractor={item => item.gro_shop_info_id.toString()}
+                        ListEmptyComponent={()=>{
+                            if(this.state.isEmpty)
+                                return( 
+                                    <View style={{justifyContent:'center',alignContent:'center',alignItems:'center',alignSelf:'center'}}>
+                                        <Text>No Data Found</Text>
+                                    </View>
+                                );
+                            else
+                                return( 
+                                    <View style={{justifyContent:'center'}}>
+                                        <ActivityIndicator size="large" color="#0000ff" />
+                                        <Text>Wait List is Loading.....</Text>
+                                    </View>
+                                );
+                        }}  
+                    />
+                
+
+            </View>
+        );
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export default class HomeScreen extends Component {
     constructor(props){
         super(props);
@@ -450,10 +665,14 @@ export default class HomeScreen extends Component {
             renderCoponentFlag: false,
             LodingModal: false,
             searchText:'',
-            searchingStatus:false,
+            searchingStatusGro:false,
+            searchingStatusShop:false,
+            searchingStatusRest:false,
+            searchingStatusServ:false,
             gro_searchData: [],
             res_searchData: [],
             ser_searchData: [],
+            shop_searchData: [],
         }
     }
     componentDidMount() {
@@ -485,7 +704,14 @@ export default class HomeScreen extends Component {
                     return;
                 }
                 this.setState({
-                    searchingStatus:true,
+                    searchingStatusGro:true,
+                    searchingStatusShop:true,
+                    searchingStatusRest:true,
+                    searchingStatusServ:true,
+                    gro_searchData: [],
+                    res_searchData: [],
+                    ser_searchData: [],
+                    shop_searchData: [],
                 });
                 fetch(Global.API_URL+'gro/search', {
                     method: 'POST',
@@ -500,27 +726,33 @@ export default class HomeScreen extends Component {
                          })
                     }).then((response) => response.json())
                     .then((responseJson) => {
-                        var itemsToSet = responseJson.data;
-                        console.log('resp Length:',responseJson.data.length);
+                        var gro_data_res = responseJson.gro_data;
+                        var shop_data_res = responseJson.shop_data;
+                        console.log("shop search data :",shop_data_res)
+                        console.log('resp Length:',responseJson);
 
                         console.log('resp:',responseJson);
                         if(responseJson.received == 'yes'){
                             
                             this.setState({
-                                gro_searchData:itemsToSet
+                                gro_searchData:gro_data_res,
+                                shop_searchData:shop_data_res,
                             })
                             
                         }else{
                             ToastAndroid.showWithGravityAndOffset(
                                 'Internal Server Error',
-                                ToastAndroid.LONG,
+                                ToastAndroid.SHORT,
                                 ToastAndroid.BOTTOM,
                                 25,
                                 50,
                             );
                         }
                         this.setState({
-                            searchingStatus:false,
+                            searchingStatusGro:false,
+                            searchingStatusShop:false,
+                            searchingStatusRest:false,
+                            searchingStatusServ:false,
                         });
                 }).catch((error) => {
                     ToastAndroid.showWithGravityAndOffset(
@@ -530,8 +762,11 @@ export default class HomeScreen extends Component {
                         25,
                         50,
                     );
+                    setTimeout(() => {
+                        this.render_getSearchData();
+                    }, 10000);
                     console.log('on error fetching:'+error);
-                    this.render_getSearchData();
+                    
                 });
             }
         });
@@ -541,8 +776,8 @@ export default class HomeScreen extends Component {
         const {renderCoponentFlag} = this.state;
         if(renderCoponentFlag){
             return(
-                <Container>
-                    <Content>
+                <Container >
+                    <ScrollView ref={(scroller) => {this.scroller = scroller}}>
                         <Header style={{backgroundColor:'#fff'}}>
                             <Right style={{borderColor:'#848484',borderRadius:8,borderWidth:1}}>
                                 <Icon name='magnify' style={{fontSize:30,alignSelf:'center',paddingHorizontal:5}} />
@@ -560,20 +795,72 @@ export default class HomeScreen extends Component {
                             </Right>
                         </Header>
                         {/* Your component goes here */}
+
+                        <Card>
+                             <CardItem header bordered>
+                                 <Text>Shop List</Text>
+                             </CardItem>
+                        </Card> 
                         {
-                            this.state.searchingStatus ?
+                            this.state.searchingStatusShop ?
                                 <AdvLoder/>:
-                                // <ShowSearchResult 
-                                //     gro_searchData = {this.state.gro_searchData}
-                                //     res_searchData = {this.state.res_searchData}
-                                //     ser_searchData = {this.state.ser_searchData}
-                                //     navigation = {this.props.navigation}
-                                // />
+                                <ShopList shop_searchData = {this.state.shop_searchData} navigation = {this.props.navigation} />
+                        }
+                        <Card>
+                             <CardItem header bordered>
+                                 <Text>Grocery</Text>
+                             </CardItem>
+                        </Card> 
+                        {
+                            this.state.searchingStatusGro ?
+                                <AdvLoder/>:
                                 <ShopsProductsList gro_searchData ={this.state.gro_searchData}
                                     navigation = {this.props.navigation}
                                 />
                         }
-                    </Content>
+                        
+                        {/* <Card>
+                             <CardItem header bordered>
+                                 <Text>Resutrant</Text>
+                             </CardItem>
+                        </Card> 
+                        {
+                            this.state.searchingStatusRest ?
+                                <AdvLoder/>:
+                                <ShopsProductsList gro_searchData ={this.state.gro_searchData}
+                                    navigation = {this.props.navigation}
+                                />
+                        }
+                        <Card>
+                             <CardItem header bordered>
+                                 <Text>Service</Text>
+                             </CardItem>
+                        </Card> 
+                        {
+                            this.state.searchingStatusServ ?
+                                <AdvLoder/>:
+                                <ShopsProductsList gro_searchData ={this.state.gro_searchData}
+                                    navigation = {this.props.navigation}
+                                />
+                        } */}
+                        
+                    </ScrollView>
+                    <Fab
+                            active={this.state.active}
+                            direction="bottomRight"
+                            containerStyle={{ }}
+                            style={{ backgroundColor: '#5067FF' }}
+                            position="bottomRight"
+                            onPress={() => {
+                                console.log("gogin up");
+                                // console.log(this.scroller.scrollTo);
+                                this.scroller.scrollTo({x: 0, y: 0, animated: true});
+                                // this.refs.scrollView.scrollTo({x: 0, y: 0, animated: true});
+
+                            }}>
+                            <Icon name="arrow-up" />
+                            
+                        </Fab>
                 </Container>
             );
         }else{

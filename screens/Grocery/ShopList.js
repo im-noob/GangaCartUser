@@ -20,7 +20,7 @@ export default class ShopList extends React.Component{
         }
     }
     componentDidMount(){  
-        this.fetech();
+        this.fetech();z
     }
 
     fetech = async() =>{    
